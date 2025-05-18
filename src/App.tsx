@@ -3,6 +3,7 @@ import './App.css'
 import SignUp from './pages/signup/SignUp'
 import Login from './pages/login/Login'
 import Dashboard from './pages/dashboard/Dashboard'
+import MatchList from './pages/matchList/MatchList'
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/signup" element={<SignUp/>}/>
         <Route path="/signin" element={<Login/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path='/matche' element={<MatchList/>}/>
   </Route>
  )) 
 

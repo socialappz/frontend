@@ -63,7 +63,7 @@ setUser({...user,
               </div>
             </div>
 
-              <label htmlFor="email" className="block text-sm/6 font-medium text-white">
+              <label htmlFor="username" className="block text-sm/6 font-medium text-white">
                 Username
               </label>
               <div className="mt-2">

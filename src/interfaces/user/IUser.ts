@@ -11,8 +11,8 @@ export interface IUser {
     },
     description: string,
     location: {
-        bottomLeft: [],
-        topRight: [],
+        bottomLeft: number[],
+        topRight: number[],
     },
     favorite: [],
 }
