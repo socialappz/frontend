@@ -1,36 +1,148 @@
-import React, { createContext, useEffect, useState, type ReactNode } from 'react'
-import type { IUser } from '../interfaces/user/IUser'
-import { axiosPublic } from '../utils/axiosConfig';
+// MainProvider.tsx
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import type { IUser } from "../interfaces/user/IUser";
+import { axiosPublic } from "../utils/axiosConfig";
+import { io, Socket } from "socket.io-client";
 
-export const mainContext = createContext({})
+export interface INotification {
+  read: any;
+  from: string;
+  message: string;
+  sentAt: Date;
+  senderId: string,
+  friend: string,
+}
 
-export default function MainProvider({children}: {children : ReactNode}) {
+interface IMainContext {
+  user: IUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
+  selectedUser: any;
+  setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
+  notifications: INotification[];
+  setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>;
+  socket: Socket | null;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<any>>;
+}
 
-const [notifications, setNotifications] = useState([]);
-const [loading,setLoading] = useState<Boolean>(false)
-const [user, setUser] = useState<IUser>({
-  email: "",
-    username: "",
-    gender: "",
-    language: "",
-    dogBreed: "",
-    userImage: "",
-    availability: {
-      dayTime: "",
-      weekDay: "",
-    },
-    description: "",
-    location: {
-      bottomLeft: [],
-      topRight: [],
-    },
-    favorite: [],
-})
+export const mainContext = createContext<IMainContext>({} as IMainContext);
 
+export default function MainProvider({ children }: { children: ReactNode }) {
+  const [notifications, setNotifications] = useState<INotification[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
+  const [selectedUser, setSelectedUser] = useState({});
+
+useEffect(() => {
+  let isMounted = true;
+  let activeSocket: Socket | null = null;
+
+  const fetchUserAndSetupSocket = async () => {
+    try {
+      // 1. Fetch current user
+      const resp = await axiosPublic.get("/currentUser", { 
+        withCredentials: true 
+      });
+      const userData = resp.data;
+
+      // 2. Only proceed if component is still mounted
+      if (!isMounted) return;
+
+      // 3. Create socket connection
+      activeSocket = io("http://localhost:2000", {
+        withCredentials: true,
+        autoConnect: true,
+        reconnectionAttempts: 3,
+        transports: ["websocket"]
+      });
+
+      // 4. Join personal notification room
+      activeSocket.emit("join_room", userData.username.toLowerCase());
+
+      // 5. Set up notification listener
+      activeSocket.on("receive_message", (data) => {
+        if (!isMounted) return;
+        setNotifications(prev => [
+          ...prev,
+          {
+            from: data.username,
+            message: data.message,
+            room: data.room,
+            sentAt: new Date(data.sentAt),
+            read: false,
+            senderId: data.senderId,
+            friend: ""
+          }
+        ]);
+      });
+
+      // 6. Set up connection listeners
+      activeSocket.on("connect", () => {
+        console.log("Socket connected:", activeSocket?.id);
+      });
+
+      activeSocket.on("disconnect", () => {
+        console.log("Socket disconnected");
+      });
+
+      activeSocket.on("error", (err) => {
+        console.error("Socket error:", err);
+      });
+
+      // 7. Update context
+      setSocket(activeSocket);
+      setUser(userData);
+      setNotifications(userData.notifications || []);
+
+    } catch (err) {
+      console.error("Error initializing user:", err);
+    } finally {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }
+  };
+
+  fetchUserAndSetupSocket();
+
+  // 8. Cleanup function
+  return () => {
+    isMounted = false;
+    
+    if (activeSocket) {
+      // Remove all listeners
+      activeSocket.off("connect");
+      activeSocket.off("disconnect");
+      activeSocket.off("error");
+      activeSocket.off("receive_message");
+      
+      // Disconnect socket
+      activeSocket.disconnect();
+    }
+  };
+}, []); 
   return (
-    <mainContext.Provider value={{user, setUser}}>
-        {children}
+    <mainContext.Provider
+      value={{
+        user,
+        setUser,
+        selectedUser,
+        setSelectedUser,
+        notifications,
+        setNotifications,
+        socket,
+        loading,
+        setLoading
+      }}
+    >
+      {children}
     </mainContext.Provider>
-  )
+  );
 }

@@ -1,29 +1,50 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
+import MatchCard from "../machtCard/MatchCard";
 
 export default function MatchList() {
-
-    const [matchUsers, setMatchUsers] = useState([]);
-    const [showCard, setShowCard] = useState(false);
-
-    const getMatchUsers = async () => {
+  const [matchUsers, setMatchUsers] = useState([]);
+  
+  const getMatchUsers = async () => {
     const resp = await axiosPublic.get("/getMatchedUsers", {
       withCredentials: true,
     });
-    console.log(resp.data);
     setMatchUsers(resp.data);
   };
 
-
-useEffect(() => {
+  useEffect(() => {
     getMatchUsers();
-}, []);
+  }, []);
 
+return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
+          Your Matches
+        </h1>
 
-  return (
-    <div>MatchList
-        <Link to="/dashboard">Back to Profile</Link>
+        {matchUsers.length !== 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {matchUsers.map((matchUser, index) => (
+              <div 
+                key={index}
+                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+              >
+                <MatchCard matchUser={matchUser} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <h2 className="text-xl sm:text-2xl text-gray-500 font-medium">
+              Keine User gefunden
+            </h2>
+            <p className="mt-2 text-gray-400">
+              Versuche deine Suchkriterien anzupassen
+            </p>
+          </div>
+        )}
+      </div>
     </div>
-  )
+  );
 }

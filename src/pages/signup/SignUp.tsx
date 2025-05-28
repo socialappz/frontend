@@ -25,9 +25,16 @@ setUser({...user,
   password: password
 })
   try {
-     await axiosPublic.post("/signup", user, {
+     await axiosPublic.post("/signup", 
+     { email,
+      username,
+      password
+    }
+      , {
         withCredentials: true,
       })
+
+       setUser({ email, username, password });
     navigator("/signin")
   } catch (error) {
     console.error(error);
