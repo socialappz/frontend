@@ -110,20 +110,19 @@ useEffect(() => {
     }
   };
 
+
+
   fetchUserAndSetupSocket();
 
-  // 8. Cleanup function
   return () => {
     isMounted = false;
     
     if (activeSocket) {
-      // Remove all listeners
       activeSocket.off("connect");
       activeSocket.off("disconnect");
       activeSocket.off("error");
       activeSocket.off("receive_message");
       
-      // Disconnect socket
       activeSocket.disconnect();
     }
   };
