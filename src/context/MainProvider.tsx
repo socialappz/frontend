@@ -1,4 +1,4 @@
-// MainProvider.tsx
+
 import React, {
   createContext,
   useEffect,
@@ -46,16 +46,16 @@ useEffect(() => {
 
   const fetchUserAndSetupSocket = async () => {
     try {
-      // 1. Fetch current user
+  
       const resp = await axiosPublic.get("/currentUser", { 
         withCredentials: true 
       });
       const userData = resp.data;
 
-      // 2. Only proceed if component is still mounted
+    
       if (!isMounted) return;
 
-      // 3. Create socket connection
+     
       activeSocket = io("http://localhost:2000", {
         withCredentials: true,
         autoConnect: true,
@@ -63,10 +63,9 @@ useEffect(() => {
         transports: ["websocket"]
       });
 
-      // 4. Join personal notification room
+  
       activeSocket.emit("join_room", userData.username.toLowerCase());
 
-      // 5. Set up notification listener
       activeSocket.on("receive_message", (data) => {
         if (!isMounted) return;
         setNotifications(prev => [
@@ -83,7 +82,6 @@ useEffect(() => {
         ]);
       });
 
-      // 6. Set up connection listeners
       activeSocket.on("connect", () => {
         console.log("Socket connected:", activeSocket?.id);
       });
@@ -96,7 +94,6 @@ useEffect(() => {
         console.error("Socket error:", err);
       });
 
-      // 7. Update context
       setSocket(activeSocket);
       setUser(userData);
       setNotifications(userData.notifications || []);
