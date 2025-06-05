@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useContext, useMemo} from "react";
 import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 interface IMessage {
@@ -20,6 +20,18 @@ export default function Chat() {
   const [matchUser, SetMatchUser] = useState<any>(null);
 
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+  const reloaded = searchParams.get("reloaded");
+
+  if (!reloaded) {
+    searchParams.set("reloaded", "1");
+    setSearchParams(searchParams); 
+    window.location.reload();
+  }
+}, []);
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -57,11 +69,11 @@ const room = useMemo(() => {
   };
 
   useEffect(() => {
-  if (!room) return;
 
   const timer = setTimeout(() => {
-    getChat();
-  }, 100);
+
+  }, 1000);
+
 
   return () => clearTimeout(timer);
 }, [room]);
@@ -136,11 +148,30 @@ const room = useMemo(() => {
     });
   };
 
-  const formatTime = (timestamp?: string) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
+ const formatTime = (timestamp?: string) => {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  const now = new Date();
+
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+
+  if (isToday) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
+  }
+
+  const isSameYear = date.getFullYear() === now.getFullYear();
+
+  return date.toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: isSameYear ? undefined : "numeric",
+  });
+};
+
 
   if (!user && !matchUser && !conversation) {
     return <p>LOADING....</p>;
