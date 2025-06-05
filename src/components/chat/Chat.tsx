@@ -32,7 +32,7 @@ export default function Chat() {
         console.error("Error fetching user:", err);
       }
     };
-    getUser();
+    getUser()
   }, [id]);
 
 const room = useMemo(() => {
@@ -55,6 +55,18 @@ const room = useMemo(() => {
       console.error("Chat fetch failed", err);
     }
   };
+
+  useEffect(() => {
+  if (!room) return;
+
+  const timer = setTimeout(() => {
+    getChat();
+  }, 100);
+
+  return () => clearTimeout(timer);
+}, [room]);
+
+
 
   useEffect(() => {
     if (!user || !matchUser || !socket) return;
@@ -130,7 +142,7 @@ const room = useMemo(() => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  if (!user && !matchUser) {
+  if (!user && !matchUser && !conversation) {
     return <p>LOADING....</p>;
   }
 
