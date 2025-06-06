@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext, useMemo} from "react";
+import { useEffect, useRef, useState, useContext, useMemo, type ReactNode} from "react";
 import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
@@ -148,7 +148,7 @@ const room = useMemo(() => {
     });
   };
 
- const formatTime = (timestamp?: string) => {
+ const formatTime = (timestamp?: string): ReactNode | string => {
   if (!timestamp) return "";
 
   const date = new Date(timestamp);
@@ -158,11 +158,9 @@ const room = useMemo(() => {
     date.getDate() === now.getDate() &&
     date.getMonth() === now.getMonth() &&
     date.getFullYear() === now.getFullYear();
-
   if (isToday) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   }
-
   const isSameYear = date.getFullYear() === now.getFullYear();
 
   return date.toLocaleDateString("de-DE", {
