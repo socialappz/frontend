@@ -33,8 +33,6 @@ useEffect(() => {
     });
 
     const fetchedUser: IUser = resp?.data;
-
-    // Fallback: wenn weekDay kein Array ist, setze []
     const weekdays = Array.isArray(fetchedUser?.availability?.weekDay)
       ? fetchedUser.availability.weekDay
       : [];

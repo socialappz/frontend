@@ -1,6 +1,5 @@
 import Header from '../components/header/Header'
 import { Outlet, useLocation, useMatch } from 'react-router-dom'
-// import Footer from '../components/footer/Footer'
 
 export default function Layout() {
   const location = useLocation()
@@ -11,7 +10,6 @@ export default function Layout() {
     <>
       {(notLayout || match) ? "" : <Header />}
       <Outlet />
-      {/* {(notLayout || match) ? "" : <Footer />} */}
     </>
   )
 }

@@ -42,8 +42,7 @@ function FitBoundsControl({
   topRight: LatLngArray;
 }) {
   const map = useMap();
-  const hasBounds = bottomLeft[0] !== 0 || bottomLeft[1] !== 0;
-
+  
  useEffect(() => {
   if (isValidLatLng(bottomLeft) && isValidLatLng(topRight)) {
     map.fitBounds([bottomLeft, topRight]);

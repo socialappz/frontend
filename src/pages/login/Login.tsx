@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
-import { mainContext } from "../../context/MainProvider";
+
 
 
 export default function Login() {
@@ -10,7 +10,7 @@ export default function Login() {
 
   const emailRef = useRef<HTMLInputElement>(null)
   const passRef = useRef<HTMLInputElement>(null)
-  const {setUser} = useContext(mainContext) as any
+
 
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -20,7 +20,7 @@ export default function Login() {
 
       try {
         console.log("Trying login with:", email, password);
-       const resp = await axiosPublic.post("/login", { email, password }, {
+       await axiosPublic.post("/login", { email, password }, {
                     headers: {
                     Accept: "application/json", "Content-Type": "application/json",
                             },
@@ -37,10 +37,10 @@ export default function Login() {
 
   const login = useGoogleLogin({
     onSuccess: tokenResponse => {
-      console.log(tokenResponse); // Enthält access_token
+      console.log(tokenResponse);
       fetchUserInfo(tokenResponse.access_token);
     },
-    flow: 'implicit', // ODER einfach: kein 'flow' angeben (Standard)
+    flow: 'implicit',
   });
 
   const fetchUserInfo = async (accessToken: string) => {
@@ -50,7 +50,7 @@ export default function Login() {
       },
     });
     const data = await res.json();
-    console.log(data); // Hier bekommst du name, email, picture etc.
+    console.log(data);
   };
 
   return (
