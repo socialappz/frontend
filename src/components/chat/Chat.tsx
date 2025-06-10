@@ -214,7 +214,11 @@ const room = useMemo(() => {
             }`}
           >
             {!isCurrentUser && (
+              <Link 
+              to={`/matche/${matchUser._id}`}
+              >
               <img src={profileImage} alt={msg.sentBy} className="w-7 h-7 rounded-full" />
+              </Link>
             )}
             <div
               className={`max-w-[75%] p-3 rounded-2xl text-sm shadow-sm ${

@@ -65,7 +65,7 @@ const Header = () => {
     <header className="relative p-4 flex justify-between items-center bg-white shadow-md z-50">
       <div className="flex items-center gap-4">
         <button
-          className="lg:hidden block"
+          className="lg:hidden block text-white"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -147,13 +147,18 @@ const Header = () => {
             <NavLinks onClick={() => setMenuOpen(false)} />
           ) : (
             <>
-              <Link to="/" className="block text-gray-700 hover:underline" onClick={() => setMenuOpen(false)}>
+              <Link to="/" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
                 Startseite
               </Link>
 
-              <Link to="/chats" className="block text-gray-700 hover:underline" onClick={() => setMenuOpen(false)}>
+              <Link to="/chats" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
                 Chats
               </Link>
+
+              <Link to="/matche" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
+                Matchs
+              </Link>
+
             </>
           )}
         </div>

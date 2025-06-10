@@ -40,7 +40,7 @@ return (
               Keine User gefunden
             </h2>
             <p className="mt-2 text-gray-400">
-              Versuche deine Suchkriterien anzupassen
+              Versuche deine Suche anzupassen
             </p>
           </div>
         )}
