@@ -1,4 +1,3 @@
-
 import React, {
   createContext,
   useEffect,
@@ -22,6 +21,8 @@ interface IMainContext {
   user: IUser | null;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   selectedUser: any;
+  matchUsers: [];
+  setMatchUsers: React.Dispatch<React.SetStateAction<[]>>;
   setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
   notifications: INotification[];
   setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>;
@@ -36,92 +37,85 @@ export default function MainProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [user, setUser] = useState<IUser | null>(null);
-
+  const [user, setUser] = useState<IUser | null>(null); // <-- initial null!
+  const [matchUsers, setMatchUsers] = useState<[]>([]);
   const [selectedUser, setSelectedUser] = useState({});
 
-useEffect(() => {
-  let isMounted = true;
-  let activeSocket: Socket | null = null;
+  useEffect(() => {
+    let isMounted = true;
+    let activeSocket: Socket | null = null;
 
-  const fetchUserAndSetupSocket = async () => {
-    try {
-  
-      const resp = await axiosPublic.get("/currentUser", { 
-        withCredentials: true 
-      });
-      const userData = resp.data;
+    const hasAuthCookie = () => {
+      return document.cookie.split(';').some(cookie =>
+        cookie.trim().startsWith('jwt=') ||
+        cookie.trim().startsWith('token')
+      );
+    };
 
-    
-      if (!isMounted) return;
+    const fetchUserAndSetupSocket = async () => {
+      try {
+        if (!hasAuthCookie()) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        const resp = await axiosPublic.get("/currentUser", {
+          withCredentials: true,
+        });
 
-     
-      activeSocket = io("http://localhost:2000", {
-        withCredentials: true,
-        autoConnect: true,
-        reconnectionAttempts: 3,
-        transports: ["websocket"]
-      });
-
-  
-      activeSocket.emit("join_room", userData.username.toLowerCase());
-
-      activeSocket.on("receive_message", (data) => {
         if (!isMounted) return;
-        setNotifications(prev => [
-          ...prev,
-          {
-            from: data.username,
-            message: data.message,
-            room: data.room,
-            sentAt: new Date(data.sentAt),
-            read: false,
-            senderId: data.senderId,
-            friend: ""
-          }
-        ]);
-      });
 
-      activeSocket.on("connect", () => {
-        console.log("Socket connected:", activeSocket?.id);
-      });
+        const userData = resp.data;
+        activeSocket = io("http://localhost:2000", {
+          withCredentials: true,
+          reconnectionAttempts: 3,
+          transports: ["websocket"],
+        });
 
-      activeSocket.on("disconnect", () => {
-        console.log("Socket disconnected");
-      });
+        activeSocket.emit("join_room", userData.username.toLowerCase());
 
-      activeSocket.on("error", (err) => {
-        console.error("Socket error:", err);
-      });
+        activeSocket.on("receive_message", (data) => {
+          if (!isMounted) return;
+          setNotifications((prev) => [
+            ...prev,
+            {
+              from: data.username,
+              message: data.message,
+              room: data.room,
+              sentAt: new Date(data.sentAt),
+              read: false,
+              senderId: data.senderId,
+              friend: "",
+            },
+          ]);
+        });
 
-      setSocket(activeSocket);
-      setUser(userData);
-      setNotifications(userData.notifications || []);
-
-    } catch (err) {
-      console.error("Error initializing user:", err);
-    } finally {
-      if (isMounted) {
-        setLoading(false);
+        setSocket(activeSocket);
+        setUser(userData);
+        setNotifications(userData.notifications || []);
+      } catch (err: any) {
+        setUser(null); // <-- User immer auf null setzen, wenn Fehler
+        if (!err.response || err.response.status !== 403) {
+          console.error("Error initializing user:", err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-    }
-  };
+    };
 
-  fetchUserAndSetupSocket();
+    fetchUserAndSetupSocket();
 
-  return () => {
-    isMounted = false;
-    
-    if (activeSocket) {
-      activeSocket.off("connect");
-      activeSocket.off("disconnect");
-      activeSocket.off("error");
-      activeSocket.off("receive_message");
-      
-      activeSocket.disconnect();
-    }
-  };
-}, []); 
+    return () => {
+      isMounted = false;
+      if (activeSocket) {
+        activeSocket.off("receive_message");
+        activeSocket.disconnect();
+      }
+    };
+  }, []);
+
   return (
     <mainContext.Provider
       value={{
@@ -129,6 +123,8 @@ useEffect(() => {
         setUser,
         selectedUser,
         setSelectedUser,
+        matchUsers,
+        setMatchUsers,
         notifications,
         setNotifications,
         socket,

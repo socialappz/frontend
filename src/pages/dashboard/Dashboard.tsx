@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { uploadImg } from "../../functions/uploadImg";
-
+import { dogBreeds } from "../../data/dogs";
+import { languages } from "../../data/laguages";
 import type { IUser } from "../../interfaces/user/IUser";
 import { useNavigate } from "react-router-dom";
 import MapComponent from "../../components/map/Map";
@@ -14,66 +15,51 @@ interface IUserProps {
 
 export default function Dashboard() {
   const { user, setUser } = useContext(mainContext) as IUserProps;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const [resizedImage, setResizedImage] = useState("");
 
-  const [selectedWeekdays, setSelectedWeekdays] = useState<string[] | any>([]);
+  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
 
-  const [bottomLeft, setBottomLeft] = useState<[number,number] | null >(null);
-  const [topRight, setTopRight] = useState<[number,number] | null>(null);
+  const [bottomLeft, setBottomLeft] = useState<[number, number] | null>(null);
+  const [topRight, setTopRight] = useState<[number, number] | null>(null);
 
+  useEffect(() => {
+    const getUser = async () => {
+      const resp = await axiosPublic.get("/currentUser", {
+        withCredentials: true,
+      });
 
-  
+      const fetchedUser: IUser = resp?.data;
+      const weekdays = Array.isArray(fetchedUser?.availability?.weekDay)
+        ? fetchedUser.availability.weekDay
+        : typeof fetchedUser?.availability?.weekDay === "string" && fetchedUser.availability.weekDay
+        ? [fetchedUser.availability.weekDay]
+        : [];
 
-useEffect(() => {
-  const getUser = async () => {
-    const resp = await axiosPublic.get("/currentUser", {
-      withCredentials: true,
-    });
+      setSelectedWeekdays(weekdays);
 
-    const fetchedUser: IUser = resp?.data;
-    const weekdays = Array.isArray(fetchedUser?.availability?.weekDay)
-      ? fetchedUser.availability.weekDay
-      : [];
+      const defaultBottomLeft: [number, number] = [52.5, 13.39];
+      const defaultTopRight: [number, number] = [52.54, 13.42];
 
-    setSelectedWeekdays(weekdays);
+      const lat = fetchedUser?.location?.bottomLeft ?? defaultBottomLeft;
+      const lng = fetchedUser?.location?.topRight ?? defaultTopRight;
 
-    const defaultBottomLeft: [number, number] = [52.50, 13.39];
-    const defaultTopRight: [number, number] = [52.54, 13.42];
+      setUser(fetchedUser);
+      setBottomLeft(lat as [number, number]);
+      setTopRight(lng as [number, number]);
+    };
 
-    const lat = fetchedUser?.location?.bottomLeft ?? defaultBottomLeft;
-    const lng = fetchedUser?.location?.topRight ?? defaultTopRight;
+    getUser();
 
-    setUser(fetchedUser);
-    setBottomLeft(lat as [number, number]);
-    setTopRight(lng as [number, number]);
-  };
+  }, []);
 
-  getUser();
-}, []);
-
-
-
-  function isValidLatLng(coords: [number, number] | null): coords is [number, number] {
-  return (
-    Array.isArray(coords) &&
-    coords.length === 2 &&
-    typeof coords[0] === "number" &&
-    typeof coords[1] === "number" &&
-    !isNaN(coords[0]) &&
-    !isNaN(coords[1])
-  );
-}
-
-  
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     const newDays = checked
       ? [...selectedWeekdays, value]
       : selectedWeekdays.filter((day: string) => day !== value);
     setSelectedWeekdays(newDays);
-    console.log(newDays);
     setUser({
       ...user,
       availability: {
@@ -103,27 +89,31 @@ useEffect(() => {
     setUser(updatedUser);
 
     try {
-      const response = await axiosPublic.post("/userprofil", updatedUser, {
+      await axiosPublic.post("/userprofil", updatedUser, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
-      console.log("Profil gespeichert:", response.data);
-      navigate("/matche")
+
+      navigate("/matche");
     } catch (error) {
       console.error("Fehler beim Speichern des Profils:", error);
     }
   };
 
-return (
-<div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-6 lg:px-8">
+  return (
+    <div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
           Welcome Back, <span className="text-indigo-600">{user?.username}</span>
         </h2>
 
-        <form ref={formRef} onSubmit={userProfilHandler} className="bg-white shadow-xl rounded-2xl p-4 sm:p-8 space-y-8">
+        <form
+          ref={formRef}
+          onSubmit={userProfilHandler}
+          className="bg-white shadow-xl rounded-2xl p-4 sm:p-8 space-y-8"
+        >
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Your Gender</h3>
             <div className="flex flex-wrap gap-4">
@@ -148,40 +138,62 @@ return (
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block font-semibold text-gray-900">Spoken Language</label>
+              <label className="block font-semibold text-gray-900">
+                Spoken Language
+              </label>
               <select
                 name="language"
-                value={user?.language || ""}
-                onChange={(e) => setUser({ ...user, language: e.target.value })}
+                value={typeof user?.language === "string" ? user.language : ""}
+                onChange={(e) =>
+                  setUser({ ...user, language: e.target.value })
+                }
                 className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">Select Language</option>
-                {["Chinese", "English", "French", "German", "Turkish", "Spanish"].map((lang) => (
-                  <option key={lang} value={lang.substring(0, 2)}>{lang}</option>
+                {languages.map((lang) => (
+                  <option key={lang} value={lang.substring(0, 2)}>
+                    {lang}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="space-y-2">
-              <label className="block font-semibold text-gray-900">Dog Breed</label>
+              <label className="block font-semibold text-gray-900">
+                Dog Breed
+              </label>
               <select
                 name="dogBreed"
-                value={user?.dogBreed || ""}
-                onChange={(e) => setUser({ ...user, dogBreed: e.target.value })}
+                value={typeof user?.dogBreed === "string" ? user.dogBreed : ""}
+                onChange={(e) =>
+                  setUser({ ...user, dogBreed: e.target.value })
+                }
                 className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">Select Breed</option>
-                {["Akita", "Border Collie", "Chinook", "Drever", "Terrier"].map((breed) => (
-                  <option key={breed} value={breed}>{breed}</option>
+                {dogBreeds.map((breed) => (
+                  <option key={breed} value={breed}>
+                    {breed}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Preferred Weekdays</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Preferred Weekdays
+            </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+              {[
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day) => (
                 <label
                   key={day}
                   className="flex items-center space-x-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50 cursor-pointer"
@@ -200,17 +212,25 @@ return (
           </div>
 
           <div className="space-y-4">
-            <label className="block font-semibold text-gray-900">Preferred Time</label>
+            <label className="block font-semibold text-gray-900">
+              Preferred Time
+            </label>
             <select
               name="dayTime"
-              value={user?.availability?.dayTime || ""}
-              onChange={(e) => setUser({
-                ...user,
-                availability: {
-                  ...user.availability,
-                  dayTime: e.target.value,
-                },
-              })}
+              value={
+                typeof user?.availability?.dayTime === "string"
+                  ? user.availability.dayTime
+                  : ""
+              }
+              onChange={(e) =>
+                setUser({
+                  ...user,
+                  availability: {
+                    ...user.availability,
+                    dayTime: e.target.value,
+                  },
+                })
+              }
               className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Select Time of Day</option>
@@ -220,17 +240,23 @@ return (
                 { value: "in the evening", label: "Afternoon 13-18pm" },
                 { value: "evening", label: "Evening 18-22pm" },
               ].map((time) => (
-                <option key={time.value} value={time.value}>{time.label}</option>
+                <option key={time.value} value={time.value}>
+                  {time.label}
+                </option>
               ))}
             </select>
           </div>
 
           <div className="space-y-4">
-            <label className="block font-semibold text-gray-900">About You & Your Dog</label>
+            <label className="block font-semibold text-gray-900">
+              About You & Your Dog
+            </label>
             <textarea
               name="description"
-              value={user?.description || ""}
-              onChange={(e) => setUser({ ...user, description: e.target.value })}
+              value={typeof user?.description === "string" ? user.description : ""}
+              onChange={(e) =>
+                setUser({ ...user, description: e.target.value })
+              }
               rows={4}
               placeholder="Tell us about your dog and yourself..."
               className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg placeholder-gray-400 focus:ring-2 focus:ring-indigo-500"
@@ -238,32 +264,45 @@ return (
           </div>
 
           <div className="space-y-4">
-            <label className="block font-semibold text-gray-900">Profile Image</label>
+            <label className="block font-semibold text-gray-900">
+              Profile Image
+            </label>
             <label className="flex flex-col items-center px-4 py-4 sm:py-6 bg-white text-indigo-600 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50">
-              <svg className="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-10 h-10 mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               <span className="text-sm font-medium">Click to upload photo</span>
-              <input type="file" name="userImage" onChange={handleImageChange} className="hidden" />
+              <input
+                type="file"
+                name="userImage"
+                onChange={handleImageChange}
+                className="hidden"
+              />
             </label>
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select Your Area</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Select Your Area
+            </h3>
             <div className="h-64 sm:h-96 w-full rounded-lg overflow-hidden border border-gray-200">
-  {isValidLatLng(bottomLeft) && isValidLatLng(topRight) ? (
-    <MapComponent
-      bottomLeft={bottomLeft}
-      topRight={topRight}
-      setBottomLeft={(coords) => setBottomLeft(coords)}
-      setTopRight={(coords) => setTopRight(coords)}
-    />
-  ) : (
-    <div className="h-full flex items-center justify-center text-gray-500">
-      Loading map...
-    </div>
-  )}
-</div>
+              <MapComponent
+                bottomLeft={bottomLeft}
+                topRight={topRight}
+                setBottomLeft={(coords) => setBottomLeft(coords)}
+                setTopRight={(coords) => setTopRight(coords)}
+              />
+            </div>
           </div>
 
           <button

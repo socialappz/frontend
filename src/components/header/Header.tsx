@@ -10,23 +10,17 @@ import { axiosPublic } from "../../utils/axiosConfig";
 moment.locale("de");
 
 const Header = () => {
-  const { notifications, setNotifications, user, setUser } = useContext(mainContext);
+  const { notifications, setNotifications, user, setUser, loading } = useContext(mainContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-  const navigation = useNavigate()
-
+  const navigation = useNavigate();
 
   const logOutFunc = async () => {
-    try {
-        const resp = await axiosPublic.post("/logout")
-        setUser(null)
-        navigation("/")
-        console.log(resp);
-    } catch (error) {
-      
-    }
-  }
+    await axiosPublic.post("/logout");
+    setUser(null);
+    navigation("/");
+  };
 
   const handleTogglePopup = async () => {
     setPopupOpen(!popupOpen);
@@ -46,7 +40,6 @@ const Header = () => {
       console.error("Error clearing notifications:", err);
     }
   };
-
 
   useEffect(() => {
     setMenuOpen(false);
@@ -73,7 +66,9 @@ const Header = () => {
       </div>
 
       <div className="ml-auto">
-        {user === null ? (
+        {loading ? (
+          <div>Lade...</div>
+        ) : user === null ? (
           <div className="hidden lg:flex items-center gap-6">
             <NavLinks />
           </div>
@@ -143,22 +138,21 @@ const Header = () => {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="absolute top-16 left-4 right-4 bg-white border rounded-lg shadow-md lg:hidden p-4 z-40 space-y-3">
-          {user === null ? (
+          {loading ? (
+            <div>Lade...</div>
+          ) : user === null ? (
             <NavLinks onClick={() => setMenuOpen(false)} />
           ) : (
             <>
               <Link to="/" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
                 Startseite
               </Link>
-
               <Link to="/chats" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
                 Chats
               </Link>
-
               <Link to="/matche" className="block text-gray-700! hover:underline" onClick={() => setMenuOpen(false)}>
                 Matchs
               </Link>
-
             </>
           )}
         </div>

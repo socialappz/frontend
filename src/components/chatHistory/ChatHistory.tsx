@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { mainContext } from "../../context/MainProvider";
 
@@ -111,8 +111,10 @@ export default function ChatHistory() {
   if (!chats.length) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-          You have no chats yet!
+        <div className="bg-black border border-white text-white px-4 py-3 rounded">
+          <p>You have any Chats</p>
+          <br/>
+         <Link className="text-white! text-shadow-amber-100" to={"/matche"}>Find some new Friend</Link>
         </div>
       </div>
     );

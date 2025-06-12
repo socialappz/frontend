@@ -22,9 +22,23 @@ export default function Chat() {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const room = useMemo(() => {
+  if (!user || !matchUser) return "";
+  return roomFromNotification ||
+    [user.username.toLowerCase(), matchUser.username.toLowerCase()]
+      .sort()
+      .join("-");
+}, [user, matchUser, roomFromNotification]);
+
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+  }, 1000);
+  return () => clearTimeout(timer);
+}, [room]);
+
   useEffect(() => {
   const reloaded = searchParams.get("reloaded");
-
   if (!reloaded) {
     searchParams.set("reloaded", "1");
     setSearchParams(searchParams); 
@@ -47,13 +61,6 @@ export default function Chat() {
     getUser()
   }, [id]);
 
-const room = useMemo(() => {
-  if (!user || !matchUser) return "";
-  return roomFromNotification ||
-    [user.username.toLowerCase(), matchUser.username.toLowerCase()]
-      .sort()
-      .join("-");
-}, [user, matchUser, roomFromNotification]);
 
 
 
@@ -68,30 +75,18 @@ const room = useMemo(() => {
     }
   };
 
-  useEffect(() => {
 
-  const timer = setTimeout(() => {
-
-  }, 1000);
-
-
-  return () => clearTimeout(timer);
-}, [room]);
 
 
 
   useEffect(() => {
     if (!user || !matchUser || !socket) return;
-
     const roomId = [user.username.toLowerCase(), matchUser.username.toLowerCase()]
       .sort()
       .join("-");
-
     const newRoom = roomFromNotification || roomId;
-
     socket.emit("join_room", newRoom);
     getChat();
-
     const handleReceiveMessage = (data: any) => {
       if (data.room === newRoom) {
         setConversation((prev) => [

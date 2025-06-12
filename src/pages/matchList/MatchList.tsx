@@ -1,10 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 import MatchCard from "../machtCard/MatchCard";
+import { useNavigate } from "react-router-dom";
+import { mainContext } from "../../context/MainProvider";
 
 export default function MatchList() {
-  const [matchUsers, setMatchUsers] = useState([]);
-  
+
+  const {matchUsers, setMatchUsers, user} = useContext(mainContext)
+  const navigate = useNavigate()
+
+   if (user === null) {
+    navigate("/signin")
+  }
+
+
   const getMatchUsers = async () => {
     const resp = await axiosPublic.get("/getMatchedUsers", {
       withCredentials: true,
@@ -15,6 +24,11 @@ export default function MatchList() {
   useEffect(() => {
     getMatchUsers();
   }, []);
+
+
+ 
+
+
 
 return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">

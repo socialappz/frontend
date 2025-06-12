@@ -1,31 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
+import { mainContext } from "../../context/MainProvider";
+import type { IUser } from "../../interfaces/user/IUser";
 
+interface LoginProps {
+  setUser : (value: IUser) => void
+}
 
 
 export default function Login() {
-  const navigate = useNavigate()
+  
+  const {setUser} = useContext(mainContext) as LoginProps
 
   const emailRef = useRef<HTMLInputElement>(null)
   const passRef = useRef<HTMLInputElement>(null)
-
+  const navigate = useNavigate()
+  
 
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     const email = emailRef.current?.value || "" 
     const password = passRef.current?.value || ""
 
       try {
-        console.log("Trying login with:", email, password);
-       await axiosPublic.post("/login", { email, password }, {
+      const resp = await axiosPublic.post("/login", { email, password }, {
                     headers: {
                     Accept: "application/json", "Content-Type": "application/json",
                             },
                     withCredentials: true,
       });
+      setUser(resp.data.loggingUser)
   navigate("/dashboard")
     } catch (error) {
       console.error(error)
@@ -63,7 +69,7 @@ export default function Login() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form action="#" method="POST" className="space-y-6" onSubmit={loginHandler}>
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-white">
+              <label htmlFor="email" className="block text-sm/6 font-medium text-black">
                 Email address
               </label>
               <div className="mt-2">
@@ -81,11 +87,11 @@ export default function Login() {
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-white">
+                <label htmlFor="password" className="block text-sm/6 font-medium text-black">
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <a href="#" className="font-semibold text-black! hover:text-indigo-500">
                     Forgot password?
                   </a>
                 </div>
@@ -114,10 +120,10 @@ export default function Login() {
           </form>
           <p className="mt-10 text-center text-sm/6 text-gray-500">
             Not a member?{' '}
-            <Link to="/signup">Sign Up</Link>
+            <Link className="text-black!" to="/signup">Sign Up</Link>
           </p>
           <span>or Continue with </span>
-          <button onClick={()=>login()}>Google</button>
+          <button className="text-white" onClick={()=>login()}>Google Sign Up</button>
         </div>
       </div>
     </>

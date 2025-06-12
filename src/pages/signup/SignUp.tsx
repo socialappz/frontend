@@ -46,7 +46,7 @@ setUser({...user,
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
+          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-black">
             Sign Up to your account
           </h2>
         </div>
@@ -54,7 +54,7 @@ setUser({...user,
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form action="#" method="POST" className="space-y-6" onSubmit={signUpHandler}>
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-white">
+              <label htmlFor="email" className="block text-sm/6 font-medium text-black">
                 Email address
               </label>
               <div className="mt-2">
@@ -70,7 +70,7 @@ setUser({...user,
               </div>
             </div>
 
-              <label htmlFor="username" className="block text-sm/6 font-medium text-white">
+              <label htmlFor="username" className="block text-sm/6 font-medium text-black">
                 Username
               </label>
               <div className="mt-2">
@@ -88,11 +88,11 @@ setUser({...user,
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-white">
+                <label htmlFor="password" className="block text-sm/6 font-medium text-black">
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <a href="#" className="font-semibold text-black hover:text-indigo-500">
                     Forgot password?
                   </a>
                 </div>
@@ -120,9 +120,9 @@ setUser({...user,
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm/6 text-gray-500">
+          <p className="mt-10 text-center text-sm/6 text-black">
            are you already a Member?{' '}
-            <Link to="/signin">Sign In</Link>
+            <Link className="text-black!" to="/signin">Sign In</Link>
           </p>
         </div>
       </div>

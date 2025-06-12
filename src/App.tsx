@@ -9,6 +9,7 @@ import ChatHistory from './components/chatHistory/ChatHistory'
 import Layout from './layout/Layout'
 import Chat from './components/chat/Chat'
 import Home from './pages/home/Home'
+import ProtectedRoute from './protectedRoute/ProtectedRoute'
 
 
 
@@ -20,12 +21,33 @@ function App() {
      <Route index element={<Home/>} />
         <Route path="signup" element={<SignUp/>}/>
         <Route path="signin" element={<Login/>}/>
-        <Route path='dashboard' element={<Dashboard/>}/>
-        <Route path='matche' element={<MatchList/>}/>
-      <Route path="matche/:id" element={<Profile/>}/>
-      <Route path='chat/:id' element={<Chat />} />
+        <Route path='dashboard' element={
+          <ProtectedRoute>
+            <Dashboard/>
+          </ProtectedRoute>
+          }/>
+          
+        <Route path='matche' element={
+          <ProtectedRoute>
+            <MatchList/>
+          </ProtectedRoute>
+          }/>
+      <Route path="matche/:id" element={
+        <ProtectedRoute>
+          <Profile/>
+        </ProtectedRoute>
+          }/>
+      <Route path='chat/:id' element={
+        <ProtectedRoute>
+          <Chat />
+        </ProtectedRoute>
+        } />
 
-      <Route path="chats" element={<ChatHistory />} />
+      <Route path="chats" element={
+        <ProtectedRoute>
+          <ChatHistory />
+        </ProtectedRoute>
+        } />
 
   </Route>
  )) 
