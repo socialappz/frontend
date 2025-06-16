@@ -10,6 +10,7 @@ import Layout from './layout/Layout'
 import Chat from './components/chat/Chat'
 import Home from './pages/home/Home'
 import ProtectedRoute from './protectedRoute/ProtectedRoute'
+import MyProfile from './pages/myProfile/MyProfile'
 
 
 
@@ -21,6 +22,14 @@ function App() {
      <Route index element={<Home/>} />
         <Route path="signup" element={<SignUp/>}/>
         <Route path="signin" element={<Login/>}/>
+
+        <Route path='myprofile' element={
+          <ProtectedRoute>
+            <MyProfile/>
+        </ProtectedRoute>
+          }/>
+
+
         <Route path='dashboard' element={
           <ProtectedRoute>
             <Dashboard/>

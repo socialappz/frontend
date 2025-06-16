@@ -8,7 +8,7 @@ export interface IUser {
     userImage: string,
     availability: {
         dayTime: string,
-        weekDay: string,
+        weekDay: string[],
     },
     description: string,
     location: {

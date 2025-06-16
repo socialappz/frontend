@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 import MatchCard from "../machtCard/MatchCard";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { mainContext } from "../../context/MainProvider";
 
 export default function MatchList() {
@@ -26,7 +26,19 @@ export default function MatchList() {
   }, []);
 
 
- 
+if (!matchUsers.length) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="bg-black border border-white text-white px-4 py-3 rounded">
+          <p>You have any Match</p>
+          <br/>
+         <Link className="text-white! text-shadow-amber-100" to={"/dashboard"}>Find some new Friend</Link>
+        </div>
+      </div>
+    );
+  }
+
+
 
 
 
@@ -49,16 +61,13 @@ return (
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <h2 className="text-xl sm:text-2xl text-gray-500 font-medium">
-              Keine User gefunden
-            </h2>
-            <p className="mt-2 text-gray-400">
-              Versuche deine Suche anzupassen
-            </p>
-          </div>
+           <div
+    className="mt-5 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+    role="status">
+  </div>
         )}
       </div>
     </div>
   );
+
 }

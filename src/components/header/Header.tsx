@@ -79,7 +79,7 @@ const Header = () => {
               <p className="font-semibold text-gray-800">{user.username}</p>
             </div>
 
-            <Link to="/dashboard">
+            <Link to="/myprofile">
               <img
                 src={user.userImage}
                 alt="User"

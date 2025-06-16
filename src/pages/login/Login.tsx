@@ -32,7 +32,7 @@ export default function Login() {
                     withCredentials: true,
       });
       setUser(resp.data.loggingUser)
-  navigate("/dashboard")
+  navigate("/matche")
     } catch (error) {
       console.error(error)
     }
