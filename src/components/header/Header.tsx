@@ -105,7 +105,7 @@ const Header = () => {
                 <ul className="max-h-64 overflow-y-auto text-sm space-y-3">
                   {notifications.length === 0 ? (
                     <li className="text-gray-500 text-center">
-                      Keine neuen Nachrichten
+                      Empty
                     </li>
                   ) : (
                     notifications.map((n, idx) => (
