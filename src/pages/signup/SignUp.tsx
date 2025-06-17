@@ -32,7 +32,6 @@ export default function SignUp() {
       if (response.data.existingUser) {
         navigator("/matche")
       } else {
-        setUser({ email, username, password });
         navigator("/signin")
       }
     } catch (error: any) {
