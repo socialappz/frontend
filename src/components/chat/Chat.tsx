@@ -3,6 +3,7 @@ import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import type { IMatchUser } from "../../interfaces/match/IMatchUser";
 
 interface IMessage {
   msg: string;
@@ -17,7 +18,7 @@ export default function Chat() {
   const lastMsgRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const roomFromNotification = location.state?.room || null;
-  const [matchUser, SetMatchUser] = useState<any>(null);
+  const [matchUser, SetMatchUser] = useState<IMatchUser | null>(null);
 
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -165,6 +166,38 @@ export default function Chat() {
   });
 };
 
+const groupMessagesByDate = (messages: IMessage[]) => {
+  const groups: { [key: string]: IMessage[] } = {};
+  
+  messages.forEach((msg) => {
+    const date = new Date(msg.sentAt || '');
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    let groupKey: string;
+    
+    if (date.toDateString() === today.toDateString()) {
+      groupKey = 'Heute';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      groupKey = 'Gestern';
+    } else {
+      groupKey = date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+    
+    if (!groups[groupKey]) {
+      groups[groupKey] = [];
+    }
+    groups[groupKey].push(msg);
+  });
+  
+  return groups;
+};
+
 
   if (!user && !matchUser && !conversation) {
     return  <div
@@ -178,7 +211,7 @@ export default function Chat() {
 
   <div className="sticky top-0 z-20 bg-white border-b px-4 py-3 flex items-center justify-between">
     <div className="flex items-center gap-3">
-      <Link to={"/profil"}>
+      <Link to={`/matche/${matchUser?._id}`}>
       <img
         src={matchUser?.userImage || "/default-avatar.png"}
         alt={matchUser?.username || "Chat"}
@@ -187,7 +220,6 @@ export default function Chat() {
       </Link>
       <div>
         <p className="text-base font-semibold text-gray-800">{matchUser?.username}</p>
-        <p className="text-xs text-green-500">Online</p>
       </div>
     </div>
     <Link to="/matche">
@@ -198,44 +230,51 @@ export default function Chat() {
 
   <div className="flex-1 overflow-y-auto bg-gray-50 px-4 py-5">
     <div className="flex flex-col gap-4">
-      {conversation.map((msg, idx) => {
-        const isCurrentUser = msg.sentBy === user?.username;
-        const profileImage = isCurrentUser
-          ? user.userImage || "/default-avatar.png"
-          : matchUser?.userImage || "/default-avatar.png";
-
-        return (
-          <div
-            key={`${msg.sentAt}-${idx}`}
-            className={`flex items-end gap-2 ${
-              isCurrentUser ? "justify-end" : "justify-start"
-            }`}
-          >
-            {!isCurrentUser && (
-              <Link 
-              to={`/matche/${matchUser._id}`}
-              >
-              <img src={profileImage} alt={msg.sentBy} className="w-7 h-7 rounded-full" />
-              </Link>
-            )}
-            <div
-              className={`max-w-[75%] p-3 rounded-2xl text-sm shadow-sm ${
-                isCurrentUser
-                  ? "bg-blue-600 text-white rounded-br-none"
-                  : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
-              }`}
-            >
-              <p className="whitespace-pre-line">{msg.msg}</p>
-              <p className="text-[10px] text-right mt-1 opacity-70">
-                {formatTime(msg.sentAt)}
-              </p>
-            </div>
-            {isCurrentUser && (
-              <img src={profileImage} alt={msg.sentBy} className="w-7 h-7 rounded-full" />
-            )}
+      {Object.entries(groupMessagesByDate(conversation)).map(([date, messages]) => (
+        <div key={date}>
+          <div className="flex justify-center my-4">
+            <span className="bg-gray-200 text-gray-600 px-4 py-1 rounded-full text-sm">
+              {date}
+            </span>
           </div>
-        );
-      })}
+          {messages.map((msg, idx) => {
+            const isCurrentUser = msg.sentBy === user?.username;
+            const profileImage = isCurrentUser
+              ? user.userImage || "/default-avatar.png"
+              : matchUser?.userImage || "/default-avatar.png";
+
+            return (
+              <div
+                key={`${msg.sentAt}-${idx}`}
+                className={`flex items-end gap-2 ${
+                  isCurrentUser ? "justify-end" : "justify-start"
+                }`}
+              >
+                {!isCurrentUser && (
+                  <Link to={`/matche/${matchUser?._id}`}>
+                    <img src={profileImage} alt={msg.sentBy} className="w-7 h-7 rounded-full" />
+                  </Link>
+                )}
+                <div
+                  className={`max-w-[75%] p-3 rounded-2xl text-sm shadow-sm ${
+                    isCurrentUser
+                      ? "bg-blue-600 text-white rounded-br-none mt-2"
+                      : "bg-white text-gray-800 border border-blue-400 rounded-bl-none mt-2"
+                  }`}
+                >
+                  <p className="whitespace-pre-line">{msg.msg}</p>
+                  <p className="text-[10px] text-right mt-1 opacity-70">
+                    {formatTime(msg.sentAt)}
+                  </p>
+                </div>
+                {isCurrentUser && (
+                  <img src={profileImage} alt={msg.sentBy} className="w-7 h-7 rounded-full" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ))}
       <div ref={lastMsgRef} />
     </div>
   </div>

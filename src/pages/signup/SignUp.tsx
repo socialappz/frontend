@@ -1,46 +1,72 @@
 import { Link, useNavigate } from "react-router-dom";
 import { mainContext } from "../../context/MainProvider";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 
 export default function SignUp() {
+  const {setUser} = useContext(mainContext) as any
+  const [emailError, setEmailError] = useState<string>("")
+  const [usernameError, setUsernameError] = useState<string>("")
+  const [passwordError, setPasswordError] = useState<string>("")
+  const navigator = useNavigate()
+  const emailRef = useRef<HTMLInputElement>(null)
+  const usernameRef = useRef<HTMLInputElement>(null)
+  const passRef = useRef<HTMLInputElement>(null)
 
-const {user, setUser} = useContext(mainContext) as any
-const navigator = useNavigate()
-const emailRef = useRef<HTMLInputElement>(null)
-const usernameRef =  useRef<HTMLInputElement>(null)
-const passRef = useRef<HTMLInputElement>(null)
+  const signUpHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setEmailError("")
+    setUsernameError("")
+    setPasswordError("")
 
+    const email = emailRef.current?.value || "" 
+    const username = usernameRef.current?.value || ""
+    const password = passRef.current?.value || ""
 
-const signUpHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault()
+    try {
+      const response = await axiosPublic.post("/signup", 
+        { email, username, password },
+        { withCredentials: true }
+      )
+      
+      if (response.data.existingUser) {
+        navigator("/matche")
+      } else {
+        setUser({ email, username, password });
+        navigator("/signin")
+      }
+    } catch (error: any) {
+      console.log("Error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        errors: error.response?.data?.errors
+      });
+      
+      if (!error.response?.data) {
+        setEmailError("Ein unerwarteter Fehler ist aufgetreten");
+        return;
+      }
 
-const email = emailRef.current?.value || "" 
-const username = usernameRef.current?.value || ""
-const password = passRef.current?.value || ""
-
-setUser({...user, 
-  email: email,
-  username: username,
-  password: password
-})
-  try {
-     await axiosPublic.post("/signup", 
-     { email,
-      username,
-      password
+      const errorData = error.response.data;
+      
+      if (errorData.errors && Array.isArray(errorData.errors)) {
+        const firstError = errorData.errors[0];
+        if (firstError) {
+          if (firstError.path === 'email') {
+            setEmailError(firstError.message || "Diese E-Mail-Adresse wird bereits verwendet");
+          } else if (firstError.path === 'username') {
+            setUsernameError(firstError.message || "Dieser Benutzername ist bereits vergeben");
+          } else if (firstError.path === 'password') {
+            setPasswordError(firstError.message || "Passwort erfüllt nicht die Anforderungen");
+          } else {
+            setEmailError(firstError.message || "Ein Fehler ist aufgetreten");
+          }
+        }
+      } else {
+        setEmailError("Ein Fehler ist aufgetreten");
+      }
     }
-      , {
-        withCredentials: true,
-      })
-
-       setUser({ email, username, password });
-    navigator("/signin")
-  } catch (error) {
-    console.error(error);
   }
-}
-
 
   return (
     <>
@@ -67,9 +93,15 @@ setUser({...user,
                   autoComplete="email"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {emailError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {emailError}
+                  </p>
+                )}
               </div>
             </div>
 
+            <div>
               <label htmlFor="username" className="block text-sm/6 font-medium text-black">
                 Username
               </label>
@@ -83,8 +115,13 @@ setUser({...user,
                   autoComplete="username"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {usernameError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {usernameError}
+                  </p>
+                )}
               </div>
-
+            </div>
 
             <div>
               <div className="flex items-center justify-between">
@@ -107,6 +144,11 @@ setUser({...user,
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {passwordError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {passwordError}
+                  </p>
+                )}
               </div>
             </div>
 

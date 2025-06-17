@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import type { IUser } from '../../interfaces/user/IUser';
+import type { IMatchUser } from '../../interfaces/match/IMatchUser';
 
-export default function MatchCard({ matchUser }: { matchUser: IUser }) {
+export default function MatchCard({ matchUser }: { matchUser: IMatchUser}) {
 
    return (
     <Link 

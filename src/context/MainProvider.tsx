@@ -5,6 +5,7 @@ import React, {
   type ReactNode,
 } from "react";
 import type { IUser } from "../interfaces/user/IUser";
+import type { IMatchUser } from "../interfaces/match/IMatchUser";
 import { axiosPublic } from "../utils/axiosConfig";
 import { io, Socket } from "socket.io-client";
 
@@ -21,8 +22,8 @@ interface IMainContext {
   user: IUser | null;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   selectedUser: any;
-  matchUsers: [];
-  setMatchUsers: React.Dispatch<React.SetStateAction<[]>>;
+  matchUsers: IMatchUser[];
+  setMatchUsers: React.Dispatch<React.SetStateAction<IMatchUser[]>>;
   setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
   notifications: INotification[];
   setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>;
@@ -37,8 +38,8 @@ export default function MainProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [user, setUser] = useState<IUser | null>(null); // <-- initial null!
-  const [matchUsers, setMatchUsers] = useState<[]>([]);
+  const [user, setUser] = useState<IUser | null>(null);
+  const [matchUsers, setMatchUsers] = useState<IMatchUser[]>([]);
   const [selectedUser, setSelectedUser] = useState({});
 
   useEffect(() => {

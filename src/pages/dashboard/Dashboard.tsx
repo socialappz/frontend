@@ -105,10 +105,6 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
-          Welcome Back, <span className="text-indigo-600">{user?.username}</span>
-        </h2>
-
         <form
           ref={formRef}
           onSubmit={userProfilHandler}

@@ -1,4 +1,3 @@
-// src/components/map/Map.tsx
 import { useEffect } from "react";
 import L from "leaflet";
 import {

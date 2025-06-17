@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { mainContext } from "../../context/MainProvider";
 import type { IUser } from "../../interfaces/user/IUser";
@@ -13,6 +13,8 @@ interface LoginProps {
 export default function Login() {
   
   const {setUser} = useContext(mainContext) as LoginProps
+  const [emailError, setEmailError] = useState<string>("")
+  const [passwordError, setPasswordError] = useState<string>("")
 
   const emailRef = useRef<HTMLInputElement>(null)
   const passRef = useRef<HTMLInputElement>(null)
@@ -21,27 +23,67 @@ export default function Login() {
 
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setEmailError("")
+    setPasswordError("")
+    
     const email = emailRef.current?.value || "" 
     const password = passRef.current?.value || ""
 
-      try {
+    try {
       const resp = await axiosPublic.post("/login", { email, password }, {
-                    headers: {
-                    Accept: "application/json", "Content-Type": "application/json",
-                            },
-                    withCredentials: true,
-      });
+        headers: {
+          Accept: "application/json", "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });      
       setUser(resp.data.loggingUser)
-  navigate("/matche")
-    } catch (error) {
-      console.error(error)
+      if (resp.data.isNewUser) {
+        console.log("Redirecting to dashboard - new user");
+        navigate("/dashboard")
+      } else {
+        console.log("Redirecting to matche - existing user");
+        navigate("/matche")
+      }
+      
+    } catch (error: any) {
+      console.log("Error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        errors: error.response?.data?.errors
+      });
+      
+      if (!error.response?.data) {
+        setEmailError("Ein unerwarteter Fehler ist aufgetreten");
+        return;
+      }
+
+      const errorData = error.response.data;
+      if (errorData.errors && Array.isArray(errorData.errors)) {
+        const firstError = errorData.errors[0];
+        if (firstError) {
+          if (firstError.path === 'email') {
+            setEmailError(firstError.message || "Benutzer nicht gefunden");
+          } else if (firstError.path === 'password') {
+            setPasswordError(firstError.message || "Passwort ist falsch");
+          } else {
+            setEmailError(firstError.message || "Ein Fehler ist aufgetreten");
+          }
+        }
+      } else if (error.response?.status === 401) {
+        if (errorData.error?.includes("Password")) {
+          setPasswordError("Passwort ist falsch");
+        } else {
+          setEmailError("Benutzer nicht gefunden");
+        }
+      } else {
+        setEmailError("Ein Fehler ist aufgetreten");
+      }
     }
   }
 
 
   const login = useGoogleLogin({
     onSuccess: tokenResponse => {
-      console.log(tokenResponse);
       fetchUserInfo(tokenResponse.access_token);
     },
     flow: 'implicit',
@@ -82,6 +124,11 @@ export default function Login() {
                   autoComplete="email"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {emailError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {emailError}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -106,6 +153,11 @@ export default function Login() {
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {passwordError && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {passwordError}
+                  </p>
+                )}
               </div>
             </div>
 

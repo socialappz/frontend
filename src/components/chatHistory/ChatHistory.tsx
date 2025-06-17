@@ -1,23 +1,19 @@
-import { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
-import { mainContext } from "../../context/MainProvider";
+import { mainContext, type INotification } from "../../context/MainProvider";
+import type { IChat } from "../../interfaces/chat/IChat";
+import type { IUser } from "../../interfaces/chat/IUser";
+import type { IMatchUser } from "../../interfaces/match/IMatchUser";
+import LoadingSpinner from "../common/LoadingSpinner";
+import NoDataMessage from "../common/NoDataMessage";
 
-interface IUser {
-  username: string;
-  userImage: string;
-}
-
-interface IMessage {
-  msg: string;
-  sentBy: string;
-  sentAt?: string;
-}
-
-interface IChat {
-  roomId: string;
-  chat: IMessage[];
-  sentAt: string;
+interface IChatHistoryProps {
+  user: IUser,
+  setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
+  notifications: INotification | unknown,
+  matchUsers: IMatchUser[];
+  setMatchUsers: React.Dispatch<React.SetStateAction<IMatchUser[]>>;
 }
 
 export default function ChatHistory() {
@@ -25,34 +21,39 @@ export default function ChatHistory() {
     user,
     setSelectedUser,
     notifications,
-  } = useContext(mainContext);
-
+    matchUsers,
+    setMatchUsers
+  } = useContext(mainContext) as IChatHistoryProps;
   const [chats, setChats] = useState<IChat[]>([]);
-  const [matchUsers, setMatchUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const getChats = async () => {
+  const getChats = useCallback(async () => {
     try {
       const resp = await axiosPublic.get("/getChats", {
         withCredentials: true,
       });
       setChats(resp.data);
     } catch (err) {
-      console.error("Error loading chats", err);
+      console.error("Error loading chats:", err);
+      setError("Fehler beim Laden der Chats");
+      setChats([]);
     }
-  };
+  }, []);
 
-  const getMatchUsers = async () => {
+  const getMatchUsers = useCallback(async () => {
     try {
       const resp = await axiosPublic.get("/getMatchedUsers", {
         withCredentials: true,
       });
-      setMatchUsers(resp.data);
+      setMatchUsers(Array.isArray(resp.data) ? resp.data : []);
     } catch (err) {
-      console.error("Error loading matched users", err);
+      console.error("Error loading matched users:", err);
+      setError("Fehler beim Laden der Benutzer");
+      setMatchUsers([]);
     }
-  };
+  }, []);
 
   const findUser = (room: string): IUser | undefined | any => {
     const roomUsers = room.split("-");
@@ -89,34 +90,53 @@ export default function ChatHistory() {
   });
 
   useEffect(() => {
-    setLoading(true);
-    Promise.all([getChats(), getMatchUsers()]).finally(() =>
-      setTimeout(() => setLoading(false), 500)
-    );
-  }, []);
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        await Promise.all([getChats(), getMatchUsers()]);
+      } catch (err) {
+        setError("Fehler beim Laden der Daten");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [getChats, getMatchUsers]);
 
   useEffect(() => {
     getChats();
   }, [notifications]);
 
   if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
     return (
-      <div
-    className="mt-5 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-    role="status">
-  </div>
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p>{error}</p>
+          <button 
+            onClick={() => {
+              setLoading(true);
+            }}
+            className="mt-2 text-red-700 hover:text-red-900 underline"
+          >
+            Try Again!
+          </button>
+        </div>
+      </div>
     );
   }
 
   if (!chats.length) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <div className="bg-black border border-white text-white px-4 py-3 rounded">
-          <p>You have any Chats</p>
-          <br/>
-         <Link className="text-white! text-shadow-amber-100" to={"/matche"}>Find some new Friend</Link>
-        </div>
-      </div>
+      <NoDataMessage 
+        message="You have any Message"
+        linkText="Find some new Friends"
+        linkTo="/matche"
+      />
     );
   }
 
@@ -132,8 +152,8 @@ export default function ChatHistory() {
           return (
             <div
               key={friend.username}
-              className={`flex items-center p-4 rounded-lg shadow hover:bg-gray-50 cursor-pointer ${
-                notifications?.includes(friend?.username) ? "bg-blue-50" : "bg-white"
+              className={`flex items-center p-4 rounded-lg shadow hover:bg-gray-50! cursor-pointer ${
+                Array.isArray(notifications) && notifications.includes(friend?.username) ? "bg-blue-50" : "bg-white"
               }`}
               onClick={() => {
                 setSelectedUser(friend);
@@ -156,8 +176,7 @@ export default function ChatHistory() {
               </span>
             </div>
           );
-        })}
-      </div>
+        })}      </div>
     </div>
   );
 }
