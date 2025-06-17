@@ -292,7 +292,7 @@ export default function Dashboard() {
                     />
                     <button
                       type="button"
-                      className="mt-2 px-3 py-1 bg-blue-200! rounded hover:bg-blue-300! text-white!"
+                      className="mt-2 px-3 py-1 bg-black! rounded hover:bg-gray-600! text-white!"
                       onClick={handleBirthdaySave}
                     >
                       Save
