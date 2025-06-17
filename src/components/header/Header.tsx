@@ -67,7 +67,7 @@ const Header = () => {
 
       <div className="ml-auto">
         {loading ? (
-          <div>Lade...</div>
+          <div></div>
         ) : user === null ? (
           <div className="hidden lg:flex items-center gap-6">
             <NavLinks />
@@ -139,7 +139,7 @@ const Header = () => {
       {menuOpen && (
         <div className="absolute top-16 left-4 right-4 bg-white border rounded-lg shadow-md lg:hidden p-4 z-40 space-y-3">
           {loading ? (
-            <div>Lade...</div>
+            <div></div>
           ) : user === null ? (
             <NavLinks onClick={() => setMenuOpen(false)} />
           ) : (
