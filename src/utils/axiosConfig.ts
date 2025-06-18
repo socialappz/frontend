@@ -1,9 +1,11 @@
 import axios from "axios";
-let baseUrl = "http://localhost:2000/";
 
-const axiosPublic = axios.create({
-    baseURL: baseUrl,
+const baseURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+
+export const axiosPublic = axios.create({
+    baseURL,
     withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
-
-export { axiosPublic };

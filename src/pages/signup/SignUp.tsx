@@ -1,10 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { mainContext } from "../../context/MainProvider";
-import { useContext, useRef, useState } from "react";
+
+import { useRef, useState } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 
 export default function SignUp() {
-  const {setUser} = useContext(mainContext) as any
   const [emailError, setEmailError] = useState<string>("")
   const [usernameError, setUsernameError] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
