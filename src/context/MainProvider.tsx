@@ -111,7 +111,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         console.log('User set successfully');
       } catch (err: any) {
         console.error('Error in fetchUserAndSetupSocket:', err);
-        setUser(null); // <-- User immer auf null setzen, wenn Fehler
+        setUser(null);
         if (!err.response || err.response.status !== 403) {
           console.error("Error initializing user:", err);
         }
