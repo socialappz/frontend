@@ -36,6 +36,13 @@ export default function Login() {
         },
         withCredentials: true,
       });      
+      
+      // Fallback: Token aus Response setzen, falls Backend-Cookies nicht funktionieren
+      if (resp.data.token) {
+        console.log('Setting token cookie manually');
+        document.cookie = `token=${resp.data.token}; path=/; max-age=${3600 * 24}; secure; samesite=lax`;
+      }
+      
       setUser(resp.data.loggingUser)
       if (resp.data.isNewUser) {
         console.log("Redirecting to dashboard - new user");
