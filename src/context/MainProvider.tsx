@@ -50,6 +50,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
       try {
         const hasCookie = document.cookie.includes('token=');
         console.log('Has auth cookie:', hasCookie);
+        console.log('All cookies:', document.cookie);
         
         if (!hasCookie) {
           console.log('No auth cookie found, setting user to null');
