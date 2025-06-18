@@ -47,19 +47,27 @@ export default function MainProvider({ children }: { children: ReactNode }) {
     let activeSocket: Socket | null = null;
 
     const hasAuthCookie = () => {
-      return document.cookie.split(';').some(cookie =>
-        cookie.trim().startsWith('jwt=') ||
-        cookie.trim().startsWith('token')
-      );
+      const cookies = document.cookie.split(';');
+      console.log('Checking cookies:', cookies);
+      return cookies.some(cookie => {
+        const trimmed = cookie.trim();
+        return trimmed.startsWith('jwt=') || trimmed.startsWith('token=');
+      });
     };
 
     const fetchUserAndSetupSocket = async () => {
       try {
-        if (!hasAuthCookie()) {
+        const hasCookie = hasAuthCookie();
+        console.log('Has auth cookie:', hasCookie);
+        
+        if (!hasCookie) {
+          console.log('No auth cookie found, setting user to null');
           setUser(null);
           setLoading(false);
           return;
         }
+        
+        console.log('Fetching current user...');
         const resp = await axiosPublic.get("/currentUser", {
           withCredentials: true,
         });
@@ -67,9 +75,11 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         if (!isMounted) return;
 
         const userData = resp.data;
+        console.log('User data received:', userData);
         
         // Socket.IO-Verbindung aktivieren (Render unterstützt WebSockets)
         const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+        console.log('Connecting to socket:', socketURL);
         activeSocket = io(socketURL, {
           withCredentials: true,
           reconnectionAttempts: 3,
@@ -98,7 +108,9 @@ export default function MainProvider({ children }: { children: ReactNode }) {
 
         setUser(userData);
         setNotifications(userData.notifications || []);
+        console.log('User set successfully');
       } catch (err: any) {
+        console.error('Error in fetchUserAndSetupSocket:', err);
         setUser(null); // <-- User immer auf null setzen, wenn Fehler
         if (!err.response || err.response.status !== 403) {
           console.error("Error initializing user:", err);
