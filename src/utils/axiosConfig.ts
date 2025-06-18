@@ -9,3 +9,23 @@ export const axiosPublic = axios.create({
         "Content-Type": "application/json",
     },
 });
+
+// Request-Interceptor für automatische Token-Einbindung
+axiosPublic.interceptors.request.use(
+    (config) => {
+        // Token aus Cookie extrahieren
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const trimmed = cookie.trim();
+            if (trimmed.startsWith('token=')) {
+                const token = trimmed.substring(6);
+                config.headers.Authorization = `Bearer ${token}`;
+                break;
+            }
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);

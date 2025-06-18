@@ -46,18 +46,9 @@ export default function MainProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
     let activeSocket: Socket | null = null;
 
-    const hasAuthCookie = () => {
-      const cookies = document.cookie.split(';');
-      console.log('Checking cookies:', cookies);
-      return cookies.some(cookie => {
-        const trimmed = cookie.trim();
-        return trimmed.startsWith('jwt=') || trimmed.startsWith('token=');
-      });
-    };
-
     const fetchUserAndSetupSocket = async () => {
       try {
-        const hasCookie = hasAuthCookie();
+        const hasCookie = document.cookie.includes('token=');
         console.log('Has auth cookie:', hasCookie);
         
         if (!hasCookie) {
@@ -69,7 +60,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         
         console.log('Fetching current user...');
         const resp = await axiosPublic.get("/currentUser", {
-          withCredentials: true,
+          withCredentials: true
         });
 
         if (!isMounted) return;
