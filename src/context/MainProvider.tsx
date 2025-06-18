@@ -67,7 +67,8 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         if (!isMounted) return;
 
         const userData = resp.data;
-        activeSocket = io("http://localhost:2000", {
+        const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+        activeSocket = io(socketURL, {
           withCredentials: true,
           reconnectionAttempts: 3,
           transports: ["websocket"],
