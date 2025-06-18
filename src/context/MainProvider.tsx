@@ -67,32 +67,37 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         if (!isMounted) return;
 
         const userData = resp.data;
-        const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
-        activeSocket = io(socketURL, {
-          withCredentials: true,
-          reconnectionAttempts: 3,
-          transports: ["websocket"],
-        });
+        
+        // Socket.IO-Verbindung nur in Entwicklung aktivieren
+        if (import.meta.env.DEV) {
+          const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+          activeSocket = io(socketURL, {
+            withCredentials: true,
+            reconnectionAttempts: 3,
+            transports: ["websocket"],
+          });
 
-        activeSocket.emit("join_room", userData.username.toLowerCase());
+          activeSocket.emit("join_room", userData.username.toLowerCase());
 
-        activeSocket.on("receive_message", (data) => {
-          if (!isMounted) return;
-          setNotifications((prev) => [
-            ...prev,
-            {
-              from: data.username,
-              message: data.message,
-              room: data.room,
-              sentAt: new Date(data.sentAt),
-              read: false,
-              senderId: data.senderId,
-              friend: "",
-            },
-          ]);
-        });
+          activeSocket.on("receive_message", (data) => {
+            if (!isMounted) return;
+            setNotifications((prev) => [
+              ...prev,
+              {
+                from: data.username,
+                message: data.message,
+                room: data.room,
+                sentAt: new Date(data.sentAt),
+                read: false,
+                senderId: data.senderId,
+                friend: "",
+              },
+            ]);
+          });
 
-        setSocket(activeSocket);
+          setSocket(activeSocket);
+        }
+
         setUser(userData);
         setNotifications(userData.notifications || []);
       } catch (err: any) {
