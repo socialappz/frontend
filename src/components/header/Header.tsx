@@ -17,9 +17,20 @@ const Header = () => {
   const navigation = useNavigate();
 
   const logOutFunc = async () => {
-    await axiosPublic.post("/logout");
-    setUser(null);
-    navigation("/");
+    try {
+      await axiosPublic.post("/logout");
+      // Cookies manuell löschen
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
+      console.log('Logout successful, cookies cleared');
+      setUser(null);
+      navigation("/");
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Auch bei Fehler Cookies löschen
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
+      setUser(null);
+      navigation("/");
+    }
   };
 
   const handleTogglePopup = async () => {
