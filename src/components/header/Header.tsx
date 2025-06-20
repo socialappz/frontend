@@ -52,6 +52,8 @@ const Header = () => {
     }
   };
 
+  
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
