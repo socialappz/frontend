@@ -7,6 +7,7 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
+import icon from "../../../public/dog-icon.png"
 
 moment.locale("de");
 
@@ -93,7 +94,7 @@ const Header = () => {
           {/* Logo/Brand */}
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold text-gray-800">
-              Dogder
+              <img src={icon} alt="" className="w-10" />
             </Link>
           </div>
 
@@ -105,7 +106,6 @@ const Header = () => {
           ) : (
             <div className="hidden md:flex items-center gap-4">
               <div className="text-right">
-                <p className="text-xs text-gray-500">Willkommen zurück</p>
                 <p className="font-semibold text-gray-800">{user.username}</p>
               </div>
 
@@ -178,7 +178,7 @@ const Header = () => {
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {menuOpen ? <X className="w-6 h-6 text-white!" /> : <Menu className="w-6 h-6 text-white!" />}
           </button>
         </div>
 
@@ -190,17 +190,13 @@ const Header = () => {
             ) : (
               <div className="space-y-3">
                 {/* User Info */}
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                  <img
-                    src={user.userImage}
-                    alt="User"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-800">{user.username}</p>
-                    <p className="text-sm text-gray-500">Willkommen zurück</p>
-                  </div>
-                </div>
+                  <Link to="/myprofile" className="relative">
+                <img
+                  src={user.userImage}
+                  alt="User"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 hover:border-indigo-300 transition-colors"
+                />
+              </Link>
 
                 {/* Navigation Links */}
                 <div className="space-y-2">
@@ -209,32 +205,32 @@ const Header = () => {
                     className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <Home className="w-5 h-5 text-gray-600" />
-                    <span>Startseite</span>
+                    <Home className="w-5 h-5 text-black!" />
+                    <span className="text-black!">Startseite</span>
                   </Link>
                   <Link 
                     to="/chats" 
                     className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <MessageCircle className="w-5 h-5 text-gray-600" />
-                    <span>Chats</span>
+                    <MessageCircle className="w-5 h-5 text-black!" />
+                    <span className="text-black!">Chats</span>
                   </Link>
                   <Link 
                     to="/matche" 
                     className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <Heart className="w-5 h-5 text-gray-600" />
-                    <span>Matches</span>
+                    <Heart className="w-5 h-5 text-black!" />
+                    <span className="text-black!">Matches</span>
                   </Link>
                   <Link 
                     to="/myprofile" 
                     className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <User className="w-5 h-5 text-gray-600" />
-                    <span>Profil</span>
+                    <User className="w-5 h-5 text-black!" />
+                    <span className="text-black!">Profil</span>
                   </Link>
                 </div>
 
@@ -252,7 +248,7 @@ const Header = () => {
                         </span>
                       )}
                     </div>
-                    <span>Benachrichtigungen</span>
+                    <span>Notification</span>
                   </button>
                 </div>
 
@@ -260,7 +256,7 @@ const Header = () => {
                 <div className="border-t pt-3">
                   <button 
                     onClick={logOutFunc}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors w-full"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-red-50 text-white hover:bg-red-100 transition-colors w-full"
                   >
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
