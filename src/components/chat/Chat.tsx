@@ -198,7 +198,7 @@ export default function Chat() {
     return (
       <div className="flex flex-col h-screen bg-gray-50">
         <div className="flex-1 flex items-center justify-center">
-          <LoadingSpinner size="large" text="Chat wird geladen..." />
+          <LoadingSpinner size="large" text="loading..." />
         </div>
       </div>
     );
@@ -209,7 +209,7 @@ export default function Chat() {
       <div className="flex flex-col h-screen bg-gray-50">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-gray-500">Chat nicht verfügbar</p>
+            <p className="text-gray-500">Chat not found </p>
           </div>
         </div>
       </div>
@@ -238,24 +238,19 @@ export default function Chat() {
             />
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-gray-800 truncate">{matchUser.username}</p>
-              <p className="text-sm text-gray-500">Online</p>
             </div>
           </Link>
         </div>
-        <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
-          <MoreVertical className="w-5 h-5 text-gray-600" />
-        </button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 border border-gray-300">
         {conversation.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <MessageCircle className="w-8 h-8 text-gray-400" />
+              <MessageCircle className="w-8 h-8 text-black!" />
             </div>
-            <p className="text-gray-500 font-medium">Starte eine Unterhaltung</p>
-            <p className="text-sm text-gray-400 mt-1">Sende deine erste Nachricht an {matchUser.username}</p>
+            <p className="text-sm text-gray-400 mt-1">write your first message{matchUser.username}</p>
           </div>
         ) : (
           <div className="space-y-4">

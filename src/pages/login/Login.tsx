@@ -4,7 +4,7 @@ import { useContext, useRef, useState } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { mainContext } from "../../context/MainProvider";
 import type { IUser } from "../../interfaces/user/IUser";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
+
 
 interface LoginProps {
   setUser : (value: IUser) => void
@@ -37,7 +37,6 @@ export default function Login() {
         withCredentials: true,
       });      
       
-      // Fallback: Token aus Response setzen, falls Backend-Cookies nicht funktionieren
       if (resp.data.token) {
         console.log('Setting token cookie manually');
         document.cookie = `token=${resp.data.token}; path=/; max-age=${3600 * 24}; secure; samesite=lax`;
@@ -60,7 +59,7 @@ export default function Login() {
       });
       
       if (!error.response?.data) {
-        setEmailError("Ein unerwarteter Fehler ist aufgetreten");
+        setEmailError("Not expected Error");
         return;
       }
 
@@ -69,21 +68,21 @@ export default function Login() {
         const firstError = errorData.errors[0];
         if (firstError) {
           if (firstError.path === 'email') {
-            setEmailError(firstError.message || "Benutzer nicht gefunden");
+            setEmailError(firstError.message || "User not found");
           } else if (firstError.path === 'password') {
-            setPasswordError(firstError.message || "Passwort ist falsch");
+            setPasswordError(firstError.message || "Password is wrong");
           } else {
-            setEmailError(firstError.message || "Ein Fehler ist aufgetreten");
+            setEmailError(firstError.message || "Something is wrong");
           }
         }
       } else if (error.response?.status === 401) {
         if (errorData.error?.includes("Password")) {
-          setPasswordError("Passwort ist falsch");
+          setPasswordError("Password is wrong");
         } else {
-          setEmailError("Benutzer nicht gefunden");
+          setEmailError("User not found");
         }
       } else {
-        setEmailError("Ein Fehler ist aufgetreten");
+        setEmailError("Something is wrong");
       }
     } finally {
       setLoading(false)
@@ -111,8 +110,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Willkommen zurück</h1>
-          <p className="text-gray-600">Melde dich in deinem Konto an</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In to your account</h2>
+
         </div>
       </div>
 
@@ -144,10 +143,10 @@ export default function Login() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Passwort
+                  Password
                 </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-500 font-medium">
-                  Passwort vergessen?
+                <a href="#" className="text-sm text-black! hover:text-blue-500! font-medium">
+                  Password forget?
                 </a>
               </div>
               <input
@@ -168,17 +167,27 @@ export default function Login() {
               )}
             </div>
 
-            <button
+           
+              {loading ? (
+               <>
+            
+<button disabled type="button" className="w-full bg-back text-white! py-2.5 px-5 me-2 text-sm font-medium bg-white! rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-black! dark:text-white! dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 flex items-center justify-center">
+<svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+<path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
+</svg>
+Loading...
+</button>
+
+               </>
+              ) : (
+              <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-              {loading ? (
-                <LoadingSpinner size="small" color="white" />
-              ) : (
-                "Anmelden"
+              className="w-full bg-back text-white! font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >Log In</button>
               )}
-            </button>
+    
           </form>
 
           <div className="mt-6">
@@ -187,14 +196,14 @@ export default function Login() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">oder</span>
+                <span className="px-2 bg-white text-gray-500">OR</span>
               </div>
             </div>
 
             <div className="mt-6">
               <button
                 onClick={() => login()}
-                className="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-3"
+                className="w-full bg-white border border-gray-300 text-white! font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-3"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -202,18 +211,18 @@ export default function Login() {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Mit Google anmelden
+                Sign Up with Google
               </button>
             </div>
           </div>
 
           <p className="mt-8 text-center text-sm text-gray-600">
-            Noch kein Konto?{' '}
+            still have not account?{' '}
             <Link 
               to="/signup" 
-              className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
+              className="font-semibold text-black! hover:text-blue-500! transition-colors"
             >
-              Jetzt registrieren
+              Sign Up
             </Link>
           </p>
         </div>

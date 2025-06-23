@@ -20,13 +20,13 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
 
   const colorClasses = {
-    primary: 'border-black',
+    primary: 'border-black-600',
     white: 'border-white',
     gray: 'border-gray-400'
   };
 
   const spinner = (
-    <div className="flex flex-col items-center justify-center space-y-3">
+    <div className="flex flex-col items-center justify-center">
       <div
         className={`${sizeClasses[size]} ${colorClasses[color]} border-2 border-t-transparent rounded-full animate-spin`}
       />
@@ -40,7 +40,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-blue-200 dark:bg-red-900 flex items-center justify-center z-50 h-0.5">
         {spinner}
       </div>
     );

@@ -82,7 +82,7 @@ export default function Dashboard() {
     const { value, checked } = e.target;
     const newDays = checked
       ? [...selectedWeekdays, value]
-      : selectedWeekdays.filter((day: string) => day !== value);
+      : selectedWeekdays?.filter((day: string) => day !== value);
     setSelectedWeekdays(newDays);
     setUser({
       ...user,
@@ -180,10 +180,9 @@ export default function Dashboard() {
 
   const handleDogAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Erlaube leere Eingabe und Zahlen mit Dezimalstellen
+    
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       const numValue = parseFloat(value);
-      // Nur speichern wenn es eine positive Zahl ist oder leer
       if (isNaN(numValue) || numValue >= 0) {
         setUser({ ...user, dogAge: value });
       }
@@ -325,7 +324,7 @@ export default function Dashboard() {
                       <input
                         type="checkbox"
                         value={day}
-                        checked={selectedWeekdays.includes(day)}
+                        checked={selectedWeekdays?.includes(day)}
                         onChange={handleCheckboxChange}
                         className="h-4 w-4 text-indigo-600"
                       />
@@ -341,7 +340,7 @@ export default function Dashboard() {
                   name="dayTime"
                   value={
                     typeof user?.availability?.dayTime === "string"
-                      ? user.availability.dayTime
+                      ? user?.availability?.dayTime
                       : ""
                   }
                   onChange={(e) =>

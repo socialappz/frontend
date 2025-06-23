@@ -11,9 +11,9 @@ interface myProfileProps {
 export default function MyProfile() {
   const { user } = useContext(mainContext) as myProfileProps;
 
-  const half = Math.ceil(user.availability.weekDay.length / 2);
-  const firstColumn = user.availability.weekDay.slice(0, half);
-  const secondColumn = user.availability.weekDay.slice(half);
+  const half = Math.ceil(user?.availability?.weekDay.length / 2);
+  const firstColumn = user?.availability?.weekDay?.slice(0, half);
+  const secondColumn = user?.availability?.weekDay.slice(half);
 
   const calculateAge = (birthday: string) => {
     if (!birthday) return null;
@@ -73,19 +73,19 @@ export default function MyProfile() {
             alt={user.username}
             className="w-44 h-44 rounded-full object-cover border-8 border-gradient-to-tr from-blue-400 via-purple-500 to-pink-500 shadow-lg"
           />
-          {user.dogImage && (
+          {user?.dogImage && (
             <img
-              src={user.dogImage}
-              alt={`${user.username}'s dog`}
+              src={user?.dogImage}
+              alt={`${user?.username}'s dog`}
               className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-lg"
             />
           )}
         </div>
         <div className="flex-1 space-y-4">
-          <h1 className="text-4xl font-extrabold text-gray-900">{user.username}</h1>
+          <h1 className="text-4xl font-extrabold text-gray-900">{user?.username}</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 text-lg">
             <div>
-              <strong>Gender:</strong> <span className="text-gray-600">{user.gender}</span>
+              <strong>Gender:</strong> <span className="text-gray-600">{user?.gender}</span>
             </div>
             <div>
               <strong>Age:</strong>{" "}
@@ -107,30 +107,30 @@ export default function MyProfile() {
             </div>
             <div>
               <strong>Dog's Age:</strong>{" "}
-              <span className="text-gray-600">{user.dogAge ? formatDogAge(user.dogAge) : "Not specified"}</span>
+              <span className="text-gray-600">{user?.dogAge ? formatDogAge(user?.dogAge) : "Not specified"}</span>
             </div>
             {user.favoriteToy && (
               <div>
                 <strong>Favorite Toy:</strong>{" "}
-                <span className="text-gray-600">{user.favoriteToy}</span>
+                <span className="text-gray-600">{user?.favoriteToy}</span>
               </div>
             )}
           </div>
 
-          {user.description && (
+          {user?.description && (
             <div className="mt-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">About Me</h2>
               <p className="text-gray-700 italic border-l-4 border-blue-500 pl-4">
-                {user.description}
+                {user?.description}
               </p>
             </div>
           )}
 
-          {user.dogDescription && (
+          {user?.dogDescription && (
             <div className="mt-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">About My Dog</h2>
               <p className="text-gray-700 italic border-l-4 border-yellow-500 pl-4">
-                {user.dogDescription}
+                {user?.dogDescription}
               </p>
             </div>
           )}
@@ -139,18 +139,18 @@ export default function MyProfile() {
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Availability</h2>
             <div className="grid grid-cols-2 gap-4">
               <ul className="space-y-1 list-disc ml-5">
-                {firstColumn.map((day, key) => (
+                {firstColumn?.map((day, key) => (
                   <li key={key}>{day}</li>
                 ))}
               </ul>
               <ul className="space-y-1 list-disc ml-5">
-                {secondColumn.map((day, key) => (
+                {secondColumn?.map((day, key) => (
                   <li key={key + half}>{day}</li>
                 ))}
               </ul>
             </div>
             <p className="mt-2 text-gray-700">
-              <strong>Time:</strong> {user.availability?.dayTime || "Not specified"}
+              <strong>Time:</strong> {user?.availability?.dayTime || "Not specified"}
             </p>
           </div>
         </div>

@@ -49,11 +49,10 @@ export default function MainProvider({ children }: { children: ReactNode }) {
     const fetchUserAndSetupSocket = async () => {
       try {
         const hasCookie = document.cookie.includes('token=');
-        console.log('Has auth cookie:', hasCookie);
-        console.log('All cookies:', document.cookie);
+
         
         if (!hasCookie) {
-          console.log('No auth cookie found, setting user to null');
+
           setUser(null);
           setLoading(false);
           return;
@@ -69,7 +68,6 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         const userData = resp.data;
         console.log('User data received:', userData);
         
-        // Socket.IO-Verbindung aktivieren (Render unterstützt WebSockets)
         const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
         console.log('Connecting to socket:', socketURL);
         activeSocket = io(socketURL, {
@@ -78,7 +76,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
           transports: ["websocket"],
         });
 
-        activeSocket.emit("join_room", userData.username.toLowerCase());
+        activeSocket.emit("join_room", userData?.username?.toLowerCase());
 
         activeSocket.on("receive_message", (data) => {
           if (!isMounted) return;
