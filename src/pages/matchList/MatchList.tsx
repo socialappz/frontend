@@ -51,7 +51,7 @@ export default function MatchList() {
             onClick={getMatchUsers}
             className="mt-2 text-red-700 hover:text-red-900 underline"
           >
-            Erneut versuchen
+            Try again!
           </button>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function MatchList() {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
-          Deine Matches
+          your Matches
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {matchUsers.map((matchUser) => (

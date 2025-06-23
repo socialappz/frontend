@@ -191,7 +191,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <form
           ref={formRef}
           onSubmit={userProfilHandler}
@@ -230,7 +230,7 @@ export default function Dashboard() {
                   >
                     <span className="text-white!">
                       {selectedLanguages.length > 0
-                        ? selectedLanguages.map(lang => languages.find(l => l.substring(0, 2) === lang)).join(", ")
+                        ? selectedLanguages.join(", ")
                         : "Select Languages"}
                     </span>
                     {showLanguages ? (
@@ -250,8 +250,8 @@ export default function Dashboard() {
                           >
                             <input
                               type="checkbox"
-                              value={lang.substring(0, 2)}
-                              checked={selectedLanguages.includes(lang.substring(0, 2))}
+                              value={lang}
+                              checked={selectedLanguages.includes(lang)}
                               onChange={handleLanguageChange}
                               className="h-4 w-4 text-white! rounded border-gray-300 focus:ring-indigo-500"
                             />
@@ -406,6 +406,9 @@ export default function Dashboard() {
                     className="hidden"
                   />
                 </label>
+                {resizedImage && (
+                  <p className="text-green-600 text-sm mt-2">Profile image uploaded successfully!</p>
+                )}
               </div>
 
               <div className="space-y-4">
@@ -497,6 +500,9 @@ export default function Dashboard() {
                     className="hidden"
                   />
                 </label>
+                {dogImage && (
+                  <p className="text-green-600 text-sm mt-2">Dog image uploaded successfully!</p>
+                )}
               </div>
 
               <div className="space-y-4">
