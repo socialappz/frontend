@@ -37,7 +37,7 @@ export default function ChatHistory() {
       setChats(resp.data);
     } catch (err) {
       console.error("Error loading chats:", err);
-      setError("Fehler beim Laden der Chats");
+      setError("Something is wrong with Server");
       setChats([]);
     }
   }, []);
@@ -50,7 +50,7 @@ export default function ChatHistory() {
       setMatchUsers(Array.isArray(resp.data) ? resp.data : []);
     } catch (err) {
       console.error("Error loading matched users:", err);
-      setError("Fehler beim Laden der Benutzer");
+      setError("User not found");
       setMatchUsers([]);
     }
   }, []);
@@ -96,7 +96,7 @@ export default function ChatHistory() {
       try {
         await Promise.all([getChats(), getMatchUsers()]);
       } catch (err) {
-        setError("Fehler beim Laden der Daten");
+        setError("Something is wrong with Server");
       } finally {
         setLoading(false);
       }

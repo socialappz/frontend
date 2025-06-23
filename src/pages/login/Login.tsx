@@ -99,7 +99,7 @@ export default function Login() {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    const data = await res.json();
+    await res.json();
   };
 
   return (
