@@ -22,7 +22,6 @@ const Header = () => {
     try {
       await axiosPublic.post("/logout");
       document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
-      console.log('Logout successful, cookies cleared');
       setUser(null);
       navigation("/");
     } catch (error) {

@@ -38,21 +38,18 @@ export default function Login() {
       });      
       
       if (resp.data.token) {
-        console.log('Setting token cookie manually');
         document.cookie = `token=${resp.data.token}; path=/; max-age=${3600 * 24}; secure; samesite=lax`;
       }
       
       setUser(resp.data.loggingUser)
       if (resp.data.isNewUser) {
-        console.log("Redirecting to dashboard - new user");
         navigate("/dashboard")
       } else {
-        console.log("Redirecting to matche - existing user");
         navigate("/matche")
       }
       
     } catch (error: any) {
-      console.log("Error details:", {
+      console.error("Error details:", {
         status: error.response?.status,
         data: error.response?.data,
         errors: error.response?.data?.errors
@@ -103,7 +100,6 @@ export default function Login() {
       },
     });
     const data = await res.json();
-    console.log(data);
   };
 
   return (

@@ -34,7 +34,7 @@ export default function SignUp() {
         navigator("/signin")
       }
     } catch (error: any) {
-      console.log("Error details:", {
+      console.error("Error details:", {
         status: error.response?.status,
         data: error.response?.data,
         errors: error.response?.data?.errors

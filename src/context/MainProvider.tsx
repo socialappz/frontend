@@ -58,7 +58,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
           return;
         }
         
-        console.log('Fetching current user...');
+
         const resp = await axiosPublic.get("/currentUser", {
           withCredentials: true
         });
@@ -66,10 +66,9 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         if (!isMounted) return;
 
         const userData = resp.data;
-        console.log('User data received:', userData);
+
         
         const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
-        console.log('Connecting to socket:', socketURL);
         activeSocket = io(socketURL, {
           withCredentials: true,
           reconnectionAttempts: 3,
@@ -98,7 +97,6 @@ export default function MainProvider({ children }: { children: ReactNode }) {
 
         setUser(userData);
         setNotifications(userData.notifications || []);
-        console.log('User set successfully');
       } catch (err: any) {
         console.error('Error in fetchUserAndSetupSocket:', err);
         setUser(null);
