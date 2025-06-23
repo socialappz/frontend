@@ -13,5 +13,17 @@ export default defineConfig({
       'react': 'react',
       'react-dom': 'react-dom'
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'moment': ['moment'],
+          'lucide': ['lucide-react'],
+          'leaflet': ['leaflet', 'react-leaflet', 'react-leaflet-draw'],
+        }
+      }
+    }
   }
 })

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useContext, useMemo, type ReactNode} from 
 import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
-import { ArrowLeft, Send, MoreVertical, MessageCircle } from "lucide-react";
+import { ArrowLeft, Send, MessageCircle } from "lucide-react";
 import type { IMatchUser } from "../../interfaces/match/IMatchUser";
 import LoadingSpinner from "../common/LoadingSpinner";
 
@@ -219,7 +219,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <div className="bg-white border border-gray-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <Link 
             to="/chats"
@@ -250,7 +250,7 @@ export default function Chat() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <MessageCircle className="w-8 h-8 text-black!" />
             </div>
-            <p className="text-sm text-gray-400 mt-1">write your first message{matchUser.username}</p>
+            <p className="text-sm text-gray-400 mt-1">write your first message with {matchUser.username}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -315,7 +315,7 @@ export default function Chat() {
       </div>
 
       {/* Message Input */}
-      <div className="bg-white border-t border-gray-200 px-4 py-3">
+      <div className="bg-white border border-gray-300 px-4 py-3">
         <form
           onSubmit={sendMessage}
           className="flex items-center gap-3"
