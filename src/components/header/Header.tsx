@@ -7,7 +7,7 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
-import icon from "../../../public/dog-icon.png"
+import icon from "/dog-icon.png"
 
 moment.locale("de");
 
