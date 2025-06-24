@@ -21,4 +21,6 @@ export interface IUser {
         topRight: number[],
     },
     favorite: [],
+    likes: string[],
+    matches: string[],
 }

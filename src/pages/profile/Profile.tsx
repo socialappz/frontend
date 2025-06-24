@@ -1,11 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Heart } from "lucide-react";
+import { useContext } from "react";
+import { mainContext } from "../../context/MainProvider";
+import type { IUser } from "../../interfaces/user/IUser";
+
+interface IProfileProps {
+  user: IUser,
+  setUser:  React.Dispatch<React.SetStateAction<IUser | null>>;
+}
 
 export default function Profile() {
   const { id } = useParams();
   const [matchUser, setMatchUser] = useState<any>(null);
+  const [likeSent, setLikeSent] = useState(false);
+  const [isMatch, setIsMatch] = useState(false);
+  const [checkingMatch, setCheckingMatch] = useState(false);
+  const [notification, setNotification] = useState("");
+  const { user, setUser } = useContext(mainContext) as IProfileProps;
+  const [canChat, setCanChat] = useState(false);
+
+
+  const normalize = (name: string) => name.toLowerCase().replace(/\s+/g, '');
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -20,6 +38,92 @@ export default function Profile() {
     };
     getUser();
   }, [id]);
+
+ 
+  useEffect(() => {
+    if (!user || !matchUser) return;
+    const targetUsername = normalize(matchUser.username);
+    const alreadyLiked = user.likes?.map(normalize).includes(targetUsername);
+    setLikeSent(alreadyLiked);
+    const alreadyMatched = user.matches?.map(normalize).includes(targetUsername);
+    setIsMatch(alreadyMatched);
+  }, [user, matchUser]);
+
+
+  useEffect(() => {
+    if (!user || !matchUser) return;
+    const myUsername = normalize(user.username);
+    const targetUsername = normalize(matchUser.username);
+    setCheckingMatch(true);
+    axiosPublic.get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true })
+      .then(res => {
+        setIsMatch(res.data.isMatch);
+      })
+      .finally(() => setCheckingMatch(false));
+  }, [user, matchUser]);
+
+
+  useEffect(() => {
+    if (!user || !matchUser) return;
+    const myUsername = normalize(user.username);
+    const targetUsername = normalize(matchUser.username);
+    axiosPublic.get(`/canChat/${myUsername}/${targetUsername}`, { withCredentials: true })
+      .then(res => {
+        setCanChat(res.data.canChat);
+      });
+  }, [user, matchUser, likeSent, isMatch]);
+
+
+  const refreshUser = async () => {
+    try {
+      const resp = await axiosPublic.get("/currentUser", { withCredentials: true });
+      setUser(resp.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  
+  const handleLike = async () => {
+    if (!user) return;
+    try {
+      const targetUsername = normalize(matchUser.username);
+      await axiosPublic.post("/like", { likedUsername: targetUsername }, { withCredentials: true });
+      setLikeSent(true);
+      setNotification("Like sent. Waiting for a match!");
+      await refreshUser();
+
+      const myUsername = normalize(user.username);
+      const res = await axiosPublic.get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true });
+      setIsMatch(res.data.isMatch);
+      const canChatRes = await axiosPublic.get(`/canChat/${myUsername}/${targetUsername}`, { withCredentials: true });
+      setCanChat(canChatRes.data.canChat);
+    } catch (err) {
+      setNotification("Error liking or already liked.");
+    }
+  };
+
+
+  useEffect(() => {
+    let interval: number;
+    if (likeSent && user && matchUser && !isMatch) {
+      const myUsername = normalize(user.username);
+      const targetUsername = normalize(matchUser.username);
+      const checkMatch = async () => {
+        try {
+          const res = await axiosPublic.get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true });
+          if (res.data.isMatch) {
+            setIsMatch(true);
+            setNotification("You have a match! Now you can chat.");
+            await refreshUser();
+            clearInterval(interval);
+          }
+        } catch (err) {}
+      };
+      interval = window.setInterval(checkMatch, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [likeSent, user, matchUser, isMatch]);
 
   if (!matchUser) {
     return (
@@ -65,7 +169,7 @@ export default function Profile() {
       <Link to="/matche">
         <ArrowLeft className="w-5 h-5 text-gray-500 hover:text-gray-700" />
       </Link>
-
+    
       <div className="flex flex-col sm:flex-row items-center gap-8">
         <div className="flex flex-col items-center gap-4">
           <img
@@ -79,6 +183,21 @@ export default function Profile() {
               alt={`${matchUser.username}'s dog`}
               className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-lg"
             />
+          )}
+          {!likeSent && (
+            <button
+              onClick={handleLike}
+              className={`mt-4 flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500 text-pink-500 hover:bg-pink-100 transition`}
+            >
+              <Heart className="w-6 h-6" />
+              Like
+            </button>
+          )}
+          {likeSent && !isMatch && (
+            <div className="mt-2 text-sm text-gray-500">Please wait until the other person likes you back.</div>
+          )}
+          {notification && (
+            <div className="mt-2 text-green-600 font-semibold">{notification}</div>
           )}
         </div>
         <div className="flex-1 space-y-4">
@@ -148,10 +267,12 @@ export default function Profile() {
           </div>
 
           <Link
-            to={`/chat/${matchUser._id}`}
-            className="mt-8 inline-block bg-black !text-white font-bold py-3 px-8 rounded-full shadow-lg hover:brightness-110 transition duration-300"
+            to={canChat ? `/chat/${matchUser._id}` : '#'}
+            className={`mt-8 inline-block bg-black !text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ${!canChat ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'hover:brightness-110'}`}
+            tabIndex={canChat ? 0 : -1}
+            aria-disabled={!canChat}
           >
-            Start Chat 💬
+            {checkingMatch ? 'Checking match...' : 'Start Chat 💬'}
           </Link>
         </div>
       </div>
