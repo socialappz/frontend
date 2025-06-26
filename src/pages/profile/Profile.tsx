@@ -193,6 +193,7 @@ export default function Profile() {
               Like
             </button>
           )}
+          <span>{notification}</span>
           {likeSent && !isMatch && (
             <div className="mt-2 text-sm text-gray-500">Please wait until the other person likes you back.</div>
           )}
