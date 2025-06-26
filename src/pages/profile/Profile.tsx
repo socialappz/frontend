@@ -54,12 +54,12 @@ export default function Profile() {
     if (!user || !matchUser) return;
     const myUsername = normalize(user.username);
     const targetUsername = normalize(matchUser.username);
-    setCheckingMatch(true);
+    setCheckingMatch(false);
     axiosPublic.get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true })
       .then(res => {
         setIsMatch(res.data.isMatch);
       })
-      .finally(() => setCheckingMatch(false));
+      .finally(() => setCheckingMatch(true));
   }, [user, matchUser]);
 
 
@@ -187,7 +187,7 @@ export default function Profile() {
           {!likeSent && (
             <button
               onClick={handleLike}
-              className={`mt-4 flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500 text-pink-500 hover:bg-pink-100 transition`}
+              className={`mt-4 flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500 text-pink-500 hover:bg-pink-100 transition focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!`}
             >
               <Heart className="w-6 h-6" />
               Like
@@ -196,9 +196,7 @@ export default function Profile() {
           {likeSent && !isMatch && (
             <div className="mt-2 text-sm text-gray-500">Please wait until the other person likes you back.</div>
           )}
-          {notification && (
-            <div className="mt-2 text-green-600 font-semibold">{notification}</div>
-          )}
+          
         </div>
         <div className="flex-1 space-y-4">
           <h1 className="text-4xl font-extrabold text-gray-900">{matchUser.username}</h1>
@@ -272,7 +270,7 @@ export default function Profile() {
             tabIndex={canChat ? 0 : -1}
             aria-disabled={!canChat}
           >
-            {checkingMatch ? 'Checking match...' : 'Start Chat 💬'}
+            {checkingMatch && !canChat ? 'waiting...' : 'Start Chat 💬'}
           </Link>
         </div>
       </div>

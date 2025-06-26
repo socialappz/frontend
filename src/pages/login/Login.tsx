@@ -103,7 +103,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In to your account</h2>
@@ -126,7 +126,7 @@ export default function Login() {
                 required
                 autoComplete="email"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="deine@email.com"
+                placeholder="your@email.com"
               />
               {emailError && (
                 <p className="mt-2 text-sm text-red-600 flex items-center">

@@ -7,7 +7,7 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
-import icon from "/dog-icon.png"
+import icon from "/icon_dinder.webp"
 
 moment.locale("de");
 
@@ -21,12 +21,10 @@ const Header = () => {
   const logOutFunc = async () => {
     try {
       await axiosPublic.post("/logout");
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
       setUser(null);
       navigation("/");
     } catch (error) {
       console.error('Logout error:', error);
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
       setUser(null);
       navigation("/");
     }
@@ -53,12 +51,34 @@ const Header = () => {
   };
 
 
+  const deleteAllNotifications = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:2000";
+      await fetch(`${apiUrl}/clearNotifications`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user?.username }),
+      });
+      setNotifications([]);
+    } catch (err) {
+      console.error("Fehler beim Löschen der Benachrichtigungen:", err);
+    }
+  };
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
+       <Link 
+        to="/" 
+        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center" 
+        onClick={onClick}
+      >
+        Home
+      </Link>
       <Link 
         to="/signup" 
         className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center" 
@@ -94,7 +114,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50 mb-2!">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
@@ -127,18 +147,18 @@ const Header = () => {
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={handleTogglePopup}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors  focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
               >
-                <Bell className="w-5 h-5 text-white!" />
+                <Bell className="w-5 h-5 text-white! " />
                 {notifications.filter((n) => !n.read).length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
                     {notifications.filter((n) => !n.read).length}
                   </span>
                 )}
               </button>
               <button
                 onClick={logOutFunc}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                className="bg-red-500 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
@@ -148,10 +168,10 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden  bg-black! text-black! font-semibold rounded-lg  hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X className="w-6 h-6 text-white!" /> : <Menu className="w-6 h-6 text-white" />}
+            {menuOpen ? <X className="w-6 h-6 text-white!" /> : <Menu className="w-6 h-6 text-white!" />}
           </button>
         </div>
 
@@ -168,6 +188,14 @@ const Header = () => {
               className="absolute right-4 top-20 w-80 bg-white shadow-xl border rounded-2xl z-50 p-4"
               onClick={e => e.stopPropagation()}
             >
+              {/* X-Button zum Löschen aller Benachrichtigungen */}
+              <button
+                className="absolute top-2 right-2 text-white! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
+                onClick={deleteAllNotifications}
+                aria-label="notification deleted"
+              >
+                <X className="w-5 h-5" />
+              </button>
               <h3 className="font-semibold text-black! mb-3">Notification</h3>
               <div className="max-h-64 overflow-y-auto space-y-2">
                 {notifications.length === 0 ? (
@@ -192,7 +220,7 @@ const Header = () => {
                         </div>
                       </div>
                     </Link>
-                  ))
+                  )).reverse()
                 )}
               </div>
             </div>
@@ -224,7 +252,7 @@ const Header = () => {
                 <>
                   <button
                     onClick={() => { handleTogglePopup(); setMenuOpen(false); }}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors w-full font-medium text-gray-800"
+                    className="flex items-center gap-3 p-3 rounded-xl text-white border-black! transition-colors w-full font-medium focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
                   >
                     <div className="relative">
                       <Bell className="w-5 h-5 text-white" />
@@ -238,7 +266,7 @@ const Header = () => {
                   </button>
                   <button
                     onClick={() => { logOutFunc(); setMenuOpen(false); }}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors w-full font-medium"
+                    className="flex items-center gap-3 p-3 rounded-xl text-white hover:bg-white! hover:text-black! border-black! transition-colors w-full font-medium"
                   >
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>

@@ -75,7 +75,7 @@ export default function SignUp() {
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white py-8 px-6 shadow-xl rounded-2xl border border-gray-100">
           <form action="#" method="POST" className="space-y-6" onSubmit={signUpHandler}>
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-black">
@@ -89,6 +89,7 @@ export default function SignUp() {
                   ref={emailRef}
                   required
                   autoComplete="email"
+                  placeholder="your@email.com"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {emailError && (
@@ -111,6 +112,7 @@ export default function SignUp() {
                   ref={usernameRef}
                   required
                   autoComplete="username"
+                  placeholder="your Username"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {usernameError && (
@@ -140,6 +142,7 @@ export default function SignUp() {
                   ref={passRef}
                   required
                   autoComplete="current-password"
+                  placeholder="••••••••"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {passwordError && (

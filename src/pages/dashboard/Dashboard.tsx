@@ -143,6 +143,7 @@ export default function Dashboard() {
 
   const nextStep = () => {
     setCurrentStep(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const prevStep = () => {
@@ -426,7 +427,7 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="w-full py-3 px-4 sm:px-6 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="w-full flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
               >
                 Next Step
               </button>
@@ -535,13 +536,13 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="flex-1 py-3 px-4 sm:px-6 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
                 >
                   Previous Step
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 px-4 sm:px-6 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
                 >
                   Save Profile
                 </button>
