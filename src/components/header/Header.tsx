@@ -33,6 +33,7 @@ const Header = () => {
   };
 
   const handleTogglePopup = async () => {
+    
     setPopupOpen(!popupOpen);
     await clearNotifications();
   };
@@ -116,7 +117,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50 mb-2!">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50 w-full">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}

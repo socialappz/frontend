@@ -4,7 +4,6 @@ import { axiosPublic } from "../../utils/axiosConfig";
 import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
 import { ArrowLeft, Send, MessageCircle } from "lucide-react";
 import type { IMatchUser } from "../../interfaces/match/IMatchUser";
-import LoadingSpinner from "../common/LoadingSpinner";
 
 interface IMessage {
   msg: string;
@@ -174,9 +173,9 @@ export default function Chat() {
       let groupKey: string;
       
       if (date.toDateString() === today.toDateString()) {
-        groupKey = 'Heute';
+        groupKey = 'Today';
       } else if (date.toDateString() === yesterday.toDateString()) {
-        groupKey = 'Gestern';
+        groupKey = 'Yesterday';
       } else {
         groupKey = date.toLocaleDateString('de-DE', {
           day: '2-digit',
@@ -198,7 +197,6 @@ export default function Chat() {
     return (
       <div className="flex flex-col h-screen bg-gray-50">
         <div className="flex-1 flex items-center justify-center">
-          <LoadingSpinner size="large" text="loading..." />
         </div>
       </div>
     );
@@ -322,15 +320,15 @@ export default function Chat() {
         >
           <input
             type="text"
-            placeholder="Nachricht schreiben..."
-            className="flex-1 px-4 py-3 rounded-full bg-gray-100 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+            placeholder="message..."
+            className="flex-1 px-4 py-3 rounded-full bg-gray-100 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition-colors"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
           <button
             type="submit"
             disabled={!message.trim()}
-            className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            className="p-3 bg-black! text-white rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
           >
             <Send className="w-5 h-5" />
           </button>
