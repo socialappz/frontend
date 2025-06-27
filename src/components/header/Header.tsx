@@ -183,7 +183,7 @@ const Header = () => {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-40 bg-white/30 backdrop-blur-sm"
               onClick={() => setPopupOpen(false)}
             />
             {/* Popup */}
