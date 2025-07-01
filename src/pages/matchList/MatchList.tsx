@@ -47,7 +47,7 @@ export default function MatchList() {
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <p>{error}</p>
-          <button 
+          <button
             onClick={getMatchUsers}
             className="mt-2 text-red-700 hover:text-red-900 underline"
           >
@@ -60,7 +60,7 @@ export default function MatchList() {
 
   if (!matchUsers.length) {
     return (
-      <NoDataMessage 
+      <NoDataMessage
         message="Keine Matches gefunden"
         linkText="Finde neue Freunde"
         linkTo="/dashboard"
@@ -76,12 +76,7 @@ export default function MatchList() {
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {matchUsers.map((matchUser) => (
-            <div 
-              key={matchUser._id}
-              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-            >
-              <MatchCard matchUser={matchUser} />
-            </div>
+            <MatchCard matchUser={matchUser} />
           ))}
         </div>
       </div>

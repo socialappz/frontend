@@ -191,22 +191,23 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-vh-100 bg-white py-4 px-3 px-sm-4 px-lg-5">
+      <div className="container max-w-2xl mx-auto">
         <form
           ref={formRef}
           onSubmit={userProfilHandler}
-          className="bg-white shadow-xl rounded-2xl p-4 sm:p-8 space-y-8"
+          className="bg-white shadow rounded-4 p-4 p-sm-5 mb-4 border border-light"
         >
           {currentStep === 1 ? (
             <>
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Your Gender</h3>
-                <div className="flex flex-wrap gap-4">
+              <div className="mb-4">
+                <h3 className="h5 fw-semibold text-dark">Your Gender</h3>
+                <div className="d-flex flex-wrap gap-2">
                   {["female", "male", "other"].map((g) => (
                     <label
                       key={g}
-                      className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-200 hover:border-indigo-300 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50 cursor-pointer"
+                      className="d-flex align-items-center gap-2 px-3 py-2 rounded border border-secondary-subtle hover-border-dark user-gender-label"
+                      style={{ cursor: "pointer" }}
                     >
                       <input
                         type="radio"
@@ -214,69 +215,67 @@ export default function Dashboard() {
                         value={g}
                         checked={user?.gender === g}
                         onChange={() => setUser({ ...user, gender: g })}
-                        className="h-4 w-4 text-indigo-600"
+                        className="form-check-input"
                       />
-                      <span className="capitalize text-gray-700">{g}</span>
+                      <span className="text-capitalize text-dark">{g}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowLanguages(!showLanguages)}
-                    className="w-full flex items-center justify-between px-4 py-2 text-left bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <span className="text-white!">
-                      {selectedLanguages.length > 0
-                        ? selectedLanguages.join(", ")
-                        : "Select Languages"}
-                    </span>
-                    {showLanguages ? (
-                      <ChevronUp className="w-5 h-5 text-white!" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-white!" />
-                    )}
-                  </button>
-                  
-                  {showLanguages && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto text-white!">
-                      <div className="p-2 space-y-1 text-white!">
-                        {languages.map((lang) => (
-                          <label
-                            key={lang}
-                            className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              value={lang}
-                              checked={selectedLanguages.includes(lang)}
-                              onChange={handleLanguageChange}
-                              className="h-4 w-4 text-white! rounded border-gray-300 focus:ring-indigo-500"
-                            />
-                            <span className="ml-2 text-black!">{lang}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+              <div className="mb-4 position-relative">
+                <button
+                  type="button"
+                  onClick={() => setShowLanguages(!showLanguages)}
+                  className="w-100 d-flex align-items-center justify-content-between px-3 py-2 text-start bg-white border border-secondary-subtle rounded shadow-sm user-lang-btn"
+                >
+                  <span className="text-dark">
+                    {selectedLanguages.length > 0
+                      ? selectedLanguages.join(", ")
+                      : "Select Languages"}
+                  </span>
+                  {showLanguages ? (
+                    <ChevronUp className="ms-2" />
+                  ) : (
+                    <ChevronDown className="ms-2" />
                   )}
-                </div>
+                </button>
+                {showLanguages && (
+                  <div className="position-absolute z-3 w-100 mt-1 bg-white border border-secondary-subtle rounded shadow user-lang-dropdown" style={{ maxHeight: "15rem", overflowY: "auto" }}>
+                    <div className="p-2">
+                      {languages.map((lang) => (
+                        <label
+                          key={lang}
+                          className="d-flex align-items-center px-2 py-2 rounded hover-bg-light user-lang-label"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <input
+                            type="checkbox"
+                            value={lang}
+                            checked={selectedLanguages.includes(lang)}
+                            onChange={handleLanguageChange}
+                            className="form-check-input"
+                          />
+                          <span className="ms-2 text-dark">{lang}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">Birthday</label>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">Birthday</label>
                 {!editBirthday ? (
                   <>
-                    <div className="mt-2 text-sm text-gray-600">
+                    <div className="mt-2 small text-secondary">
                       {user?.birthday
                         ? new Date(user.birthday).toLocaleDateString()
                         : "No birthday set"}
                     </div>
                     <button
                       type="button"
-                      className="mt-2 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-white!"
+                      className="mt-2 btn btn-outline-secondary btn-sm"
                       onClick={() => setEditBirthday(true)}
                     >
                       Change your Birthday
@@ -288,11 +287,11 @@ export default function Dashboard() {
                       type="date"
                       value={birthdayInput}
                       onChange={e => setBirthdayInput(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-black text-white"
+                      className="form-control"
                     />
                     <button
                       type="button"
-                      className="mt-2 px-3 py-1 bg-black! rounded hover:bg-gray-600! text-white!"
+                      className="mt-2 btn btn-dark btn-sm"
                       onClick={handleBirthdaySave}
                     >
                       Save
@@ -300,50 +299,40 @@ export default function Dashboard() {
                   </>
                 )}
                 {user?.birthday && (
-                  <div className="mt-2 text-sm text-gray-600">
+                  <div className="mt-2 small text-secondary">
                     <p>Age: {calculateAge(user.birthday)} years</p>
                   </div>
                 )}
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Preferred Weekdays</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {[
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday",
-                  ].map((day) => (
-                    <label
-                      key={day}
-                      className="flex items-center space-x-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        value={day}
-                        checked={selectedWeekdays?.includes(day)}
-                        onChange={handleCheckboxChange}
-                        className="h-4 w-4 text-indigo-600"
-                      />
-                      <span className="text-gray-700">{day}</span>
-                    </label>
+              <div className="mb-4">
+                <h3 className="h5 fw-semibold text-dark">Preferred Weekdays</h3>
+                <div className="row g-2">
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                    <div className="col-6 col-sm-4 col-md-3" key={day}>
+                      <label
+                        className="d-flex align-items-center gap-2 p-2 rounded border border-secondary-subtle hover-bg-light user-weekday-label"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <input
+                          type="checkbox"
+                          value={day}
+                          checked={selectedWeekdays?.includes(day)}
+                          onChange={handleCheckboxChange}
+                          className="form-check-input"
+                        />
+                        <span className="text-dark">{day}</span>
+                      </label>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">Preferred Time</label>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">Preferred Time</label>
                 <select
                   name="dayTime"
-                  value={
-                    typeof user?.availability?.dayTime === "string"
-                      ? user?.availability?.dayTime
-                      : ""
-                  }
+                  value={typeof user?.availability?.dayTime === "string" ? user?.availability?.dayTime : ""}
                   onChange={(e) =>
                     setUser({
                       ...user,
@@ -353,7 +342,7 @@ export default function Dashboard() {
                       },
                     })
                   }
-                  className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                  className="form-select"
                 >
                   <option value="">Select Time of Day</option>
                   {[
@@ -362,15 +351,15 @@ export default function Dashboard() {
                     { value: "in the evening", label: "Afternoon 13-18pm" },
                     { value: "evening", label: "Evening 18-22pm" },
                   ].map((time) => (
-                    <option key={time.value} value={time.value}>
+                    <option key={time.value} value={time.value} className="text-dark">
                       {time.label}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">About You</label>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">About You</label>
                 <textarea
                   name="description"
                   value={typeof user?.description === "string" ? user.description : ""}
@@ -379,15 +368,16 @@ export default function Dashboard() {
                   }
                   rows={4}
                   placeholder="Tell us about yourself..."
-                  className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg placeholder-gray-400 focus:ring-2 focus:ring-indigo-500"
+                  className="form-control"
                 />
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">Profile Image</label>
-                <label className="flex flex-col items-center px-4 py-4 sm:py-6 bg-white text-indigo-600 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50">
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">Profile Image</label>
+                <label className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light" style={{ cursor: "pointer" }}>
                   <svg
-                    className="w-10 h-10 mb-2"
+                    className="mb-2"
+                    width="40" height="40"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -399,22 +389,22 @@ export default function Dashboard() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-sm font-medium">Click to upload photo</span>
+                  <span className="small fw-medium">Click to upload photo</span>
                   <input
                     type="file"
                     name="userImage"
                     onChange={handleImageChange}
-                    className="hidden"
+                    className="d-none"
                   />
                 </label>
                 {resizedImage && (
-                  <p className="text-green-600 text-sm mt-2">Profile image uploaded successfully!</p>
+                  <p className="text-success small mt-2">Profile image uploaded successfully!</p>
                 )}
               </div>
 
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Select Your Area</h3>
-                <div className="h-64 sm:h-96 w-full rounded-lg overflow-hidden border border-gray-200">
+              <div className="mb-4">
+                <h3 className="h5 fw-semibold text-dark">Select Your Area</h3>
+                <div className="rounded overflow-hidden border border-secondary-subtle" style={{ height: "16rem" }}>
                   <MapComponent
                     bottomLeft={bottomLeft}
                     topRight={topRight}
@@ -427,48 +417,48 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="w-full flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
+                className="w-100 btn btn-dark fw-semibold rounded mt-3 user-next-btn"
               >
                 Next Step
               </button>
             </>
           ) : (
             <>
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">About Your Dog</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="block font-semibold text-gray-900">Dog Breed</label>
+              <div className="mb-4">
+                <h3 className="h5 fw-semibold text-dark">About Your Dog</h3>
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-dark">Dog Breed</label>
                     <select
                       name="dogBreed"
                       value={typeof user?.dogBreed === "string" ? user.dogBreed : ""}
                       onChange={(e) =>
                         setUser({ ...user, dogBreed: e.target.value })
                       }
-                      className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="form-select"
                     >
                       <option value="">Select Breed</option>
                       {dogBreeds.map((breed) => (
-                        <option key={breed} value={breed}>
+                        <option key={breed} value={breed} className="text-dark">
                           {breed}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block font-semibold text-gray-900">Dog's Age</label>
-                    <div className="relative">
+                  <div className="col-md-6">
+                    <label className="form-label fw-semibold text-dark">Dog's Age</label>
+                    <div className="position-relative">
                       <input
                         type="text"
                         name="dogAge"
                         value={user?.dogAge || ""}
                         onChange={handleDogAgeChange}
-                        className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        className="form-control"
                         placeholder="Enter age (e.g. 0.4 for 4 months)"
                       />
                       {user?.dogAge && (
-                        <div className="mt-2 text-sm text-gray-600">
+                        <div className="mt-2 small text-secondary">
                           <p>Age: {formatDogAge(user.dogAge)}</p>
                         </div>
                       )}
@@ -477,11 +467,12 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">Dog's Image</label>
-                <label className="flex flex-col items-center px-4 py-4 sm:py-6 bg-white text-indigo-600 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-indigo-500 hover:bg-indigo-50">
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">Dog's Image</label>
+                <label className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light" style={{ cursor: "pointer" }}>
                   <svg
-                    className="w-10 h-10 mb-2"
+                    className="mb-2"
+                    width="40" height="40"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -493,33 +484,33 @@ export default function Dashboard() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-sm font-medium">Click to upload dog's photo</span>
+                  <span className="small fw-medium">Click to upload dog's photo</span>
                   <input
                     type="file"
                     name="dogImage"
                     onChange={handleDogImageChange}
-                    className="hidden"
+                    className="d-none"
                   />
                 </label>
                 {dogImage && (
-                  <p className="text-green-600 text-sm mt-2">Dog image uploaded successfully!</p>
+                  <p className="text-success small mt-2">Dog image uploaded successfully!</p>
                 )}
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">Favorite Toy</label>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">Favorite Toy</label>
                 <input
                   type="text"
                   name="favoriteToy"
                   value={user?.favoriteToy || ""}
                   onChange={(e) => setUser({ ...user, favoriteToy: e.target.value })}
-                  className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                  className="form-control"
                   placeholder="What's your dog's favorite toy?"
                 />
               </div>
 
-              <div className="space-y-4">
-                <label className="block font-semibold text-gray-900">About Your Dog</label>
+              <div className="mb-4">
+                <label className="form-label fw-semibold text-dark">About Your Dog</label>
                 <textarea
                   name="dogDescription"
                   value={typeof user?.dogDescription === "string" ? user.dogDescription : ""}
@@ -528,21 +519,21 @@ export default function Dashboard() {
                   }
                   rows={4}
                   placeholder="Tell us about your dog..."
-                  className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg placeholder-gray-400 focus:ring-2 focus:ring-indigo-500"
+                  className="form-control"
                 />
               </div>
 
-              <div className="flex gap-4">
+              <div className="d-flex gap-3">
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
+                  className="btn btn-outline-dark flex-fill"
                 >
                   Previous Step
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 px-4 sm:px-6 bg-black! text-white! font-semibold rounded-lg hover:bg-white! hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
+                  className="btn btn-dark flex-fill"
                 >
                   Save Profile
                 </button>

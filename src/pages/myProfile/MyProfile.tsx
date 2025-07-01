@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Brush } from "lucide-react";
 import { mainContext } from "../../context/MainProvider";
 import type { IUser } from "../../interfaces/user/IUser";
+import { Carousel } from "react-bootstrap";
 
 interface myProfileProps {
   user: IUser;
@@ -55,103 +56,78 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-gray-50 rounded-3xl shadow-lg">
-      <div className="flex justify-between">
-        <Link to="/matche">
-          <ArrowLeft className="w-5 h-5 text-gray-500 hover:text-gray-700" />
-        </Link>
-
-        <Link to={"/dashboard"}>
-          <Brush className="w-5 h-5 text-gray-500 hover:text-gray-700" />
-        </Link>
-      </div>
-
-      <div className="flex flex-col sm:flex-row items-center gap-8">
-        <div className="flex flex-col items-center gap-4">
-          <img
-            src={user.userImage || "/default-avatar.png"}
-            alt={user.username}
-            className="w-44 h-44 rounded-full object-cover border-8 border-gradient-to-tr from-blue-400 via-purple-500 to-pink-500 shadow-lg"
-          />
-          {user?.dogImage && (
-            <img
-              src={user?.dogImage}
-              alt={`${user?.username}'s dog`}
-              className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-lg"
-            />
-          )}
+    <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
+      <div className="w-full flex flex-col items-center mt-8">
+        <div className="w-full flex justify-between px-4">
+          <Link to="/matche">
+            <ArrowLeft className="w-6 h-6 text-gray-400 hover:text-gray-700" />
+          </Link>
+          <Link to={"/dashboard"}>
+            <Brush className="w-6 h-6 text-gray-400 hover:text-gray-700" />
+          </Link>
         </div>
-        <div className="flex-1 space-y-4">
-          <h1 className="text-4xl font-extrabold text-gray-900">{user?.username}</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700 text-lg">
-            <div>
-              <strong>Gender:</strong> <span className="text-gray-600">{user?.gender}</span>
+        <div className="w-full flex flex-col items-center">
+          <div className="w-full flex justify-center">
+            <div className="w-80 h-96 flex items-center justify-center">
+              <Carousel indicators={true} controls={true} interval={null} className="w-full h-full">
+                <Carousel.Item>
+                  <img
+                    src={user.userImage || "/default-avatar.png"}
+                    alt={user.username}
+                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                  />
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img
+                    src={user.dogImage || "/default-dog.png"}
+                    alt={user.dogBreed ? `${user.username}'s dog` : "Kein Hundebild"}
+                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                  />
+                </Carousel.Item>
+              </Carousel>
             </div>
-            <div>
-              <strong>Age:</strong>{" "}
-              <span className="text-gray-600">
-                {user.birthday ? calculateAge(user.birthday) : "Not specified"}
-              </span>
-            </div>
-            <div>
-              <strong>Languages:</strong>{" "}
-              <span className="text-gray-600">
-                {Array.isArray(user.languages)
-                  ? user.languages.join(", ")
-                  : user.languages || "Not specified"}
-              </span>
-            </div>
-            <div>
-              <strong>Dog Breed:</strong>{" "}
-              <span className="text-gray-600">{user.dogBreed || "Not specified"}</span>
-            </div>
-            <div>
-              <strong>Dog's Age:</strong>{" "}
-              <span className="text-gray-600">{user?.dogAge ? formatDogAge(user?.dogAge) : "Not specified"}</span>
-            </div>
-            {user.favoriteToy && (
-              <div>
-                <strong>Favorite Toy:</strong>{" "}
-                <span className="text-gray-600">{user?.favoriteToy}</span>
-              </div>
-            )}
           </div>
-
-          {user?.description && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">About Me</h2>
-              <p className="text-gray-700 italic border-l-4 border-blue-500 pl-4">
-                {user?.description}
+          <div className="w-full flex flex-col items-center mt-6">
+            <h1 className="text-3xl font-bold text-gray-900 text-center">{user.username}, {user.birthday ? calculateAge(user.birthday) : "-"}</h1>
+            <div className="text-gray-500 text-center text-lg mt-1">{user.gender}</div>
+            {user.description && (
+              <p className="mt-4 text-gray-700 text-center text-base px-4">{user.description}</p>
+            )}
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              {user.languages && Array.isArray(user.languages) && user.languages.map((lang: string, idx: number) => (
+                <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">{lang}</span>
+              ))}
+              {user.dogBreed && (
+                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">{user.dogBreed}</span>
+              )}
+              {user.dogAge && (
+                <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm">{formatDogAge(user.dogAge)}</span>
+              )}
+              {user.favoriteToy && (
+                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">{user.favoriteToy}</span>
+              )}
+            </div>
+            {user.dogDescription && (
+              <p className="mt-4 text-gray-700 text-center text-base px-4">🐶 {user.dogDescription}</p>
+            )}
+            <div className="mt-6 w-full flex flex-col items-center">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Availability</h2>
+              <div className="flex flex-col items-center">
+                <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
+                  {firstColumn?.map((day, key) => (
+                    <li key={key}>{day}</li>
+                  ))}
+                </ul>
+                <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
+                  {secondColumn?.map((day, key) => (
+                    <li key={key + half}>{day}</li>
+                  ))}
+                </ul>
+              </div>
+              <p className="mt-2 text-gray-700">
+                <strong>Time:</strong> {user?.availability?.dayTime || "Not specified"}
               </p>
             </div>
-          )}
-
-          {user?.dogDescription && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">About My Dog</h2>
-              <p className="text-gray-700 italic border-l-4 border-yellow-500 pl-4">
-                {user?.dogDescription}
-              </p>
-            </div>
-          )}
-
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Availability</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <ul className="space-y-1 list-disc ml-5">
-                {firstColumn?.map((day, key) => (
-                  <li key={key}>{day}</li>
-                ))}
-              </ul>
-              <ul className="space-y-1 list-disc ml-5">
-                {secondColumn?.map((day, key) => (
-                  <li key={key + half}>{day}</li>
-                ))}
-              </ul>
-            </div>
-            <p className="mt-2 text-gray-700">
-              <strong>Time:</strong> {user?.availability?.dayTime || "Not specified"}
-            </p>
           </div>
         </div>
       </div>

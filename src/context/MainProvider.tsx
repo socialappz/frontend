@@ -2,6 +2,7 @@ import React, {
   createContext,
   useEffect,
   useState,
+  useRef,
   type ReactNode,
 } from "react";
 import type { IUser } from "../interfaces/user/IUser";
@@ -14,11 +15,11 @@ export interface INotification {
   from: string;
   message: string;
   sentAt: Date;
-  senderId: string,
-  friend: string,
+  senderId: string;
+  friend: string;
 }
 
-interface IMainContext {
+export interface IMainContext {
   user: IUser | null;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   selectedUser: any;
@@ -30,93 +31,100 @@ interface IMainContext {
   socket: Socket | null;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<any>>;
+  reloadUser?: () => Promise<void>;
 }
 
-export const mainContext = createContext<IMainContext>({} as IMainContext);
+export const mainContext = createContext<IMainContext>({
+  user: null,
+  setUser: () => {},
+  selectedUser: {},
+  matchUsers: [],
+  setMatchUsers: () => {},
+  setSelectedUser: () => {},
+  notifications: [],
+  setNotifications: () => {},
+  socket: null,
+  loading: false,
+  setLoading: () => {},
+  reloadUser: async () => {},
+});
 
 export default function MainProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const [matchUsers, setMatchUsers] = useState<IMatchUser[]>([]);
   const [selectedUser, setSelectedUser] = useState({});
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
+
+  const reloadUser = async () => {
+    try {
+      const hasCookie = document.cookie.includes("token=");
+      if (!hasCookie) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      const resp = await axiosPublic.get("/currentUser", {
+        withCredentials: true,
+      });
+      const userData = resp.data;
+
+      if (
+        socketRef.current instanceof Object &&
+        typeof socketRef.current.off === "function" &&
+        typeof socketRef.current.disconnect === "function"
+      ) {
+        socketRef.current.off("receive_message");
+        socketRef.current.disconnect();
+      }
+      const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+      const newSocket = io(socketURL, {
+        withCredentials: true,
+        reconnectionAttempts: 3,
+        transports: ["websocket"],
+      });
+      newSocket.emit("join_room", userData?.username?.toLowerCase());
+      newSocket.on("receive_message", (data) => {
+        setNotifications((prev) => [
+          ...prev,
+          {
+            from: data.username,
+            message: data.message,
+            room: data.room,
+            sentAt: new Date(data.sentAt),
+            read: false,
+            senderId: data.senderId,
+            friend: "",
+          },
+        ]);
+      });
+      socketRef.current = newSocket;
+      setSocket(newSocket);
+      setUser(userData);
+      setNotifications(userData.notifications || []);
+    } catch (err: any) {
+      console.error("Error in reloadUser:", err);
+      setUser(null);
+      if (!err.response || err.response.status !== 403) {
+        console.error("Error initializing user:", err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let isMounted = true;
-    let activeSocket: Socket | null = null;
-
-    const fetchUserAndSetupSocket = async () => {
-      try {
-        const hasCookie = document.cookie.includes('token=');
-
-        
-        if (!hasCookie) {
-
-          setUser(null);
-          setLoading(false);
-          return;
-        }
-        
-
-        const resp = await axiosPublic.get("/currentUser", {
-          withCredentials: true
-        });
-
-        if (!isMounted) return;
-
-        const userData = resp.data;
-
-        
-        const socketURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
-        activeSocket = io(socketURL, {
-          withCredentials: true,
-          reconnectionAttempts: 3,
-          transports: ["websocket"],
-        });
-
-        activeSocket.emit("join_room", userData?.username?.toLowerCase());
-
-        activeSocket.on("receive_message", (data) => {
-          if (!isMounted) return;
-          setNotifications((prev) => [
-            ...prev,
-            {
-              from: data.username,
-              message: data.message,
-              room: data.room,
-              sentAt: new Date(data.sentAt),
-              read: false,
-              senderId: data.senderId,
-              friend: "",
-            },
-          ]);
-        });
-
-        setSocket(activeSocket);
-
-        setUser(userData);
-        setNotifications(userData.notifications || []);
-      } catch (err: any) {
-        console.error('Error in fetchUserAndSetupSocket:', err);
-        setUser(null);
-        if (!err.response || err.response.status !== 403) {
-          console.error("Error initializing user:", err);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchUserAndSetupSocket();
-
+    reloadUser();
     return () => {
-      isMounted = false;
-      if (activeSocket) {
-        activeSocket.off("receive_message");
-        activeSocket.disconnect();
+      if (
+        socketRef.current instanceof Object &&
+        typeof socketRef.current.off === "function" &&
+        typeof socketRef.current.disconnect === "function"
+      ) {
+        socketRef.current.off("receive_message");
+        socketRef.current.disconnect();
       }
     };
   }, []);
@@ -134,7 +142,8 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         setNotifications,
         socket,
         loading,
-        setLoading
+        setLoading,
+        reloadUser,
       }}
     >
       {children}
