@@ -75,9 +75,13 @@ export default function MatchList() {
           your Matches
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {matchUsers.map((matchUser) => (
-            <MatchCard matchUser={matchUser} />
-          ))}
+          {matchUsers.map((matchUser, index) => {
+            return (
+              <div key={index}>
+                <MatchCard matchUser={matchUser} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

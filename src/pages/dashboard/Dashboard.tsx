@@ -38,7 +38,8 @@ export default function Dashboard() {
       const fetchedUser: IUser = resp?.data;
       const weekdays = Array.isArray(fetchedUser?.availability?.weekDay)
         ? fetchedUser.availability.weekDay
-        : typeof fetchedUser?.availability?.weekDay === "string" && fetchedUser.availability.weekDay
+        : typeof fetchedUser?.availability?.weekDay === "string" &&
+          fetchedUser.availability.weekDay
         ? [fetchedUser.availability.weekDay]
         : [];
 
@@ -98,7 +99,9 @@ export default function Dashboard() {
     setResizedImage(base64);
   };
 
-  const handleDogImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDogImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const base64 = await uploadImg(e);
     setDogImage(base64);
   };
@@ -106,7 +109,7 @@ export default function Dashboard() {
   const handleBirthdaySave = () => {
     setUser({
       ...user,
-      birthday: birthdayInput
+      birthday: birthdayInput,
     });
     setEditBirthday(false);
   };
@@ -155,7 +158,10 @@ export default function Dashboard() {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return age;
@@ -164,25 +170,27 @@ export default function Dashboard() {
   const formatDogAge = (age: string | number): string => {
     const ageNum = parseFloat(age as string);
     if (isNaN(ageNum)) return "No age set";
-    
+
     if (ageNum < 1) {
       const months = Math.round(ageNum * 12);
-      return `${months} ${months === 1 ? 'Month' : 'Months'}`;
+      return `${months} ${months === 1 ? "Month" : "Months"}`;
     } else {
       const years = Math.floor(ageNum);
       const months = Math.round((ageNum - years) * 12);
       if (months === 0) {
-        return `${years} ${years === 1 ? 'Year' : 'Years'}`;
+        return `${years} ${years === 1 ? "Year" : "Years"}`;
       } else {
-        return `${years} ${years === 1 ? 'Year' : 'Years'} and ${months} ${months === 1 ? 'Month' : 'Months'}`;
+        return `${years} ${years === 1 ? "Year" : "Years"} and ${months} ${
+          months === 1 ? "Month" : "Months"
+        }`;
       }
     }
   };
 
   const handleDogAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
       const numValue = parseFloat(value);
       if (isNaN(numValue) || numValue >= 0) {
         setUser({ ...user, dogAge: value });
@@ -241,7 +249,10 @@ export default function Dashboard() {
                   )}
                 </button>
                 {showLanguages && (
-                  <div className="position-absolute z-3 w-100 mt-1 bg-white border border-secondary-subtle rounded shadow user-lang-dropdown" style={{ maxHeight: "15rem", overflowY: "auto" }}>
+                  <div
+                    className="position-absolute z-3 w-100 mt-1 bg-white border border-secondary-subtle rounded shadow user-lang-dropdown"
+                    style={{ maxHeight: "15rem", overflowY: "auto" }}
+                  >
                     <div className="p-2">
                       {languages.map((lang) => (
                         <label
@@ -265,7 +276,9 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">Birthday</label>
+                <label className="form-label fw-semibold text-dark">
+                  Birthday
+                </label>
                 {!editBirthday ? (
                   <>
                     <div className="mt-2 small text-secondary">
@@ -286,7 +299,7 @@ export default function Dashboard() {
                     <input
                       type="date"
                       value={birthdayInput}
-                      onChange={e => setBirthdayInput(e.target.value)}
+                      onChange={(e) => setBirthdayInput(e.target.value)}
                       className="form-control"
                     />
                     <button
@@ -308,7 +321,15 @@ export default function Dashboard() {
               <div className="mb-4">
                 <h3 className="h5 fw-semibold text-dark">Preferred Weekdays</h3>
                 <div className="row g-2">
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                  {[
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                  ].map((day) => (
                     <div className="col-6 col-sm-4 col-md-3" key={day}>
                       <label
                         className="d-flex align-items-center gap-2 p-2 rounded border border-secondary-subtle hover-bg-light user-weekday-label"
@@ -329,10 +350,16 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">Preferred Time</label>
+                <label className="form-label fw-semibold text-dark">
+                  Preferred Time
+                </label>
                 <select
                   name="dayTime"
-                  value={typeof user?.availability?.dayTime === "string" ? user?.availability?.dayTime : ""}
+                  value={
+                    typeof user?.availability?.dayTime === "string"
+                      ? user?.availability?.dayTime
+                      : ""
+                  }
                   onChange={(e) =>
                     setUser({
                       ...user,
@@ -351,7 +378,11 @@ export default function Dashboard() {
                     { value: "in the evening", label: "Afternoon 13-18pm" },
                     { value: "evening", label: "Evening 18-22pm" },
                   ].map((time) => (
-                    <option key={time.value} value={time.value} className="text-dark">
+                    <option
+                      key={time.value}
+                      value={time.value}
+                      className="text-dark"
+                    >
                       {time.label}
                     </option>
                   ))}
@@ -359,10 +390,16 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">About You</label>
+                <label className="form-label fw-semibold text-dark">
+                  About You
+                </label>
                 <textarea
                   name="description"
-                  value={typeof user?.description === "string" ? user.description : ""}
+                  value={
+                    typeof user?.description === "string"
+                      ? user.description
+                      : ""
+                  }
                   onChange={(e) =>
                     setUser({ ...user, description: e.target.value })
                   }
@@ -373,11 +410,17 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">Profile Image</label>
-                <label className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light" style={{ cursor: "pointer" }}>
+                <label className="form-label fw-semibold text-dark">
+                  Profile Image
+                </label>
+                <label
+                  className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light"
+                  style={{ cursor: "pointer" }}
+                >
                   <svg
                     className="mb-2"
-                    width="40" height="40"
+                    width="40"
+                    height="40"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -398,13 +441,18 @@ export default function Dashboard() {
                   />
                 </label>
                 {resizedImage && (
-                  <p className="text-success small mt-2">Profile image uploaded successfully!</p>
+                  <p className="text-success small mt-2">
+                    Profile image uploaded successfully!
+                  </p>
                 )}
               </div>
 
               <div className="mb-4">
                 <h3 className="h5 fw-semibold text-dark">Select Your Area</h3>
-                <div className="rounded overflow-hidden border border-secondary-subtle" style={{ height: "16rem" }}>
+                <div
+                  className="rounded overflow-hidden border border-secondary-subtle"
+                  style={{ height: "16rem" }}
+                >
                   <MapComponent
                     bottomLeft={bottomLeft}
                     topRight={topRight}
@@ -428,10 +476,14 @@ export default function Dashboard() {
                 <h3 className="h5 fw-semibold text-dark">About Your Dog</h3>
                 <div className="row g-4">
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold text-dark">Dog Breed</label>
+                    <label className="form-label fw-semibold text-dark">
+                      Dog Breed
+                    </label>
                     <select
                       name="dogBreed"
-                      value={typeof user?.dogBreed === "string" ? user.dogBreed : ""}
+                      value={
+                        typeof user?.dogBreed === "string" ? user.dogBreed : ""
+                      }
                       onChange={(e) =>
                         setUser({ ...user, dogBreed: e.target.value })
                       }
@@ -447,7 +499,9 @@ export default function Dashboard() {
                   </div>
 
                   <div className="col-md-6">
-                    <label className="form-label fw-semibold text-dark">Dog's Age</label>
+                    <label className="form-label fw-semibold text-dark">
+                      Dog's Age
+                    </label>
                     <div className="position-relative">
                       <input
                         type="text"
@@ -468,11 +522,17 @@ export default function Dashboard() {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">Dog's Image</label>
-                <label className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light" style={{ cursor: "pointer" }}>
+                <label className="form-label fw-semibold text-dark">
+                  Dog's Image
+                </label>
+                <label
+                  className="d-flex flex-column align-items-center px-4 py-4 bg-white text-dark rounded border-2 border-dashed border-secondary-subtle user-img-label hover-border-dark hover-bg-light"
+                  style={{ cursor: "pointer" }}
+                >
                   <svg
                     className="mb-2"
-                    width="40" height="40"
+                    width="40"
+                    height="40"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -484,7 +544,9 @@ export default function Dashboard() {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="small fw-medium">Click to upload dog's photo</span>
+                  <span className="small fw-medium">
+                    Click to upload dog's photo
+                  </span>
                   <input
                     type="file"
                     name="dogImage"
@@ -493,27 +555,39 @@ export default function Dashboard() {
                   />
                 </label>
                 {dogImage && (
-                  <p className="text-success small mt-2">Dog image uploaded successfully!</p>
+                  <p className="text-success small mt-2">
+                    Dog image uploaded successfully!
+                  </p>
                 )}
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">Favorite Toy</label>
+                <label className="form-label fw-semibold text-dark">
+                  Favorite Toy
+                </label>
                 <input
                   type="text"
                   name="favoriteToy"
                   value={user?.favoriteToy || ""}
-                  onChange={(e) => setUser({ ...user, favoriteToy: e.target.value })}
+                  onChange={(e) =>
+                    setUser({ ...user, favoriteToy: e.target.value })
+                  }
                   className="form-control"
                   placeholder="What's your dog's favorite toy?"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold text-dark">About Your Dog</label>
+                <label className="form-label fw-semibold text-dark">
+                  About Your Dog
+                </label>
                 <textarea
                   name="dogDescription"
-                  value={typeof user?.dogDescription === "string" ? user.dogDescription : ""}
+                  value={
+                    typeof user?.dogDescription === "string"
+                      ? user.dogDescription
+                      : ""
+                  }
                   onChange={(e) =>
                     setUser({ ...user, dogDescription: e.target.value })
                   }
@@ -531,10 +605,7 @@ export default function Dashboard() {
                 >
                   Previous Step
                 </button>
-                <button
-                  type="submit"
-                  className="btn btn-dark flex-fill"
-                >
+                <button type="submit" className="btn btn-dark flex-fill">
                   Save Profile
                 </button>
               </div>

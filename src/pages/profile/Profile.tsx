@@ -16,7 +16,7 @@ export default function Profile() {
   const { id } = useParams();
   const [matchUser, setMatchUser] = useState<any>(null);
   const [likeSent, setLikeSent] = useState(false);
-  const [isMatch, setIsMatch] = useState(false);
+  const [isMatch, setIsMatch] = useState<undefined | boolean>(undefined);
   const [checkingMatch, setCheckingMatch] = useState(false);
   const [notification, setNotification] = useState("");
   const { user, setUser } = useContext(mainContext) as IProfileProps;
@@ -43,10 +43,6 @@ export default function Profile() {
     const targetUsername = normalize(matchUser.username);
     const alreadyLiked = user.likes?.map(normalize).includes(targetUsername);
     setLikeSent(alreadyLiked);
-    const alreadyMatched = user.matches
-      ?.map(normalize)
-      .includes(targetUsername);
-    setIsMatch(alreadyMatched);
   }, [user, matchUser]);
 
   useEffect(() => {
@@ -55,14 +51,10 @@ export default function Profile() {
     const targetUsername = normalize(matchUser.username);
     setCheckingMatch(false);
     axiosPublic
-      .get(`/isMatch/${myUsername}/${targetUsername}`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setIsMatch(res.data.isMatch);
-      })
+      .get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true })
+      .then((res) => setIsMatch(res.data.isMatch))
       .finally(() => setCheckingMatch(true));
-  }, [user, matchUser]);
+  }, [user, matchUser, likeSent]);
 
   useEffect(() => {
     if (!user || !matchUser) return;
@@ -100,22 +92,24 @@ export default function Profile() {
       setLikeSent(true);
       setNotification("Like sent. Waiting for a match!");
       await refreshUser();
-
-      const myUsername = normalize(user.username);
-      const res = await axiosPublic.get(
-        `/isMatch/${myUsername}/${targetUsername}`,
-        { withCredentials: true }
-      );
-      setIsMatch(res.data.isMatch);
-      const canChatRes = await axiosPublic.get(
-        `/canChat/${myUsername}/${targetUsername}`,
-        { withCredentials: true }
-      );
-      setCanChat(canChatRes.data.canChat);
     } catch (err) {
       setNotification("Error liking or already liked.");
     }
   };
+
+  useEffect(() => {
+    if (!checkingMatch || isMatch === undefined) {
+      setNotification("");
+      return;
+    }
+    if (isMatch) {
+      setNotification("You have a Match !!");
+    } else if (likeSent) {
+      setNotification("Like gesendet. Warte auf ein Match!");
+    } else {
+      setNotification("");
+    }
+  }, [isMatch, likeSent, checkingMatch]);
 
   useEffect(() => {
     let interval: number;
@@ -129,7 +123,6 @@ export default function Profile() {
             { withCredentials: true }
           );
           if (res.data.isMatch) {
-            setNotification("You have a match! Now you can chat.");
             setIsMatch(true);
             await refreshUser();
             clearInterval(interval);
@@ -188,14 +181,23 @@ export default function Profile() {
   return (
     <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
       <div className="w-full flex flex-col items-center mt-8">
-        <div className="w-full flex justify-start px-4">
+        <div className="w-full flex justify-between items-center px-4">
           <Link to="/matche">
             <ArrowLeft className="w-6 h-6 text-gray-400 hover:text-gray-700" />
           </Link>
+          {!likeSent && (
+            <button
+              onClick={handleLike}
+              className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500 text-pink-500 bg-white hover:bg-pink-100 transition font-semibold text-lg shadow-sm"
+              title="Like senden"
+            >
+              <Heart className="w-6 h-6" />
+            </button>
+          )}
         </div>
         <div className="w-full flex flex-col items-center">
-          <div className="w-full flex justify-center">
-            <div className="w-80 h-96 flex items-center justify-center">
+          <div className="w-full flex justify-center relative">
+            <div className="w-80 h-96 flex items-center justify-center relative">
               <Carousel
                 indicators={true}
                 controls={true}
@@ -285,32 +287,21 @@ export default function Profile() {
               </p>
             </div>
             <div className="mt-8 flex flex-col items-center gap-2 w-full">
-              {!likeSent && (
-                <button
-                  onClick={handleLike}
-                  className="flex items-center gap-2 px-6 py-2 rounded-full border-2 border-pink-500 text-pink-500 hover:bg-pink-100 transition font-semibold text-lg shadow-sm"
+              <span className="text-pink-600 text-sm min-h-[24px]">{notification}</span>
+              {checkingMatch && canChat ? (
+                <Link
+                  to={canChat ? `/chat/${matchUser._id}` : "#"}
+                  className={`mt-4 mb-4 inline-block bg-black text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ${
+                    !canChat
+                      ? "opacity-50 cursor-not-allowed pointer-events-none"
+                      : "hover:brightness-110"
+                  }`}
+                  tabIndex={canChat ? 0 : -1}
+                  aria-disabled={!canChat}
                 >
-                  <Heart className="w-6 h-6" /> Like
-                </button>
-              )}
-              <span className="text-pink-600 text-sm">{notification}</span>
-              {!likeSent && !isMatch && (
-                <div className="mt-2 text-sm text-gray-500">
-                  Please Wait, util you get like from another Person
-                </div>
-              )}
-              <Link
-                to={canChat ? `/chat/${matchUser._id}` : "#"}
-                className={`mt-4 mb-4 inline-block bg-black text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ${
-                  !canChat
-                    ? "opacity-50 cursor-not-allowed pointer-events-none"
-                    : "hover:brightness-110"
-                }`}
-                tabIndex={canChat ? 0 : -1}
-                aria-disabled={!canChat}
-              >
-                {checkingMatch && !canChat ? "like back.." : "Chat starten 💬"}
-              </Link>
+                  Chat starten 💬
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>
