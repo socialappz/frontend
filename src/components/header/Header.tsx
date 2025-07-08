@@ -1,5 +1,13 @@
 import { useContext, useState, useEffect } from "react";
-import { Bell, Menu, X, Home, MessageCircle, Heart, User, LogOut } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  X,
+  Home,
+  MessageCircle,
+  Heart,
+  LogOut,
+} from "lucide-react";
 import moment from "moment";
 // @ts-ignore
 import "moment/locale/de";
@@ -7,12 +15,13 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
-import icon from "/icon_dinder.webp"
+import icon from "/icon_dinder.webp";
 
 moment.locale("de");
 
 const Header = () => {
-  const { notifications, setNotifications, user, setUser, loading } = useContext(mainContext);
+  const { notifications, setNotifications, user, setUser, loading } =
+    useContext(mainContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -21,19 +30,20 @@ const Header = () => {
   const logOutFunc = async () => {
     try {
       await axiosPublic.post("/logout");
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
+      document.cookie =
+        "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
       setUser(null);
       navigation("/");
     } catch (error) {
-      console.error('Logout error:', error);
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
+      console.error("Logout error:", error);
+      document.cookie =
+        "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=lax";
       setUser(null);
       navigation("/");
     }
   };
 
   const handleTogglePopup = async () => {
-    
     setPopupOpen(!popupOpen);
     await clearNotifications();
   };
@@ -52,7 +62,6 @@ const Header = () => {
       console.error("Error clearing notifications:", err);
     }
   };
-
 
   const deleteAllNotifications = async () => {
     try {
@@ -75,23 +84,23 @@ const Header = () => {
 
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
     <div className="flex flex-col sm:flex-row gap-3 w-full">
-       <Link 
-        to="/" 
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center" 
+      <Link
+        to="/"
+        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
         onClick={onClick}
       >
         Home
       </Link>
-      <Link 
-        to="/signup" 
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center" 
+      <Link
+        to="/signup"
+        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
         onClick={onClick}
       >
         Sign Up
       </Link>
-      <Link 
-        to="/signin" 
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center" 
+      <Link
+        to="/signin"
+        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
         onClick={onClick}
       >
         Sign In
@@ -100,10 +109,14 @@ const Header = () => {
   );
 
   const navLinks = [
-    { to: '/', label: 'Home', icon: Home },
-    { to: '/chats', label: 'Chats', icon: MessageCircle },
-    { to: '/matche', label: 'Matches', icon: Heart },
-    { to: '/myprofile', label: 'Profile', icon: User },
+    { to: "/", label: "Home", icon: Home },
+    { to: "/chats", label: "Chats", icon: MessageCircle },
+    { to: "/matche", label: "Matches", icon: Heart },
+    {
+      to: "/myprofile",
+      label: "Profile",
+      icon: null,
+    },
   ];
 
   if (loading) {
@@ -121,7 +134,10 @@ const Header = () => {
       <div className="px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold text-black!">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xl font-bold text-black!"
+          >
             <img src={icon} alt="Logo" className="w-10" />
           </Link>
 
@@ -138,7 +154,15 @@ const Header = () => {
                   to={to}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors font-medium text-black!"
                 >
-                  <Icon className="w-5 h-5" />
+                  {label === "Profile" ? (
+                    <img
+                      src={user?.userImage || "/default-avatar.png"}
+                      alt="Profilbild"
+                      className="w-7 h-7 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : (
+                    Icon && <Icon className="w-5 h-5" />
+                  )}
                   <span>{label}</span>
                 </Link>
               ))}
@@ -174,7 +198,11 @@ const Header = () => {
             className="md:hidden  bg-black! text-black! font-semibold rounded-lg  hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? <X className="w-6 h-6 text-white!" /> : <Menu className="w-6 h-6 text-white!" />}
+            {menuOpen ? (
+              <X className="w-6 h-6 text-white!" />
+            ) : (
+              <Menu className="w-6 h-6 text-white!" />
+            )}
           </button>
         </div>
 
@@ -189,7 +217,7 @@ const Header = () => {
             {/* Popup */}
             <div
               className="absolute right-4 top-20 w-80 bg-white shadow-xl border rounded-2xl z-50 p-4"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               {/* X-Button zum Löschen aller Benachrichtigungen */}
               <button
@@ -204,26 +232,30 @@ const Header = () => {
                 {notifications.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">Empty</p>
                 ) : (
-                  notifications.map((n, idx) => (
-                    <Link
-                      key={idx}
-                      onClick={() => setPopupOpen(false)}
-                      className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                      to={`/chat/${n?.senderId}`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-800">{n.from}</div>
-                          <div className="text-sm text-gray-600 mt-1 line-clamp-2">
-                            {n.message}
+                  notifications
+                    .map((n, idx) => (
+                      <Link
+                        key={idx}
+                        onClick={() => setPopupOpen(false)}
+                        className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                        to={`/chat/${n?.senderId}`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">
+                              {n.from}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-1 line-clamp-2">
+                              {n.message}
+                            </div>
+                          </div>
+                          <div className="text-xs text-gray-400 ml-2">
+                            {moment(n.sentAt).fromNow()}
                           </div>
                         </div>
-                        <div className="text-xs text-gray-400 ml-2">
-                          {moment(n.sentAt).fromNow()}
-                        </div>
-                      </div>
-                    </Link>
-                  )).reverse()
+                      </Link>
+                    ))
+                    .reverse()
                 )}
               </div>
             </div>
@@ -245,7 +277,15 @@ const Header = () => {
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors font-medium text-black!"
                       onClick={() => setMenuOpen(false)}
                     >
-                      <Icon className="w-5 h-5" />
+                      {label === "Profile" ? (
+                        <img
+                          src={user?.userImage || "/default-avatar.png"}
+                          alt="Profilbild"
+                          className="w-7 h-7 rounded-full object-cover border border-gray-300"
+                        />
+                      ) : (
+                        Icon && <Icon className="w-5 h-5" />
+                      )}
                       <span>{label}</span>
                     </Link>
                   ))
@@ -254,7 +294,10 @@ const Header = () => {
               {user && (
                 <>
                   <button
-                    onClick={() => { handleTogglePopup(); setMenuOpen(false); }}
+                    onClick={() => {
+                      handleTogglePopup();
+                      setMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 p-3 rounded-xl text-white border-black! transition-colors w-full font-medium focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
                   >
                     <div className="relative">
@@ -268,7 +311,10 @@ const Header = () => {
                     <span className="text-white">Notification</span>
                   </button>
                   <button
-                    onClick={() => { logOutFunc(); setMenuOpen(false); }}
+                    onClick={() => {
+                      logOutFunc();
+                      setMenuOpen(false);
+                    }}
                     className="flex items-center gap-3 p-3 rounded-xl text-white hover:bg-white! hover:text-black! border-black! transition-colors w-full font-medium"
                   >
                     <LogOut className="w-5 h-5" />

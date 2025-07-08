@@ -51,7 +51,9 @@ export default function Profile() {
     const targetUsername = normalize(matchUser.username);
     setCheckingMatch(false);
     axiosPublic
-      .get(`/isMatch/${myUsername}/${targetUsername}`, { withCredentials: true })
+      .get(`/isMatch/${myUsername}/${targetUsername}`, {
+        withCredentials: true,
+      })
       .then((res) => setIsMatch(res.data.isMatch))
       .finally(() => setCheckingMatch(true));
   }, [user, matchUser, likeSent]);
@@ -105,7 +107,7 @@ export default function Profile() {
     if (isMatch) {
       setNotification("You have a Match !!");
     } else if (likeSent) {
-      setNotification("Like gesendet. Warte auf ein Match!");
+      setNotification("Like sended, wait..");
     } else {
       setNotification("");
     }
@@ -188,7 +190,7 @@ export default function Profile() {
           {!likeSent && (
             <button
               onClick={handleLike}
-              className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500 text-pink-500 bg-white hover:bg-pink-100 transition font-semibold text-lg shadow-sm"
+              className="btn btn-outline-dark flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500! text-pink-500! bg-white hover:bg-pink-200! transition font-semibold text-lg shadow-sm mb-1"
               title="Like senden"
             >
               <Heart className="w-6 h-6" />
@@ -287,7 +289,9 @@ export default function Profile() {
               </p>
             </div>
             <div className="mt-8 flex flex-col items-center gap-2 w-full">
-              <span className="text-pink-600 text-sm min-h-[24px]">{notification}</span>
+              <span className="text-pink-600 text-sm min-h-[24px]">
+                {notification}
+              </span>
               {checkingMatch && canChat ? (
                 <Link
                   to={canChat ? `/chat/${matchUser._id}` : "#"}
