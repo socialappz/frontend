@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { ArrowLeft, Heart } from "lucide-react";
@@ -6,6 +6,8 @@ import { useContext } from "react";
 import { mainContext } from "../../context/MainProvider";
 import type { IUser } from "../../interfaces/user/IUser";
 import Carousel from "react-bootstrap/Carousel";
+import ReactConfetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 interface IProfileProps {
   user: IUser;
@@ -21,6 +23,10 @@ export default function Profile() {
   const [notification, setNotification] = useState("");
   const { user, setUser } = useContext(mainContext) as IProfileProps;
   const [canChat, setCanChat] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
+  const prevIsMatch = useRef<boolean | undefined>(undefined);
+  const [, setJustLiked] = useState(false);
 
   const normalize = (name: string) => name.toLowerCase().replace(/\s+/g, "");
 
@@ -93,15 +99,18 @@ export default function Profile() {
       );
       setLikeSent(true);
       setNotification("Like sent. Waiting for a match!");
+      setJustLiked(true);
       await refreshUser();
     } catch (err) {
       setNotification("Error liking or already liked.");
     }
   };
 
+  // Notification-Logik
   useEffect(() => {
-    if (!checkingMatch || isMatch === undefined) {
+    if (!user || !matchUser || !checkingMatch || isMatch === undefined) {
       setNotification("");
+      setShowConfetti(false);
       return;
     }
     if (isMatch) {
@@ -111,7 +120,27 @@ export default function Profile() {
     } else {
       setNotification("");
     }
-  }, [isMatch, likeSent, checkingMatch]);
+  }, [user, matchUser, isMatch, likeSent, checkingMatch]);
+
+  useEffect(() => {
+    if (!user || !matchUser) return;
+    const MATCH_CONFETTI_KEY = `match-celebrated-${user.username}-${matchUser.username}`;
+    const alreadyCelebrated = localStorage.getItem(MATCH_CONFETTI_KEY);
+
+    if (
+      isMatch &&
+      (prevIsMatch.current === false || prevIsMatch.current === undefined) &&
+      !alreadyCelebrated
+    ) {
+      setShowConfetti(true);
+      localStorage.setItem(MATCH_CONFETTI_KEY, "true");
+      const timeout = setTimeout(() => setShowConfetti(false), 3000);
+      prevIsMatch.current = isMatch;
+      return () => clearTimeout(timeout);
+    }
+
+    prevIsMatch.current = isMatch;
+  }, [isMatch, user, matchUser]);
 
   useEffect(() => {
     let interval: number;
@@ -182,6 +211,14 @@ export default function Profile() {
 
   return (
     <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
+      {showConfetti && (
+        <ReactConfetti
+          width={width}
+          height={height}
+          gravity={1}
+          numberOfPieces={1000}
+        />
+      )}
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-between items-center px-4">
           <Link to="/matche">

@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import type { IMatchUser } from "../../interfaces/match/IMatchUser";
+import { Heart } from "lucide-react";
 
-export default function MatchCard({ matchUser }: { matchUser: IMatchUser }) {
+export default function MatchCard({
+  matchUser,
+  likes,
+}: {
+  matchUser: IMatchUser;
+  likes: string[];
+  currentUsername: string;
+}) {
+  const isLiked = likes.includes(matchUser.username);
+
   return (
     <Link to={`/matche/${matchUser._id}`} className="text-decoration-none">
       <div className="card text-center border-0 shadow-sm match-card-hover">
@@ -16,6 +26,9 @@ export default function MatchCard({ matchUser }: { matchUser: IMatchUser }) {
               className="w-100 h-100 rounded-circle border-4 border-dark match-card-img"
               style={{ objectFit: "cover" }}
             />
+            <span style={{ position: "absolute", bottom: -10, right: -10 }}>
+              {isLiked ? <Heart fill="#e11d48" color="#e11d48" /> : <Heart />}
+            </span>
           </div>
           <div>
             <h3 className="h5 fw-semibold text-dark mb-1 match-card-username">

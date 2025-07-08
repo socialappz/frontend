@@ -78,7 +78,7 @@ export default function MatchList() {
           {matchUsers.map((matchUser, index) => {
             return (
               <div key={index}>
-                <MatchCard matchUser={matchUser} />
+                <MatchCard matchUser={matchUser} likes={user?.likes || []} currentUsername={user?.username || ""} />
               </div>
             );
           })}
