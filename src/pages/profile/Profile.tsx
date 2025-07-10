@@ -9,6 +9,9 @@ import Carousel from "react-bootstrap/Carousel";
 import ReactConfetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
+import { formatDogAge } from "../../functions/formatDogAge";
+import { calculateAge } from "../../functions/calculateAge";
+
 interface IProfileProps {
   user: IUser;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
@@ -174,50 +177,10 @@ export default function Profile() {
     );
   }
 
-  const calculateAge = (birthday: string) => {
-    if (!birthday) return null;
-    const birthDate = new Date(birthday);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
-
-  const formatDogAge = (age: string | number): string => {
-    const ageNum = parseFloat(age as string);
-    if (isNaN(ageNum)) return "Not specified";
-
-    if (ageNum < 1) {
-      const months = Math.round(ageNum * 12);
-      return `${months} ${months === 1 ? "Month" : "Months"}`;
-    } else {
-      const years = Math.floor(ageNum);
-      const months = Math.round((ageNum - years) * 12);
-      if (months === 0) {
-        return `${years} ${years === 1 ? "Year" : "Years"}`;
-      } else {
-        return `${years} ${years === 1 ? "Year" : "Years"} and ${months} ${
-          months === 1 ? "Month" : "Months"
-        }`;
-      }
-    }
-  };
-
   return (
     <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
       {showConfetti && (
-        <ReactConfetti
-          width={width}
-          height={height}
-          gravity={1}
-          numberOfPieces={1000}
-        />
+        <ReactConfetti width={width} height={height} numberOfPieces={400} />
       )}
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-between items-center px-4">

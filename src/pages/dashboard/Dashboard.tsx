@@ -8,6 +8,8 @@ import type { IUser } from "../../interfaces/user/IUser";
 import { useNavigate } from "react-router-dom";
 import MapComponent from "../../components/map/Map";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { calculateAge } from "../../functions/calculateAge";
+import { formatDogAge } from "../../functions/formatDogAge";
 
 interface IUserProps {
   user: IUser;
@@ -151,40 +153,6 @@ export default function Dashboard() {
 
   const prevStep = () => {
     setCurrentStep(1);
-  };
-
-  const calculateAge = (birthday: string): number => {
-    const birthDate = new Date(birthday);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
-
-  const formatDogAge = (age: string | number): string => {
-    const ageNum = parseFloat(age as string);
-    if (isNaN(ageNum)) return "No age set";
-
-    if (ageNum < 1) {
-      const months = Math.round(ageNum * 12);
-      return `${months} ${months === 1 ? "Month" : "Months"}`;
-    } else {
-      const years = Math.floor(ageNum);
-      const months = Math.round((ageNum - years) * 12);
-      if (months === 0) {
-        return `${years} ${years === 1 ? "Year" : "Years"}`;
-      } else {
-        return `${years} ${years === 1 ? "Year" : "Years"} and ${months} ${
-          months === 1 ? "Month" : "Months"
-        }`;
-      }
-    }
   };
 
   const handleDogAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState, useContext, useMemo, type ReactNode} from "react";
+import { useEffect, useRef, useState, useContext, useMemo } from "react";
 import { mainContext } from "../../context/MainProvider";
 import { axiosPublic } from "../../utils/axiosConfig";
-import { Link, useLocation, useParams , useSearchParams} from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { ArrowLeft, Send, MessageCircle } from "lucide-react";
 import type { IMatchUser } from "../../interfaces/match/IMatchUser";
-
+import { formatTime } from "../../functions/formatTime";
+import { groupMessagesByDate } from "../../functions/groupMessagesByDate";
 interface IMessage {
   msg: string;
   sentBy: string;
@@ -26,15 +32,16 @@ export default function Chat() {
 
   const room = useMemo(() => {
     if (!user || !matchUser) return "";
-    return roomFromNotification ||
+    return (
+      roomFromNotification ||
       [user.username.toLowerCase(), matchUser.username.toLowerCase()]
         .sort()
-        .join("-");
+        .join("-")
+    );
   }, [user, matchUser, roomFromNotification]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-    }, 1000);
+    const timer = setTimeout(() => {}, 1000);
     return () => clearTimeout(timer);
   }, [room]);
 
@@ -42,7 +49,7 @@ export default function Chat() {
     const reloaded = searchParams.get("reloaded");
     if (!reloaded) {
       searchParams.set("reloaded", "1");
-      setSearchParams(searchParams); 
+      setSearchParams(searchParams);
       window.location.reload();
     }
   }, []);
@@ -61,7 +68,7 @@ export default function Chat() {
         setLoading(false);
       }
     };
-    getUser()
+    getUser();
   }, [id]);
 
   const getChat = async () => {
@@ -77,7 +84,10 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user || !matchUser || !socket) return;
-    const roomId = [user.username.toLowerCase(), matchUser.username.toLowerCase()]
+    const roomId = [
+      user.username.toLowerCase(),
+      matchUser.username.toLowerCase(),
+    ]
       .sort()
       .join("-");
     const newRoom = roomFromNotification || roomId;
@@ -124,7 +134,10 @@ export default function Chat() {
       sentAt,
     };
 
-    setConversation((prev) => [...prev, { msg: newMsg.message, sentBy: user?.username || "", sentAt }]);
+    setConversation((prev) => [
+      ...prev,
+      { msg: newMsg.message, sentBy: user?.username || "", sentAt },
+    ]);
     setMessage("");
 
     setTimeout(() => {
@@ -139,65 +152,10 @@ export default function Chat() {
     });
   };
 
-  const formatTime = (timestamp?: string): ReactNode | string => {
-    if (!timestamp) return "";
-
-    const date = new Date(timestamp);
-    const now = new Date();
-
-    const isToday =
-      date.getDate() === now.getDate() &&
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear();
-    if (isToday) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-    const isSameYear = date.getFullYear() === now.getFullYear();
-
-    return date.toLocaleDateString("de-DE", {
-      day: "2-digit",
-      month: "2-digit",
-      year: isSameYear ? undefined : "numeric",
-    });
-  };
-
-  const groupMessagesByDate = (messages: IMessage[]) => {
-    const groups: { [key: string]: IMessage[] } = {};
-    
-    messages.forEach((msg) => {
-      const date = new Date(msg.sentAt || '');
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      let groupKey: string;
-      
-      if (date.toDateString() === today.toDateString()) {
-        groupKey = 'Today';
-      } else if (date.toDateString() === yesterday.toDateString()) {
-        groupKey = 'Yesterday';
-      } else {
-        groupKey = date.toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-      }
-      
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
-      }
-      groups[groupKey].push(msg);
-    });
-    
-    return groups;
-  };
-
   if (loading) {
     return (
       <div className="flex flex-col h-screen bg-gray-50">
-        <div className="flex-1 flex items-center justify-center">
-        </div>
+        <div className="flex-1 flex items-center justify-center"></div>
       </div>
     );
   }
@@ -219,13 +177,13 @@ export default function Chat() {
       {/* Header */}
       <div className="bg-white border border-gray-300 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Link 
+          <Link
             to="/chats"
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </Link>
-          <Link 
+          <Link
             to={`/matche/${matchUser._id}`}
             className="flex items-center gap-3 flex-1 min-w-0"
           >
@@ -235,7 +193,9 @@ export default function Chat() {
               className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-800 truncate">{matchUser.username}</p>
+              <p className="font-semibold text-gray-800 truncate">
+                {matchUser.username}
+              </p>
             </div>
           </Link>
         </div>
@@ -248,65 +208,75 @@ export default function Chat() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <MessageCircle className="w-8 h-8 text-black!" />
             </div>
-            <p className="text-sm text-gray-400 mt-1">write your first message with {matchUser.username}</p>
+            <p className="text-sm text-gray-400 mt-1">
+              write your first message with {matchUser.username}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {Object.entries(groupMessagesByDate(conversation)).map(([date, messages]) => (
-              <div key={date}>
-                <div className="flex justify-center my-4">
-                  <span className="bg-white text-gray-500 px-4 py-2 rounded-full text-sm font-medium shadow-sm border">
-                    {date}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {messages.map((msg, idx) => {
-                    const isCurrentUser = msg.sentBy === user?.username;
-                    const profileImage = isCurrentUser
-                      ? user.userImage || "/default-avatar.png"
-                      : matchUser?.userImage || "/default-avatar.png";
+            {Object.entries(groupMessagesByDate(conversation)).map(
+              ([date, messages]) => (
+                <div key={date}>
+                  <div className="flex justify-center my-4">
+                    <span className="bg-white text-gray-500 px-4 py-2 rounded-full text-sm font-medium shadow-sm border">
+                      {date}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {messages.map((msg, idx) => {
+                      const isCurrentUser = msg.sentBy === user?.username;
+                      const profileImage = isCurrentUser
+                        ? user.userImage || "/default-avatar.png"
+                        : matchUser?.userImage || "/default-avatar.png";
 
-                    return (
-                      <div
-                        key={`${msg.sentAt}-${idx}`}
-                        className={`flex items-end gap-2 ${
-                          isCurrentUser ? "justify-end" : "justify-start"
-                        }`}
-                      >
-                        {!isCurrentUser && (
-                          <img 
-                            src={profileImage} 
-                            alt={msg.sentBy} 
-                            className="w-8 h-8 rounded-full object-cover flex-shrink-0" 
-                          />
-                        )}
+                      return (
                         <div
-                          className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm shadow-sm ${
-                            isCurrentUser
-                              ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md"
-                              : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                          key={`${msg.sentAt}-${idx}`}
+                          className={`flex items-end gap-2 ${
+                            isCurrentUser ? "justify-end" : "justify-start"
                           }`}
                         >
-                          <p className="whitespace-pre-wrap break-words">{msg.msg}</p>
-                          <p className={`text-xs mt-2 ${
-                            isCurrentUser ? "text-blue-100" : "text-gray-400"
-                          }`}>
-                            {formatTime(msg.sentAt)}
-                          </p>
+                          {!isCurrentUser && (
+                            <img
+                              src={profileImage}
+                              alt={msg.sentBy}
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                            />
+                          )}
+                          <div
+                            className={`max-w-[75%] px-4 py-3 rounded-2xl text-sm shadow-sm ${
+                              isCurrentUser
+                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md"
+                                : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                            }`}
+                          >
+                            <p className="whitespace-pre-wrap break-words">
+                              {msg.msg}
+                            </p>
+                            <p
+                              className={`text-xs mt-2 ${
+                                isCurrentUser
+                                  ? "text-blue-100"
+                                  : "text-gray-400"
+                              }`}
+                            >
+                              {formatTime(msg.sentAt)}
+                            </p>
+                          </div>
+                          {isCurrentUser && (
+                            <img
+                              src={profileImage}
+                              alt={msg.sentBy}
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                            />
+                          )}
                         </div>
-                        {isCurrentUser && (
-                          <img 
-                            src={profileImage} 
-                            alt={msg.sentBy} 
-                            className="w-8 h-8 rounded-full object-cover flex-shrink-0" 
-                          />
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
             <div ref={lastMsgRef} />
           </div>
         )}
@@ -314,10 +284,7 @@ export default function Chat() {
 
       {/* Message Input */}
       <div className="bg-white border border-gray-300 px-4 py-3">
-        <form
-          onSubmit={sendMessage}
-          className="flex items-center gap-3"
-        >
+        <form onSubmit={sendMessage} className="flex items-center gap-3">
           <input
             type="text"
             placeholder="message..."

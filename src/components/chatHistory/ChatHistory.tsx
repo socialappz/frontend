@@ -7,23 +7,19 @@ import type { IUser } from "../../interfaces/chat/IUser";
 import type { IMatchUser } from "../../interfaces/match/IMatchUser";
 import LoadingSpinner from "../common/LoadingSpinner";
 import NoDataMessage from "../common/NoDataMessage";
+import { displayTime } from "../../functions/displayTime";
 
 interface IChatHistoryProps {
-  user: IUser,
+  user: IUser;
   setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
-  notifications: INotification | unknown,
+  notifications: INotification | unknown;
   matchUsers: IMatchUser[];
   setMatchUsers: React.Dispatch<React.SetStateAction<IMatchUser[]>>;
 }
 
 export default function ChatHistory() {
-  const {
-    user,
-    setSelectedUser,
-    notifications,
-    matchUsers,
-    setMatchUsers
-  } = useContext(mainContext) as IChatHistoryProps;
+  const { user, setSelectedUser, notifications, matchUsers, setMatchUsers } =
+    useContext(mainContext) as IChatHistoryProps;
   const [chats, setChats] = useState<IChat[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,29 +56,7 @@ export default function ChatHistory() {
     const otherUsername = roomUsers.find(
       (u) => u !== user?.username.toLowerCase()
     );
-    return matchUsers.find(
-      (u) => u.username.toLowerCase() === otherUsername
-    );
-  };
-
-  const displayTime = (time: string): string => {
-    const now = new Date();
-    const sentAt = new Date(time);
-    const diff = now.getTime() - sentAt.getTime();
-
-    if (diff > 86400000) {
-      const days = Math.floor(diff / 86400000);
-      return days === 1 ? "yesterday" : `${days} days ago`;
-    }
-    if (diff > 3600000) {
-      const hours = Math.floor(diff / 3600000);
-      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
-    }
-    if (diff > 60000) {
-      const minutes = Math.floor(diff / 60000);
-      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
-    }
-    return "just now";
+    return matchUsers.find((u) => u.username.toLowerCase() === otherUsername);
   };
 
   const sortedChats = chats.sort((a, b) => {
@@ -117,7 +91,7 @@ export default function ChatHistory() {
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <p>{error}</p>
-          <button 
+          <button
             onClick={() => {
               setLoading(true);
             }}
@@ -132,7 +106,7 @@ export default function ChatHistory() {
 
   if (!chats.length) {
     return (
-      <NoDataMessage 
+      <NoDataMessage
         message="You have any Message"
         linkText="Find some new Friends"
         linkTo="/matche"
@@ -142,7 +116,9 @@ export default function ChatHistory() {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h4 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">Your Messages</h4>
+      <h4 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
+        Your Messages
+      </h4>
       <div className="space-y-3">
         {sortedChats.map((chat) => {
           const friend = findUser(chat.roomId);
@@ -153,7 +129,10 @@ export default function ChatHistory() {
             <div
               key={friend.username}
               className={`flex items-center p-4 rounded-lg shadow hover:bg-gray-50! cursor-pointer ${
-                Array.isArray(notifications) && notifications.includes(friend?.username) ? "bg-blue-50" : "bg-white"
+                Array.isArray(notifications) &&
+                notifications.includes(friend?.username)
+                  ? "bg-blue-50"
+                  : "bg-white"
               }`}
               onClick={() => {
                 setSelectedUser(friend);
@@ -176,7 +155,8 @@ export default function ChatHistory() {
               </span>
             </div>
           );
-        })}      </div>
+        })}{" "}
+      </div>
     </div>
   );
 }
