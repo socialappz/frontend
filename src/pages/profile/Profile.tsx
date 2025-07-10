@@ -184,16 +184,16 @@ export default function Profile() {
       )}
       <div className="w-full flex flex-col items-center mt-8">
         <div className="w-full flex justify-between items-center px-4">
-          <Link to="/matche">
+          <Link className="mb-5" to="/matche" title="Back">
             <ArrowLeft className="w-6 h-6 text-gray-400 hover:text-gray-700" />
           </Link>
           {!likeSent && (
             <button
               onClick={handleLike}
-              className="btn btn-outline-dark flex items-center gap-2 px-4 py-2 rounded-full border-2 border-pink-500! text-pink-500! bg-white hover:bg-pink-200! transition font-semibold text-lg shadow-sm mb-1"
-              title="Like senden"
+              className="btn btn-outline-dark flex items-center gap-2 px-4 py-2 rounded-full border-2 border-red-700! text-red-500! bg-white hover:bg-red-700! hover:text-white! transition font-semibold text-lg shadow-sm mb-5"
+              title="Like"
             >
-              <Heart className="w-6 h-6" />
+              <Heart className="w-6 h-7" />
             </button>
           )}
         </div>

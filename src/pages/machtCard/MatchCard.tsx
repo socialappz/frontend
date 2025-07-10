@@ -14,7 +14,7 @@ export default function MatchCard({
 
   return (
     <Link to={`/matche/${matchUser._id}`} className="text-decoration-none">
-      <div className="card text-center border-0 shadow-sm match-card-hover">
+      <div className="card text-center border-0 shadow-sm match-card-hover  hover:text-red-500!">
         <div className="d-flex flex-column align-items-center p-4 bg-white rounded">
           <div
             className="position-relative mb-3"
@@ -27,7 +27,11 @@ export default function MatchCard({
               style={{ objectFit: "cover" }}
             />
             <span style={{ position: "absolute", bottom: -10, right: -10 }}>
-              {isLiked ? <Heart fill="#e11d48" color="#e11d48" /> : <Heart />}
+              {isLiked ? (
+                <Heart fill="#e11d48" color="#e11d48" />
+              ) : (
+                <Heart className="hover:fill-white!" />
+              )}
             </span>
           </div>
           <div>
