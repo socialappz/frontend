@@ -17,6 +17,9 @@ import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
 import icon from "/icon_dinder.webp";
 
+import notification_icon from "/notification_icon.gif";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
 moment.locale("de");
 
 const Header = () => {
@@ -174,14 +177,25 @@ const Header = () => {
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={handleTogglePopup}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors  focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10  focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
               >
-                <Bell className="w-5 h-5 text-white! " />
-                {notifications.filter((n) => !n.read).length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {notifications.filter((n) => !n.read).length}
-                  </span>
-                )}
+                <div className="relative">
+                  {notifications.filter((n) => !n.read).length > 0 ? (
+                    <>
+                      <span className="absolute -top-0 -right-1 bg-red-500 text-white! text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {notifications.filter((n) => !n.read).length}
+                      </span>
+                      <DotLottieReact
+                        src="https://lottie.host/71eb15bb-f9bb-42e1-bc81-3b53a94090bd/bvgKhOEQVk.lottie"
+                        loop
+                        autoplay
+                        className="h-8 w-7"
+                      />
+                    </>
+                  ) : (
+                    <Bell className="w-5 h-5 text-white!" />
+                  )}
+                </div>
               </button>
               <button
                 onClick={logOutFunc}
@@ -301,11 +315,20 @@ const Header = () => {
                     className="flex items-center gap-3 p-3 rounded-xl text-white border-black! transition-colors w-full font-medium focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
                   >
                     <div className="relative">
-                      <Bell className="w-5 h-5 text-white" />
-                      {notifications.filter((n) => !n.read).length > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                          {notifications.filter((n) => !n.read).length}
-                        </span>
+                      {notifications.filter((n) => !n.read).length > 0 ? (
+                        <>
+                          <DotLottieReact
+                            src="https://lottie.host/71eb15bb-f9bb-42e1-bc81-3b53a94090bd/bvgKhOEQVk.lottie"
+                            loop
+                            autoplay
+                            className="h-8 w-7"
+                          />
+                          <span className="absolute -top-2 -right-1 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                            {notifications.filter((n) => !n.read).length}
+                          </span>
+                        </>
+                      ) : (
+                        <Bell className="w-5 h-5 text-white!" />
                       )}
                     </div>
                     <span className="text-white">Notification</span>
