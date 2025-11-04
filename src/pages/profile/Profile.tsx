@@ -109,7 +109,6 @@ export default function Profile() {
     }
   };
 
-  // Notification-Logik
   useEffect(() => {
     if (!user || !matchUser || !checkingMatch || isMatch === undefined) {
       setNotification("");
@@ -168,15 +167,6 @@ export default function Profile() {
     }
   }, [likeSent, user, matchUser, isMatch]);
 
-  if (!matchUser) {
-    return (
-      <div
-        className="mt-5 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-        role="status"
-      ></div>
-    );
-  }
-
   return (
     <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
       {showConfetti && (
@@ -208,18 +198,18 @@ export default function Profile() {
               >
                 <Carousel.Item>
                   <img
-                    src={matchUser.userImage || "/default-avatar.png"}
-                    alt={matchUser.username}
+                    src={matchUser?.userImage || "/default-avatar.png"}
+                    alt={matchUser?.username}
                     className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
                   />
                 </Carousel.Item>
                 <Carousel.Item>
                   <img
-                    src={matchUser.dogImage || "/default-dog.png"}
+                    src={matchUser?.dogImage || "/default-dog.png"}
                     alt={
-                      matchUser.dogBreed
+                      matchUser?.dogBreed
                         ? `${matchUser.username}'s dog`
-                        : "Kein Hundebild"
+                        : "not available"
                     }
                     className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
                   />
@@ -229,20 +219,20 @@ export default function Profile() {
           </div>
           <div className="w-full flex flex-col items-center mt-6">
             <h1 className="text-3xl font-bold text-gray-900 text-center">
-              {matchUser.username},{" "}
-              {matchUser.birthday ? calculateAge(matchUser.birthday) : "-"}
+              {matchUser?.username},{" "}
+              {matchUser?.birthday ? calculateAge(matchUser?.birthday) : "-"}
             </h1>
             <div className="text-gray-500 text-center text-lg mt-1">
-              {matchUser.gender}
+              {matchUser?.gender}
             </div>
-            {matchUser.description && (
+            {matchUser?.description && (
               <p className="mt-4 text-gray-700 text-center text-base px-4">
                 {matchUser.description}
               </p>
             )}
             <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {matchUser.languages &&
-                Array.isArray(matchUser.languages) &&
+              {matchUser?.languages &&
+                Array.isArray(matchUser?.languages) &&
                 matchUser.languages.map((lang: string, idx: number) => (
                   <span
                     key={idx}
@@ -251,25 +241,25 @@ export default function Profile() {
                     {lang}
                   </span>
                 ))}
-              {matchUser.dogBreed && (
+              {matchUser?.dogBreed && (
                 <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
-                  {matchUser.dogBreed}
+                  {matchUser?.dogBreed}
                 </span>
               )}
-              {matchUser.dogAge && (
+              {matchUser?.dogAge && (
                 <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm">
-                  {formatDogAge(matchUser.dogAge)}
+                  {formatDogAge(matchUser?.dogAge)}
                 </span>
               )}
-              {matchUser.favoriteToy && (
+              {matchUser?.favoriteToy && (
                 <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
                   {matchUser.favoriteToy}
                 </span>
               )}
             </div>
-            {matchUser.dogDescription && (
+            {matchUser?.dogDescription && (
               <p className="mt-4 text-gray-700 text-center text-base px-4">
-                🐶 {matchUser.dogDescription}
+                🐶 {matchUser?.dogDescription}
               </p>
             )}
             <div className="mt-6 w-full flex flex-col items-center">
@@ -277,7 +267,7 @@ export default function Profile() {
                 availability
               </h2>
               <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
-                {matchUser.availability?.weekDay?.map(
+                {matchUser?.availability?.weekDay?.map(
                   (day: string, idx: number) => (
                     <li key={idx}>{day}</li>
                   )
@@ -285,7 +275,7 @@ export default function Profile() {
               </ul>
               <p className="mt-2 text-gray-700">
                 <strong>Time:</strong>{" "}
-                {matchUser.availability?.dayTime || "not available"}
+                {matchUser?.availability?.dayTime || "not available"}
               </p>
             </div>
             <div className="mt-8 flex flex-col items-center gap-2 w-full">
@@ -303,7 +293,7 @@ export default function Profile() {
                   tabIndex={canChat ? 0 : -1}
                   aria-disabled={!canChat}
                 >
-                  Chat starten 💬
+                  Chat now 💬
                 </Link>
               ) : null}
             </div>

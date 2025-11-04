@@ -6,6 +6,7 @@ import { dogBreeds } from "../../data/dogs";
 import { languages } from "../../data/laguages";
 import type { IUser } from "../../interfaces/user/IUser";
 import { useNavigate } from "react-router-dom";
+// MapComponent entfernt – Koordination erfolgt nun über Header-Popup
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { calculateAge } from "../../functions/calculateAge";
 import { formatDogAge } from "../../functions/formatDogAge";

@@ -1,28 +1,28 @@
-import React from 'react';
+import React from "react";
 
 interface LoadingSpinnerProps {
-  size?: 'small' | 'medium' | 'large';
-  color?: 'primary' | 'white' | 'gray';
+  size?: "small" | "medium" | "large";
+  color?: "primary" | "white" | "gray";
   text?: string;
   fullScreen?: boolean;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
-  size = 'medium', 
-  color = 'primary', 
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = "medium",
+  color = "primary",
   text,
-  fullScreen = false 
+  fullScreen = false,
 }) => {
   const sizeClasses = {
-    small: 'w-4 h-4',
-    medium: 'w-8 h-8',
-    large: 'w-12 h-12'
+    small: "w-4 h-4",
+    medium: "w-8 h-8",
+    large: "w-12 h-12",
   };
 
   const colorClasses = {
-    primary: 'border-black-600',
-    white: 'border-white',
-    gray: 'border-gray-400'
+    primary: "border-black",
+    white: "border-white",
+    gray: "border-gray-400",
   };
 
   const spinner = (
@@ -40,17 +40,13 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-red-500! flex items-center justify-center z-50 h-0.5">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/75 backdrop-blur-sm">
         {spinner}
       </div>
     );
   }
 
-  return (
-    <div className="flex items-center justify-center p-8">
-      {spinner}
-    </div>
-  );
+  return <div className="flex items-center justify-center w-100 min-h-[8rem] p-3">{spinner}</div>;
 };
 
-export default LoadingSpinner; 
+export default LoadingSpinner;
