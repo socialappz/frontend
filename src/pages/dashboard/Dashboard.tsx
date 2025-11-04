@@ -6,7 +6,7 @@ import { dogBreeds } from "../../data/dogs";
 import { languages } from "../../data/laguages";
 import type { IUser } from "../../interfaces/user/IUser";
 import { useNavigate } from "react-router-dom";
-import MapComponent from "../../components/map/Map";
+// MapComponent entfernt – Koordination erfolgt nun über Header-Popup
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { calculateAge } from "../../functions/calculateAge";
 import { formatDogAge } from "../../functions/formatDogAge";
@@ -415,20 +415,7 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="mb-4">
-                <h3 className="h5 fw-semibold text-dark">Select Your Area</h3>
-                <div
-                  className="rounded overflow-hidden border border-secondary-subtle"
-                  style={{ height: "16rem" }}
-                >
-                  <MapComponent
-                    bottomLeft={bottomLeft}
-                    topRight={topRight}
-                    setBottomLeft={(coords) => setBottomLeft(coords)}
-                    setTopRight={(coords) => setTopRight(coords)}
-                  />
-                </div>
-              </div>
+              {/* Koordinationsbereich entfernt – bitte Header-Popup nutzen */}
 
               <button
                 type="button"

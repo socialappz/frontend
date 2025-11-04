@@ -6,6 +6,10 @@ export interface IMatchUser {
     language?: string;
     dogBreed?: string;
     description?: string;
+    location?: {
+        bottomLeft?: number[];
+        topRight?: number[];
+    };
     availability?: {
         dayTime?: string;
         weekDay?: string[];

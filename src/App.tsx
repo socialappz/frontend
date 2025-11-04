@@ -10,6 +10,7 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 const MatchList = lazy(() => import('./pages/matchList/MatchList'));
+const CoordinationResults = lazy(() => import('./pages/coordinationResults/CoordinationResults'));
 const Profile = lazy(() => import('./pages/profile/Profile'));
 const ChatHistory = lazy(() => import('./components/chatHistory/ChatHistory'));
 const Chat = lazy(() => import('./components/chat/Chat'));
@@ -43,6 +44,13 @@ function App() {
           <ProtectedRoute>
             <Suspense fallback={<LoadingSpinner />}>
               <MatchList/>
+            </Suspense>
+          </ProtectedRoute>
+          }/>
+        <Route path='coordination-results' element={
+          <ProtectedRoute>
+            <Suspense fallback={<LoadingSpinner />}>
+              <CoordinationResults/>
             </Suspense>
           </ProtectedRoute>
           }/>

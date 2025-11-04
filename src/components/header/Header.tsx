@@ -16,9 +16,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
 import icon from "/icon_dinder.webp";
-
-import notification_icon from "/notification_icon.gif";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import MapModal from "../map/MapModal";
 
 moment.locale("de");
 
@@ -27,6 +26,7 @@ const Header = () => {
     useContext(mainContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
   const location = useLocation();
   const navigation = useNavigate();
 
@@ -176,6 +176,17 @@ const Header = () => {
           {user && (
             <div className="hidden md:flex items-center gap-2">
               <button
+                onClick={() => setMapOpen(true)}
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black! bg-white!"
+                aria-label="Open Coordination Map"
+              >
+                <img
+                  src="/worldwide.png"
+                  alt="Koordination"
+                  className="w-6 h-6"
+                />
+              </button>
+              <button
                 onClick={handleTogglePopup}
                 className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10  focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
               >
@@ -309,6 +320,19 @@ const Header = () => {
                 <>
                   <button
                     onClick={() => {
+                      setMapOpen(true);
+                      setMenuOpen(false);
+                    }}
+                    className="flex items-center justify-center gap-3 p-3 rounded-xl transition-colors w-full font-medium !bg-white border-black! hover:border-black! !hover:bg-amber-400 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
+                  >
+                    <img
+                      src="/worldwide.png"
+                      alt="Koordination"
+                      className="w-5 h-5"
+                    />
+                  </button>
+                  <button
+                    onClick={() => {
                       handleTogglePopup();
                       setMenuOpen(false);
                     }}
@@ -348,9 +372,17 @@ const Header = () => {
             </div>
           </div>
         )}
+        {/* Koordinations-Modal */}
+        <MapModal isOpen={mapOpen} onClose={() => setMapOpen(false)} />
       </div>
     </header>
   );
 };
 
 export default Header;
+
+// Modal außerhalb des Flusses rendern
+// Hinweis: Header ist sticky; Modal verwendet fixed und überdeckt die Seite
+// Rendering des Modals am Ende, damit es immer verfügbar ist
+// (kein Kommentar für Erklärungen im Code selbst)
+// eslint-disable-next-line

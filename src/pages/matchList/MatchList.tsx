@@ -68,17 +68,27 @@ export default function MatchList() {
     );
   }
 
+  const mutualUsers = (matchUsers || []).filter((m) => {
+    const likedByMe = (user?.likes || []).includes(m.username);
+    const alsoMatches = (user?.matches || []).includes(m.username);
+    return likedByMe && alsoMatches;
+  });
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <h4 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">
-          your Matches
+          your friends
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {matchUsers.map((matchUser, index) => {
+          {mutualUsers.map((matchUser, index) => {
             return (
               <div key={index}>
-                <MatchCard matchUser={matchUser} likes={user?.likes || []} currentUsername={user?.username || ""} />
+                <MatchCard
+                  matchUser={matchUser}
+                  likes={user?.likes || []}
+                  currentUsername={user?.username || ""}
+                />
               </div>
             );
           })}
