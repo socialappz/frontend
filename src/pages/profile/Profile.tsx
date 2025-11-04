@@ -296,7 +296,7 @@ export default function Profile() {
             <div className="rounded-3xl p-4 shadow border border-light bg-white d-flex gap-2">
               {!likeSent ? (
                 <button onClick={handleLike} className="btn btn-dark flex-fill">
-                  Like senden
+                  Like ❤️
                 </button>
               ) : null}
               {checkingMatch && canChat ? (
@@ -318,13 +318,10 @@ export default function Profile() {
             onClick={() => setShowLikeModal(false)}
           />
           <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 text-center">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {isMatch ? "Woow, du hast ein Match!" : "Like wurde geschickt"}
-            </h3>
             <p className="text-gray-700 mb-4">
               {isMatch
-                ? "Ihr mögt euch gegenseitig. Ihr könnt jetzt chatten!"
-                : "Bitte warte, bis die andere Person zurückliket."}
+                ? "wow! you can now chat with each other."
+                : "Your like has been sent. Fingers crossed!"}
             </p>
             <div className="flex justify-center gap-2">
               {isMatch ? (
@@ -333,14 +330,14 @@ export default function Profile() {
                   className="btn btn-dark"
                   onClick={() => setShowLikeModal(false)}
                 >
-                  Zum Chat
+                  Chat now 💬
                 </Link>
               ) : null}
               <button
                 className="btn btn-outline-dark"
                 onClick={() => setShowLikeModal(false)}
               >
-                Schließen
+                close
               </button>
             </div>
           </div>
