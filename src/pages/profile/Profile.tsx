@@ -167,6 +167,14 @@ export default function Profile() {
     }
   }, [likeSent, user, matchUser, isMatch]);
 
+  if (matchUser === null) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading profile...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
       {showConfetti && (
