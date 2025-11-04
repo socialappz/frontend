@@ -23,7 +23,7 @@ export default function Profile() {
   const [likeSent, setLikeSent] = useState(false);
   const [isMatch, setIsMatch] = useState<undefined | boolean>(undefined);
   const [checkingMatch, setCheckingMatch] = useState(false);
-  const [notification, setNotification] = useState("");
+  const [, setNotification] = useState("");
   const [showLikeModal, setShowLikeModal] = useState(false);
   const { user, setUser } = useContext(mainContext) as IProfileProps;
   const [canChat, setCanChat] = useState(false);
@@ -200,7 +200,12 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="rounded-3xl overflow-hidden shadow border border-light bg-white">
             <div className="w-100 h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] xl:h-[560px] overflow-hidden">
-              <Carousel indicators={true} controls={true} interval={null} className="w-100 h-100">
+              <Carousel
+                indicators={true}
+                controls={true}
+                interval={null}
+                className="w-100 h-100"
+              >
                 <Carousel.Item>
                   <img
                     src={matchUser?.userImage || "/default-avatar.png"}
@@ -211,7 +216,11 @@ export default function Profile() {
                 <Carousel.Item>
                   <img
                     src={matchUser?.dogImage || "/default-dog.png"}
-                    alt={matchUser?.dogBreed ? `${matchUser.username}'s dog` : "not available"}
+                    alt={
+                      matchUser?.dogBreed
+                        ? `${matchUser.username}'s dog`
+                        : "not available"
+                    }
                     className="d-block w-100 h-100 object-cover"
                   />
                 </Carousel.Item>
@@ -221,10 +230,14 @@ export default function Profile() {
               <h1 className="h4 fw-bold text-dark mb-1">
                 {matchUser?.username}{" "}
                 <span className="text-secondary">
-                  {matchUser?.birthday ? `• ${calculateAge(matchUser?.birthday)}` : ""}
+                  {matchUser?.birthday
+                    ? `• ${calculateAge(matchUser?.birthday)}`
+                    : ""}
                 </span>
               </h1>
-              <div className="text-secondary small mb-2">{matchUser?.gender}</div>
+              <div className="text-secondary small mb-2">
+                {matchUser?.gender}
+              </div>
               {matchUser?.description && (
                 <p className="text-dark m-0">{matchUser.description}</p>
               )}
@@ -235,7 +248,8 @@ export default function Profile() {
             <div className="rounded-3xl p-4 shadow border border-light bg-white">
               <h2 className="h6 fw-semibold text-dark mb-3">Info</h2>
               <div className="d-flex flex-wrap gap-2">
-                {matchUser?.languages && Array.isArray(matchUser?.languages) &&
+                {matchUser?.languages &&
+                  Array.isArray(matchUser?.languages) &&
                   matchUser.languages.map((lang: string, idx: number) => (
                     <span key={idx} className="badge bg-light text-dark border">
                       {lang}
@@ -258,32 +272,40 @@ export default function Profile() {
                 )}
               </div>
               {matchUser?.dogDescription && (
-                <p className="mt-3 text-dark">
-                  🐶 {matchUser?.dogDescription}
-                </p>
+                <p className="mt-3 text-dark">🐶 {matchUser?.dogDescription}</p>
               )}
             </div>
 
             <div className="rounded-3xl p-4 shadow border border-light bg-white">
               <h2 className="h6 fw-semibold text-dark mb-3">Availability</h2>
               <ul className="mb-2">
-                {matchUser?.availability?.weekDay?.map((day: string, idx: number) => (
-                  <li key={idx} className="text-dark small">
-                    {day}
-                  </li>
-                ))}
+                {matchUser?.availability?.weekDay?.map(
+                  (day: string, idx: number) => (
+                    <li key={idx} className="text-dark small">
+                      {day}
+                    </li>
+                  )
+                )}
               </ul>
               <div className="text-dark small">
-                <strong>Time:</strong> {matchUser?.availability?.dayTime || "not available"}
+                <strong>Time:</strong>{" "}
+                {matchUser?.availability?.dayTime || "not available"}
               </div>
             </div>
 
             <div className="rounded-3xl p-4 shadow border border-light bg-white d-flex gap-2">
               {!likeSent ? (
-                <button onClick={handleLike} className="btn btn-dark flex-fill">Like senden</button>
+                <button onClick={handleLike} className="btn btn-dark flex-fill">
+                  Like senden
+                </button>
               ) : null}
               {checkingMatch && canChat ? (
-                <Link to={`/chat/${matchUser._id}`} className="btn btn-outline-dark flex-fill">Chat now 💬</Link>
+                <Link
+                  to={`/chat/${matchUser._id}`}
+                  className="btn btn-outline-dark flex-fill"
+                >
+                  Chat now 💬
+                </Link>
               ) : null}
             </div>
           </div>
@@ -291,9 +313,14 @@ export default function Profile() {
       </div>
       {showLikeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30" onClick={() => setShowLikeModal(false)} />
+          <div
+            className="absolute inset-0 bg-black/30"
+            onClick={() => setShowLikeModal(false)}
+          />
           <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 text-center">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">{isMatch ? "Woow, du hast ein Match!" : "Like wurde geschickt"}</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              {isMatch ? "Woow, du hast ein Match!" : "Like wurde geschickt"}
+            </h3>
             <p className="text-gray-700 mb-4">
               {isMatch
                 ? "Ihr mögt euch gegenseitig. Ihr könnt jetzt chatten!"
@@ -309,7 +336,10 @@ export default function Profile() {
                   Zum Chat
                 </Link>
               ) : null}
-              <button className="btn btn-outline-dark" onClick={() => setShowLikeModal(false)}>
+              <button
+                className="btn btn-outline-dark"
+                onClick={() => setShowLikeModal(false)}
+              >
                 Schließen
               </button>
             </div>
