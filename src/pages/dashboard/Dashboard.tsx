@@ -5,7 +5,7 @@ import { uploadImg } from "../../functions/uploadImg";
 import { dogBreeds } from "../../data/dogs";
 import { languages } from "../../data/laguages";
 import type { IUser } from "../../interfaces/user/IUser";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 // MapComponent entfernt – Koordination erfolgt nun über Header-Popup
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { calculateAge } from "../../functions/calculateAge";
@@ -168,6 +168,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-vh-100 bg-white py-4 px-3 px-sm-4 px-lg-5">
+      <NavLink to="/matche" className="btn btn-outline-dark mb-4">
+        Back to Matches
+      </NavLink>
       <div className="container max-w-2xl mx-auto">
         <form
           ref={formRef}

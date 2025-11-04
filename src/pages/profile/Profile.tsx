@@ -24,6 +24,7 @@ export default function Profile() {
   const [isMatch, setIsMatch] = useState<undefined | boolean>(undefined);
   const [checkingMatch, setCheckingMatch] = useState(false);
   const [notification, setNotification] = useState("");
+  const [showLikeModal, setShowLikeModal] = useState(false);
   const { user, setUser } = useContext(mainContext) as IProfileProps;
   const [canChat, setCanChat] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -101,7 +102,7 @@ export default function Profile() {
         { withCredentials: true }
       );
       setLikeSent(true);
-      setNotification("Like sent. Waiting for a match!");
+      setShowLikeModal(true);
       setJustLiked(true);
       await refreshUser();
     } catch (err) {
@@ -176,138 +177,145 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
+    <div className="w-100 bg-white min-h-screen">
       {showConfetti && (
         <ReactConfetti width={width} height={height} numberOfPieces={400} />
       )}
-      <div className="w-full flex flex-col items-center mt-8">
-        <div className="w-full flex justify-between items-center px-4">
-          <Link className="mb-5" to="/matche" title="Back">
+      <div className="container max-w-6xl mx-auto py-6 px-3">
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <Link className="mb-0" to="/matche" title="Back">
             <ArrowLeft className="w-6 h-6 text-gray-400 hover:text-gray-700" />
           </Link>
           {!likeSent && (
             <button
               onClick={handleLike}
-              className="btn btn-outline-dark flex items-center gap-2 px-4 py-2 rounded-full border-2 border-red-700! text-red-500! bg-white hover:bg-red-700! hover:text-white! transition font-semibold text-lg shadow-sm mb-5"
+              className="btn btn-dark d-flex align-items-center gap-2 px-4 py-2 rounded-full fw-semibold shadow-sm"
               title="Like"
             >
               <Heart className="w-6 h-7" />
             </button>
           )}
         </div>
-        <div className="w-full flex flex-col items-center">
-          <div className="w-full flex justify-center relative">
-            <div className="w-80 h-96 flex items-center justify-center relative">
-              <Carousel
-                indicators={true}
-                controls={true}
-                interval={null}
-                className="w-full h-full"
-              >
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="rounded-3xl overflow-hidden shadow border border-light bg-white">
+            <div className="w-100 h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] xl:h-[560px] overflow-hidden">
+              <Carousel indicators={true} controls={true} interval={null} className="w-100 h-100">
                 <Carousel.Item>
                   <img
                     src={matchUser?.userImage || "/default-avatar.png"}
                     alt={matchUser?.username}
-                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                    className="d-block w-100 h-100 object-cover"
                   />
                 </Carousel.Item>
                 <Carousel.Item>
                   <img
                     src={matchUser?.dogImage || "/default-dog.png"}
-                    alt={
-                      matchUser?.dogBreed
-                        ? `${matchUser.username}'s dog`
-                        : "not available"
-                    }
-                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                    alt={matchUser?.dogBreed ? `${matchUser.username}'s dog` : "not available"}
+                    className="d-block w-100 h-100 object-cover"
                   />
                 </Carousel.Item>
               </Carousel>
             </div>
+            <div className="p-4 border-top position-relative z-10 bg-white">
+              <h1 className="h4 fw-bold text-dark mb-1">
+                {matchUser?.username}{" "}
+                <span className="text-secondary">
+                  {matchUser?.birthday ? `• ${calculateAge(matchUser?.birthday)}` : ""}
+                </span>
+              </h1>
+              <div className="text-secondary small mb-2">{matchUser?.gender}</div>
+              {matchUser?.description && (
+                <p className="text-dark m-0">{matchUser.description}</p>
+              )}
+            </div>
           </div>
-          <div className="w-full flex flex-col items-center mt-6">
-            <h1 className="text-3xl font-bold text-gray-900 text-center">
-              {matchUser?.username},{" "}
-              {matchUser?.birthday ? calculateAge(matchUser?.birthday) : "-"}
-            </h1>
-            <div className="text-gray-500 text-center text-lg mt-1">
-              {matchUser?.gender}
-            </div>
-            {matchUser?.description && (
-              <p className="mt-4 text-gray-700 text-center text-base px-4">
-                {matchUser.description}
-              </p>
-            )}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {matchUser?.languages &&
-                Array.isArray(matchUser?.languages) &&
-                matchUser.languages.map((lang: string, idx: number) => (
-                  <span
-                    key={idx}
-                    className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                  >
-                    {lang}
+
+          <div className="space-y-3">
+            <div className="rounded-3xl p-4 shadow border border-light bg-white">
+              <h2 className="h6 fw-semibold text-dark mb-3">Info</h2>
+              <div className="d-flex flex-wrap gap-2">
+                {matchUser?.languages && Array.isArray(matchUser?.languages) &&
+                  matchUser.languages.map((lang: string, idx: number) => (
+                    <span key={idx} className="badge bg-light text-dark border">
+                      {lang}
+                    </span>
+                  ))}
+                {matchUser?.dogBreed && (
+                  <span className="badge bg-warning-subtle text-warning-emphasis border">
+                    {matchUser?.dogBreed}
                   </span>
-                ))}
-              {matchUser?.dogBreed && (
-                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
-                  {matchUser?.dogBreed}
-                </span>
-              )}
-              {matchUser?.dogAge && (
-                <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm">
-                  {formatDogAge(matchUser?.dogAge)}
-                </span>
-              )}
-              {matchUser?.favoriteToy && (
-                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                  {matchUser.favoriteToy}
-                </span>
-              )}
-            </div>
-            {matchUser?.dogDescription && (
-              <p className="mt-4 text-gray-700 text-center text-base px-4">
-                🐶 {matchUser?.dogDescription}
-              </p>
-            )}
-            <div className="mt-6 w-full flex flex-col items-center">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                availability
-              </h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
-                {matchUser?.availability?.weekDay?.map(
-                  (day: string, idx: number) => (
-                    <li key={idx}>{day}</li>
-                  )
                 )}
-              </ul>
-              <p className="mt-2 text-gray-700">
-                <strong>Time:</strong>{" "}
-                {matchUser?.availability?.dayTime || "not available"}
-              </p>
+                {matchUser?.dogAge && (
+                  <span className="badge bg-pink-100 text-pink-700 border">
+                    {formatDogAge(matchUser?.dogAge)}
+                  </span>
+                )}
+                {matchUser?.favoriteToy && (
+                  <span className="badge bg-primary-subtle text-primary-emphasis border">
+                    {matchUser.favoriteToy}
+                  </span>
+                )}
+              </div>
+              {matchUser?.dogDescription && (
+                <p className="mt-3 text-dark">
+                  🐶 {matchUser?.dogDescription}
+                </p>
+              )}
             </div>
-            <div className="mt-8 flex flex-col items-center gap-2 w-full">
-              <span className="text-pink-600 text-sm min-h-[24px]">
-                {notification}
-              </span>
+
+            <div className="rounded-3xl p-4 shadow border border-light bg-white">
+              <h2 className="h6 fw-semibold text-dark mb-3">Availability</h2>
+              <ul className="mb-2">
+                {matchUser?.availability?.weekDay?.map((day: string, idx: number) => (
+                  <li key={idx} className="text-dark small">
+                    {day}
+                  </li>
+                ))}
+              </ul>
+              <div className="text-dark small">
+                <strong>Time:</strong> {matchUser?.availability?.dayTime || "not available"}
+              </div>
+            </div>
+
+            <div className="rounded-3xl p-4 shadow border border-light bg-white d-flex gap-2">
+              {!likeSent ? (
+                <button onClick={handleLike} className="btn btn-dark flex-fill">Like senden</button>
+              ) : null}
               {checkingMatch && canChat ? (
-                <Link
-                  to={canChat ? `/chat/${matchUser._id}` : "#"}
-                  className={`mt-4 mb-4 inline-block bg-black text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ${
-                    !canChat
-                      ? "opacity-50 cursor-not-allowed pointer-events-none"
-                      : "hover:brightness-110"
-                  }`}
-                  tabIndex={canChat ? 0 : -1}
-                  aria-disabled={!canChat}
-                >
-                  Chat now 💬
-                </Link>
+                <Link to={`/chat/${matchUser._id}`} className="btn btn-outline-dark flex-fill">Chat now 💬</Link>
               ) : null}
             </div>
           </div>
         </div>
       </div>
+      {showLikeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setShowLikeModal(false)} />
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 text-center">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{isMatch ? "Woow, du hast ein Match!" : "Like wurde geschickt"}</h3>
+            <p className="text-gray-700 mb-4">
+              {isMatch
+                ? "Ihr mögt euch gegenseitig. Ihr könnt jetzt chatten!"
+                : "Bitte warte, bis die andere Person zurückliket."}
+            </p>
+            <div className="flex justify-center gap-2">
+              {isMatch ? (
+                <Link
+                  to={`/chat/${matchUser._id}`}
+                  className="btn btn-dark"
+                  onClick={() => setShowLikeModal(false)}
+                >
+                  Zum Chat
+                </Link>
+              ) : null}
+              <button className="btn btn-outline-dark" onClick={() => setShowLikeModal(false)}>
+                Schließen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

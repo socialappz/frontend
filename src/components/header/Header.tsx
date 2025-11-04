@@ -114,7 +114,7 @@ const Header = () => {
   const navLinks = [
     { to: "/", label: "Home", icon: Home },
     { to: "/chats", label: "Chats", icon: MessageCircle },
-    { to: "/matche", label: "Matches", icon: Heart },
+    { to: "/matche", label: "Friends", icon: Heart },
     {
       to: "/myprofile",
       label: "Profile",
@@ -250,7 +250,7 @@ const Header = () => {
                 onClick={deleteAllNotifications}
                 aria-label="notification deleted"
               >
-                <X className="w-5 h-5" />
+                Delete All
               </button>
               <h3 className="font-semibold text-black! mb-3">Notification</h3>
               <div className="max-h-64 overflow-y-auto space-y-2">
