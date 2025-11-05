@@ -25,7 +25,8 @@ function rectanglesOverlap(
 }
 
 export default function CoordinationResults() {
-  const { user, matchUsers, setMatchUsers } = useContext(mainContext);
+  const { user, matchUsers, setMatchUsers, setMapOpen } =
+    useContext(mainContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -71,15 +72,25 @@ export default function CoordinationResults() {
 
   if (loading) return <LoadingSpinner />;
   if (error)
-    return <NoDataMessage message={error} linkText="Zurück" linkTo="/" />;
+    return <NoDataMessage message={error} linkText="Back" linkTo="/" />;
 
   if (!results.length) {
     return (
-      <NoDataMessage
-        message="Keine gemeinsamen Koordinationsbereiche gefunden"
-        linkText="Koordination ändern"
-        linkTo="/dashboard"
-      />
+      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <NoDataMessage
+          message="any Matches found in your coordination area"
+          linkText="change your coordination area"
+          linkTo="/coordination-results"
+        />
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setMapOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Open Coordination Map
+          </button>
+        </div>
+      </div>
     );
   }
 

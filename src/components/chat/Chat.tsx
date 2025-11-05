@@ -18,7 +18,7 @@ interface IMessage {
 }
 
 export default function Chat() {
-  const { user, socket } = useContext(mainContext);
+  const { user, socket, setNotifications } = useContext(mainContext);
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,21 @@ export default function Chat() {
 
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const clearNotifications = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:2000";
+      await fetch(`${apiUrl}/markNotificationsRead`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user?.username }),
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (err) {
+      console.error("Error clearing notifications:", err);
+    }
+  };
 
   const room = useMemo(() => {
     if (!user || !matchUser) return "";
@@ -62,6 +77,7 @@ export default function Chat() {
           withCredentials: true,
         });
         SetMatchUser(resp.data.matchUser);
+        await clearNotifications();
       } catch (err) {
         console.error("Error fetching user:", err);
       } finally {

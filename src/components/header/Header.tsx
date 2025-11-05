@@ -22,11 +22,17 @@ import MapModal from "../map/MapModal";
 moment.locale("de");
 
 const Header = () => {
-  const { notifications, setNotifications, user, setUser, loading } =
-    useContext(mainContext);
+  const {
+    notifications,
+    setNotifications,
+    user,
+    setUser,
+    loading,
+    mapOpen,
+    setMapOpen,
+  } = useContext(mainContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mapOpen, setMapOpen] = useState(false);
   const location = useLocation();
   const navigation = useNavigate();
 
@@ -193,15 +199,10 @@ const Header = () => {
                 <div className="relative">
                   {notifications.filter((n) => !n.read).length > 0 ? (
                     <>
-                      <span className="absolute -top-0 -right-1 bg-red-500 text-white! text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-2 bg-red-500 text-white! text-xs w-4 h-4 rounded-full flex items-center justify-center">
                         {notifications.filter((n) => !n.read).length}
                       </span>
-                      <DotLottieReact
-                        src="https://lottie.host/71eb15bb-f9bb-42e1-bc81-3b53a94090bd/bvgKhOEQVk.lottie"
-                        loop
-                        autoplay
-                        className="h-8 w-7"
-                      />
+                      <Bell className="w-5 h-5 text-white!" />
                     </>
                   ) : (
                     <Bell className="w-5 h-5 text-white!" />
@@ -327,7 +328,7 @@ const Header = () => {
                   >
                     <img
                       src="/worldwide.png"
-                      alt="Koordination"
+                      alt="coordination"
                       className="w-5 h-5"
                     />
                   </button>

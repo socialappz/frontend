@@ -32,6 +32,8 @@ export interface IMainContext {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<any>>;
   reloadUser?: () => Promise<void>;
+  mapOpen: boolean;
+  setMapOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const mainContext = createContext<IMainContext>({
@@ -47,6 +49,8 @@ export const mainContext = createContext<IMainContext>({
   loading: false,
   setLoading: () => {},
   reloadUser: async () => {},
+  mapOpen: false,
+  setMapOpen: () => {},
 });
 
 export default function MainProvider({ children }: { children: ReactNode }) {
@@ -57,6 +61,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
   const [selectedUser, setSelectedUser] = useState({});
   const [socket, setSocket] = useState<Socket | null>(null);
   const socketRef = useRef<Socket | null>(null);
+  const [mapOpen, setMapOpen] = useState(false);
 
   const reloadUser = async () => {
     try {
@@ -144,6 +149,8 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         loading,
         setLoading,
         reloadUser,
+        mapOpen,
+        setMapOpen,
       }}
     >
       {children}

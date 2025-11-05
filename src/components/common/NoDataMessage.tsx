@@ -6,13 +6,17 @@ interface NoDataMessageProps {
   linkTo: string;
 }
 
-export default function NoDataMessage({ message, linkText, linkTo }: NoDataMessageProps) {
+export default function NoDataMessage({
+  message,
+  linkText,
+  linkTo,
+}: NoDataMessageProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center text-center">
       <div className="bg-black border border-white text-white px-6 py-4 rounded-lg shadow-lg">
-        <p className="text-lg mb-4">{message}</p>
-        <Link 
-          className="text-white! hover:text-blue-400! transition-colors duration-300 inline-block"
+        <p className="text-lg mb-3">{message}</p>
+        <Link
+          className="text-white hover:text-blue-300 transition-colors duration-200 inline-block"
           to={linkTo}
         >
           {linkText}
@@ -20,4 +24,4 @@ export default function NoDataMessage({ message, linkText, linkTo }: NoDataMessa
       </div>
     </div>
   );
-} 
+}

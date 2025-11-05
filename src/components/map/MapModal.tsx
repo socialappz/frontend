@@ -40,19 +40,15 @@ export default function MapModal({ isOpen, onClose }: MapModalProps) {
         withCredentials: true,
       });
       onClose();
+      navigate("/coordination-results");
     } catch (e) {
-      console.error("Fehler beim Speichern der Koordination:", e);
+      console.error("Failed by Coordination :", e);
     } finally {
       setSaving(false);
     }
   };
 
   if (!isOpen) return null;
-
-  const handleResult = () => {
-    onClose();
-    navigate("/coordination-results");
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -87,10 +83,7 @@ export default function MapModal({ isOpen, onClose }: MapModalProps) {
             className="btn btn-dark"
             disabled={saving}
           >
-            {saving ? "loading..." : "saved"}
-          </button>
-          <button onClick={handleResult} className="btn btn-outline-dark">
-            Result
+            {saving ? "loading..." : "Result"}
           </button>
         </div>
       </div>

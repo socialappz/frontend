@@ -8,7 +8,8 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import NoDataMessage from "../../components/common/NoDataMessage";
 
 export default function MatchList() {
-  const { matchUsers, setMatchUsers, user } = useContext(mainContext);
+  const { matchUsers, setMatchUsers, user, setMapOpen } =
+    useContext(mainContext);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -60,11 +61,21 @@ export default function MatchList() {
 
   if (!matchUsers.length) {
     return (
-      <NoDataMessage
-        message="Keine Matches gefunden"
-        linkText="Finde neue Freunde"
-        linkTo="/dashboard"
-      />
+      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <NoDataMessage
+          message="any Matches found in your coordination area"
+          linkText="change your coordination area"
+          linkTo="/coordination-results"
+        />
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setMapOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Open Coordination Map
+          </button>
+        </div>
+      </div>
     );
   }
 

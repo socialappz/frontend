@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import { ArrowLeft, Heart } from "lucide-react";
-import { useContext } from "react";
 import { mainContext } from "../../context/MainProvider";
 import type { IUser } from "../../interfaces/user/IUser";
 import Carousel from "react-bootstrap/Carousel";
@@ -293,24 +292,30 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="rounded-3xl p-4 shadow border border-light bg-white d-flex gap-2">
-              {!likeSent ? (
-                <button onClick={handleLike} className="btn btn-dark flex-fill">
-                  Like ❤️
-                </button>
-              ) : null}
-              {checkingMatch && canChat ? (
-                <Link
-                  to={`/chat/${matchUser._id}`}
-                  className="btn btn-outline-dark flex-fill"
-                >
-                  Chat now 💬
-                </Link>
-              ) : null}
-            </div>
+            {(!likeSent || (checkingMatch && canChat)) && (
+              <div className="rounded-3xl p-4 shadow border border-light d-flex gap-2">
+                {!likeSent && (
+                  <button
+                    onClick={handleLike}
+                    className="btn flex justify-center align-items-center flex-fill d-flex align-items-center gap-2 px-4 py-2 rounded-full fw-semibold shadow-sm"
+                  >
+                    <Heart className="w-6 h-7" /> Like
+                  </button>
+                )}
+                {checkingMatch && canChat && (
+                  <Link
+                    to={`/chat/${matchUser._id}`}
+                    className="btn btn-outline-dark flex-fill"
+                  >
+                    Chat now 💬
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
       {showLikeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
