@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:2000";
+// Use explicit API URL when provided; otherwise default to same-origin in production
+// and only fall back to localhost during local development.
+const isBrowser = typeof window !== "undefined";
+const isLocalhost = isBrowser && window.location.hostname === "localhost";
+const baseURL = import.meta.env.VITE_API_URL || (isLocalhost ? "http://localhost:2000" : "");
 
 export const axiosPublic = axios.create({
     baseURL,
