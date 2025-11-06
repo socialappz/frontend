@@ -16,7 +16,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
 import icon from "/icon_dinder.webp";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import MapModal from "../map/MapModal";
 
 moment.locale("de");
