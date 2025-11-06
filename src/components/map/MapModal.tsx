@@ -35,7 +35,7 @@ export default function MapModal({ isOpen, onClose }: MapModalProps) {
         location: { bottomLeft, topRight },
       };
       setUser(updatedUser);
-      await axiosPublic.post("/userprofil", updatedUser, {
+      await axiosPublic.post("/auth/userprofil", updatedUser, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });

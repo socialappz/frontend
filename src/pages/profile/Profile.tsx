@@ -36,7 +36,7 @@ export default function Profile() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const resp = await axiosPublic.get(`/getmatchuser/${id}`, {
+        const resp = await axiosPublic.get(`/auth/getmatchuser/${id}`, {
           withCredentials: true,
         });
         setMatchUser(resp.data.matchUser);
@@ -60,7 +60,7 @@ export default function Profile() {
     const targetUsername = normalize(matchUser.username);
     setCheckingMatch(false);
     axiosPublic
-      .get(`/isMatch/${myUsername}/${targetUsername}`, {
+      .get(`/api/isMatch/${myUsername}/${targetUsername}`, {
         withCredentials: true,
       })
       .then((res) => setIsMatch(res.data.isMatch))
@@ -72,7 +72,7 @@ export default function Profile() {
     const myUsername = normalize(user.username);
     const targetUsername = normalize(matchUser.username);
     axiosPublic
-      .get(`/canChat/${myUsername}/${targetUsername}`, {
+      .get(`/api/canChat/${myUsername}/${targetUsername}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -82,7 +82,7 @@ export default function Profile() {
 
   const refreshUser = async () => {
     try {
-      const resp = await axiosPublic.get("/currentUser", {
+      const resp = await axiosPublic.get("/api/currentUser", {
         withCredentials: true,
       });
       setUser(resp.data);
@@ -96,7 +96,7 @@ export default function Profile() {
     try {
       const targetUsername = normalize(matchUser.username);
       await axiosPublic.post(
-        "/like",
+        "/api/like",
         { likedUsername: targetUsername },
         { withCredentials: true }
       );
@@ -152,7 +152,7 @@ export default function Profile() {
       const checkMatch = async () => {
         try {
           const res = await axiosPublic.get(
-            `/isMatch/${myUsername}/${targetUsername}`,
+            `/api/isMatch/${myUsername}/${targetUsername}`,
             { withCredentials: true }
           );
           if (res.data.isMatch) {
@@ -310,6 +310,13 @@ export default function Profile() {
                     Chat now 💬
                   </Link>
                 )}
+              </div>
+            )}
+            {likeSent && checkingMatch && !canChat && (
+              <div className="rounded-3xl p-4 shadow border border-light bg-white">
+                <p className="m-0 text-dark text-center">
+                  Wait for them to like you back to start chatting! 🤞🏼
+                </p>
               </div>
             )}
           </div>

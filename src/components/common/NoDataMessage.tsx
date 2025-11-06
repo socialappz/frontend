@@ -12,7 +12,7 @@ export default function NoDataMessage({
   linkTo,
 }: NoDataMessageProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center">
+    <div className="flex flex-col items-center justify-center text-center mt-40">
       <div className="bg-black border border-white text-white px-6 py-4 rounded-lg shadow-lg">
         <p className="text-lg mb-3">{message}</p>
         <Link

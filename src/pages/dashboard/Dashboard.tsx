@@ -30,10 +30,12 @@ export default function Dashboard() {
   const [showLanguages, setShowLanguages] = useState(false);
   const [editBirthday, setEditBirthday] = useState(false);
   const [birthdayInput, setBirthdayInput] = useState(user?.birthday || "");
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getUser = async () => {
-      const resp = await axiosPublic.get("/currentUser", {
+      const resp = await axiosPublic.get("/api/currentUser", {
         withCredentials: true,
       });
 
@@ -133,7 +135,7 @@ export default function Dashboard() {
     setUser(updatedUser);
 
     try {
-      await axiosPublic.post("/userprofil", updatedUser, {
+      await axiosPublic.post("/auth/userprofil", updatedUser, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -143,6 +145,17 @@ export default function Dashboard() {
       navigate("/matche");
     } catch (error) {
       console.error("Fehler beim Speichern des Profils:", error);
+      // Build a clear, user-friendly error message
+      // @ts-ignore
+      const status = error?.response?.status;
+      // @ts-ignore
+      const serverMsg = error?.response?.data?.error || "";
+      let message = "Saving failed. Please try again.";
+      if (status === 500 && typeof serverMsg === "string" && serverMsg.toLowerCase().includes("request entity too large")) {
+        message = "Your images are too large to upload. Please choose smaller images or try again after reducing size.";
+      }
+      setErrorMessage(message);
+      setErrorModalOpen(true);
     }
   };
 
@@ -571,6 +584,22 @@ export default function Dashboard() {
           )}
         </form>
       </div>
+      {errorModalOpen && (
+        <div className="fixed inset-0 z-50 d-flex align-items-center justify-content-center">
+          <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-25" onClick={() => setErrorModalOpen(false)} />
+          <div className="position-relative bg-white rounded-4 shadow p-4 mx-3" style={{ maxWidth: 420, width: "100%" }}>
+            <h5 className="fw-semibold text-dark mb-2">Could not save profile</h5>
+            <p className="text-secondary mb-3" style={{ whiteSpace: "pre-wrap" }}>{errorMessage}</p>
+            <ul className="text-secondary small ps-3 mb-3">
+              <li>Reduce image size (recommended &lt; 1-2 MB).</li>
+              <li>Try again later if the problem persists.</li>
+            </ul>
+            <div className="d-flex justify-content-end gap-2">
+              <button className="btn btn-outline-dark" onClick={() => setErrorModalOpen(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

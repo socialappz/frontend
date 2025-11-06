@@ -35,9 +35,12 @@ export default function CoordinationResults() {
     if (Array.isArray(matchUsers) && matchUsers.length > 0) return;
     try {
       setLoading(true);
-      const resp = await axiosPublic.get<IMatchUser[]>("/getMatchedUsers", {
-        withCredentials: true,
-      });
+      const resp = await axiosPublic.get<IMatchUser[]>(
+        "/auth/getMatchedUsers",
+        {
+          withCredentials: true,
+        }
+      );
       setMatchUsers(Array.isArray(resp.data) ? resp.data : []);
     } catch (e) {
       setError("Fehler beim Laden der Ergebnisse");

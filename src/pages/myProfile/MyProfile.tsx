@@ -13,10 +13,6 @@ interface myProfileProps {
 export default function MyProfile() {
   const { user } = useContext(mainContext) as myProfileProps;
 
-  const half = Math.ceil(user?.availability?.weekDay.length / 2);
-  const firstColumn = user?.availability?.weekDay?.slice(0, half);
-  const secondColumn = user?.availability?.weekDay.slice(half);
-
   if (!user) {
     return (
       <div
@@ -27,111 +23,101 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-0 bg-white rounded-3xl shadow-lg flex flex-col items-center min-h-screen">
-      <div className="w-full flex flex-col items-center mt-8">
-        <div className="w-full flex justify-between px-4">
-          <Link to="/matche">
+    <div className="w-100 bg-white min-h-screen">
+      <div className="container max-w-6xl mx-auto py-6 px-3">
+        <div className="d-flex align-items-center justify-content-between mb-3">
+          <Link className="mb-0" to="/matche" title="Back">
             <ArrowLeft className="w-6 h-6 text-gray-400 hover:text-gray-700" />
           </Link>
-          <Link to={"/dashboard"}>
+          <Link className="mb-0" to={"/dashboard"} title="Edit profile">
             <Brush className="w-6 h-6 text-gray-400 hover:text-gray-700" />
           </Link>
         </div>
-        <div className="w-full flex flex-col items-center">
-          <div className="w-full flex justify-center">
-            <div className="w-80 h-96 flex items-center justify-center">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="rounded-3xl overflow-hidden shadow border border-light bg-white">
+            <div className="w-100 h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] xl:h-[560px] overflow-hidden">
               <Carousel
                 indicators={true}
                 controls={true}
                 interval={null}
-                className="w-full h-full"
+                className="w-100 h-100"
               >
                 <Carousel.Item>
                   <img
                     src={user.userImage || "/default-avatar.png"}
                     alt={user.username}
-                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                    className="d-block w-100 h-100 object-cover"
                   />
                 </Carousel.Item>
                 <Carousel.Item>
                   <img
                     src={user.dogImage || "/default-dog.png"}
-                    alt={
-                      user.dogBreed
-                        ? `${user.username}'s dog`
-                        : "Kein Hundebild"
-                    }
-                    className="d-block w-full h-96 object-cover rounded-2xl shadow-md"
+                    alt={user.dogBreed ? `${user.username}'s dog` : "not available"}
+                    className="d-block w-100 h-100 object-cover"
                   />
                 </Carousel.Item>
               </Carousel>
             </div>
+            <div className="p-4 border-top position-relative z-10 bg-white">
+              <h1 className="h4 fw-bold text-dark mb-1">
+                {user.username}{" "}
+                <span className="text-secondary">
+                  {user.birthday ? `• ${calculateAge(user.birthday)}` : ""}
+                </span>
+              </h1>
+              <div className="text-secondary small mb-2">{user.gender}</div>
+              {user.description && (
+                <p className="text-dark m-0">{user.description}</p>
+              )}
+            </div>
           </div>
-          <div className="w-full flex flex-col items-center mt-6">
-            <h1 className="text-3xl font-bold text-gray-900 text-center">
-              {user.username},{" "}
-              {user.birthday ? calculateAge(user.birthday) : "-"}
-            </h1>
-            <div className="text-gray-500 text-center text-lg mt-1">
-              {user.gender}
-            </div>
-            {user.description && (
-              <p className="mt-4 text-gray-700 text-center text-base px-4">
-                {user.description}
-              </p>
-            )}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {user.languages &&
-                Array.isArray(user.languages) &&
-                user.languages.map((lang: string, idx: number) => (
-                  <span
-                    key={idx}
-                    className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                  >
-                    {lang}
+
+          <div className="space-y-3">
+            <div className="rounded-3xl p-4 shadow border border-light bg-white">
+              <h2 className="h6 fw-semibold text-dark mb-3">Info</h2>
+              <div className="d-flex flex-wrap gap-2">
+                {user.languages &&
+                  Array.isArray(user.languages) &&
+                  user.languages.map((lang: string, idx: number) => (
+                    <span key={idx} className="badge bg-light text-dark border">
+                      {lang}
+                    </span>
+                  ))}
+                {user.dogBreed && (
+                  <span className="badge bg-warning-subtle text-warning-emphasis border">
+                    {user.dogBreed}
                   </span>
-                ))}
-              {user.dogBreed && (
-                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
-                  {user.dogBreed}
-                </span>
-              )}
-              {user.dogAge && (
-                <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm">
-                  {formatDogAge(user.dogAge)}
-                </span>
-              )}
-              {user.favoriteToy && (
-                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                  {user.favoriteToy}
-                </span>
+                )}
+                {user.dogAge && (
+                  <span className="badge bg-pink-100 text-pink-700 border">
+                    {formatDogAge(user.dogAge)}
+                  </span>
+                )}
+                {user.favoriteToy && (
+                  <span className="badge bg-primary-subtle text-primary-emphasis border">
+                    {user.favoriteToy}
+                  </span>
+                )}
+              </div>
+              {user.dogDescription && (
+                <p className="mt-3 text-dark">🐶 {user.dogDescription}</p>
               )}
             </div>
-            {user.dogDescription && (
-              <p className="mt-4 text-gray-700 text-center text-base px-4">
-                🐶 {user.dogDescription}
-              </p>
-            )}
-            <div className="mt-6 w-full flex flex-col items-center">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                Availability
-              </h2>
-              <div className="flex flex-col items-center">
-                <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
-                  {firstColumn?.map((day, key) => (
-                    <li key={key}>{day}</li>
-                  ))}
-                </ul>
-                <ul className="list-disc list-inside text-gray-700 space-y-1 text-center">
-                  {secondColumn?.map((day, key) => (
-                    <li key={key + half}>{day}</li>
-                  ))}
-                </ul>
-              </div>
-              <p className="mt-2 text-gray-700">
+
+            <div className="rounded-3xl p-4 shadow border border-light bg-white">
+              <h2 className="h6 fw-semibold text-dark mb-3">Availability</h2>
+              <ul className="mb-2">
+                {user?.availability?.weekDay?.map((day: string, idx: number) => (
+                  <li key={idx} className="text-dark small">
+                    {day}
+                  </li>
+                ))}
+              </ul>
+              <div className="text-dark small">
                 <strong>Time:</strong>{" "}
                 {user?.availability?.dayTime || "Not specified"}
-              </p>
+              </div>
             </div>
           </div>
         </div>

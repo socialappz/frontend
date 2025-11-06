@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { axiosPublic } from "../../utils/axiosConfig";
 import MatchCard from "../machtCard/MatchCard";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +8,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import NoDataMessage from "../../components/common/NoDataMessage";
 
 export default function MatchList() {
-  const { matchUsers, setMatchUsers, user, setMapOpen } =
-    useContext(mainContext);
+  const { matchUsers, setMatchUsers, user } = useContext(mainContext);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -18,9 +17,12 @@ export default function MatchList() {
     try {
       setLoading(true);
       setError(null);
-      const resp = await axiosPublic.get<IMatchUser[]>("/getMatchedUsers", {
-        withCredentials: true,
-      });
+      const resp = await axiosPublic.get<IMatchUser[]>(
+        "/auth/getMatchedUsers",
+        {
+          withCredentials: true,
+        }
+      );
       setMatchUsers(Array.isArray(resp.data) ? resp.data : []);
     } catch (err) {
       console.error("Error fetching matches:", err);
@@ -38,6 +40,14 @@ export default function MatchList() {
     }
     getMatchUsers();
   }, [user, navigate, getMatchUsers]);
+
+  const mutualUsers = useMemo(() => {
+    return (matchUsers || []).filter((m) => {
+      const likedByMe = (user?.likes || []).includes(m.username);
+      const alsoMatches = (user?.matches || []).includes(m.username);
+      return likedByMe && alsoMatches;
+    });
+  }, [matchUsers, user]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -59,31 +69,17 @@ export default function MatchList() {
     );
   }
 
-  if (!matchUsers.length) {
+  if (!mutualUsers.length) {
     return (
       <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
         <NoDataMessage
-          message="any Matches found in your coordination area"
-          linkText="change your coordination area"
-          linkTo="/coordination-results"
+          message="No friends yet"
+          linkText="change your coordination"
+          linkTo="/"
         />
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => setMapOpen(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-          >
-            Open Coordination Map
-          </button>
-        </div>
       </div>
     );
   }
-
-  const mutualUsers = (matchUsers || []).filter((m) => {
-    const likedByMe = (user?.likes || []).includes(m.username);
-    const alsoMatches = (user?.matches || []).includes(m.username);
-    return likedByMe && alsoMatches;
-  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">

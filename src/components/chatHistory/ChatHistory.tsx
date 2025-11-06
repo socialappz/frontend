@@ -27,7 +27,7 @@ export default function ChatHistory() {
 
   const getChats = useCallback(async () => {
     try {
-      const resp = await axiosPublic.get("/getChats", {
+      const resp = await axiosPublic.get("/auth/getChats", {
         withCredentials: true,
       });
       setChats(resp.data);
@@ -40,7 +40,7 @@ export default function ChatHistory() {
 
   const getMatchUsers = useCallback(async () => {
     try {
-      const resp = await axiosPublic.get("/getMatchedUsers", {
+      const resp = await axiosPublic.get("/auth/getMatchedUsers", {
         withCredentials: true,
       });
       setMatchUsers(Array.isArray(resp.data) ? resp.data : []);

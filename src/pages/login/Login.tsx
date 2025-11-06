@@ -25,7 +25,7 @@ export default function Login() {
 
     try {
       const resp = await axiosPublic.post(
-        "/login",
+        "/auth/login",
         { email, password },
         {
           headers: {

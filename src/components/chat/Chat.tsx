@@ -33,7 +33,7 @@ export default function Chat() {
   const clearNotifications = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:2000";
-      await fetch(`${apiUrl}/markNotificationsRead`, {
+      await fetch(`${apiUrl}/auth/markNotificationsRead`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -73,7 +73,7 @@ export default function Chat() {
     const getUser = async () => {
       try {
         setLoading(true);
-        const resp = await axiosPublic.get(`/getmatchuser/${id}`, {
+        const resp = await axiosPublic.get(`/auth/getmatchuser/${id}`, {
           withCredentials: true,
         });
         SetMatchUser(resp.data.matchUser);
@@ -90,7 +90,7 @@ export default function Chat() {
   const getChat = async () => {
     if (!room) return;
     try {
-      const resp = await axiosPublic.post("/getChatHistory", { room });
+      const resp = await axiosPublic.post("/auth/getChatHistory", { room });
       setConversation(resp.data.chat || []);
       lastMsgRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {

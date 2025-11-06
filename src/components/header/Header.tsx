@@ -60,7 +60,7 @@ const Header = () => {
   const clearNotifications = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:2000";
-      await fetch(`${apiUrl}/markNotificationsRead`, {
+      await fetch(`${apiUrl}/auth/markNotificationsRead`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +75,7 @@ const Header = () => {
   const deleteAllNotifications = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:2000";
-      await fetch(`${apiUrl}/clearNotifications`, {
+      await fetch(`${apiUrl}/auth/clearNotifications`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -342,13 +342,8 @@ const Header = () => {
                     <div className="relative">
                       {notifications.filter((n) => !n.read).length > 0 ? (
                         <>
-                          <DotLottieReact
-                            src="https://lottie.host/71eb15bb-f9bb-42e1-bc81-3b53a94090bd/bvgKhOEQVk.lottie"
-                            loop
-                            autoplay
-                            className="h-8 w-7"
-                          />
-                          <span className="absolute -top-2 -right-1 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                          <Bell className="w-5 h-5 text-white!" />
+                          <span className="absolute -top-3 -right-2 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
                             {notifications.filter((n) => !n.read).length}
                           </span>
                         </>

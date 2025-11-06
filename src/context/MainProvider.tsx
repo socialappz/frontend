@@ -71,7 +71,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
         setLoading(false);
         return;
       }
-      const resp = await axiosPublic.get("/currentUser", {
+      const resp = await axiosPublic.get("/api/currentUser", {
         withCredentials: true,
       });
       const userData = resp.data;
