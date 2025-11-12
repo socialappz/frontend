@@ -29,6 +29,8 @@ const Header = () => {
     loading,
     mapOpen,
     setMapOpen,
+    setMatchUsers,
+    reloadUser,
   } = useContext(mainContext);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -250,7 +252,7 @@ const Header = () => {
                 onClick={deleteAllNotifications}
                 aria-label="notification deleted"
               >
-                Delete All
+                Remove All
               </button>
               <h3 className="font-semibold text-black! mb-3">Notification</h3>
               <div className="max-h-64 overflow-y-auto space-y-2">
@@ -259,13 +261,11 @@ const Header = () => {
                 ) : (
                   notifications
                     .map((n, idx) => (
-                      <Link
+                      <div
                         key={idx}
-                        onClick={() => setPopupOpen(false)}
-                        className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                        to={`/chat/${n?.senderId}`}
+                        className="p-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
                       >
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
                             <div className="font-medium text-gray-800">
                               {n.from}
@@ -273,12 +273,71 @@ const Header = () => {
                             <div className="text-sm text-gray-600 mt-1 line-clamp-2">
                               {n.message}
                             </div>
+                            {n?.type === "like" ? (
+                              <div className="flex gap-2 mt-2">
+                                <button
+                                  className="px-3 py-1 rounded-md bg-green-600 text-white text-sm"
+                                  onClick={async () => {
+                                    try {
+                                      await axiosPublic.post(
+                                        "/api/like",
+                                        { likedUsername: n.from },
+                                        { withCredentials: true }
+                                      );
+                                      // refresh user and matched users
+                                      try {
+                                        await (reloadUser && reloadUser());
+                                      } catch {}
+                                      try {
+                                        const resp = await axiosPublic.get(
+                                          "/auth/getMatchedUsers",
+                                          { withCredentials: true }
+                                        );
+                                        setMatchUsers(
+                                          Array.isArray(resp.data)
+                                            ? resp.data
+                                            : []
+                                        );
+                                      } catch {}
+                                      setNotifications((prev) =>
+                                        prev.filter((x) => x !== n)
+                                      );
+                                    } catch (err) {
+                                      console.error("Error liking back:", err);
+                                    } finally {
+                                      setPopupOpen(false);
+                                    }
+                                  }}
+                                >
+                                  Accept
+                                </button>
+                                <button
+                                  className="px-3 py-1 rounded-md bg-gray-900 text-white text-sm"
+                                  onClick={() => {
+                                    setNotifications((prev) =>
+                                      prev.filter((x) => x !== n)
+                                    );
+                                    navigation("/matche");
+                                  }}
+                                >
+                                  Decline
+                                </button>
+                              </div>
+                            ) : (
+                              <Link
+                                onClick={() => setPopupOpen(false)}
+                                className="inline-block mt-2 text-black text-sm hover:underline"
+                                to={`/chat/${n?.senderId}`}
+                              >
+                                Go to Chat
+                              </Link>
+                            )}
                           </div>
-                          <div className="text-xs text-gray-400 ml-2">
+                          <div className="text-xs text-gray-400 ml-2 whitespace-nowrap">
                             {moment(n.sentAt).fromNow()}
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     ))
                     .reverse()
                 )}

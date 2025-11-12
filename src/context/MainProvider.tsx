@@ -17,6 +17,8 @@ export interface INotification {
   sentAt: Date;
   senderId: string;
   friend: string;
+  type?: string;
+  room?: string;
 }
 
 export interface IMainContext {
@@ -102,6 +104,7 @@ export default function MainProvider({ children }: { children: ReactNode }) {
             read: false,
             senderId: data.senderId,
             friend: "",
+            type: data?.type || "chat",
           },
         ]);
       });
