@@ -4,7 +4,12 @@ import axios from "axios";
 // and only fall back to localhost during local development.
 const isBrowser = typeof window !== "undefined";
 const isLocalhost = isBrowser && window.location.hostname === "localhost";
-const baseURL = import.meta.env.VITE_API_URL || (isLocalhost ? "http://localhost:2000" : "");
+
+const fallbackHostedUrl = "https://backend-38x3.onrender.com";
+
+const baseURL =
+  import.meta.env.VITE_API_URL ||
+  (isLocalhost ? "http://localhost:2000" : fallbackHostedUrl);
 
 export const axiosPublic = axios.create({
     baseURL,
