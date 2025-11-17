@@ -102,18 +102,11 @@ const Header = () => {
         Home
       </Link>
       <Link
-        to="/signup"
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-        onClick={onClick}
-      >
-        Sign Up
-      </Link>
-      <Link
         to="/signin"
         className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
         onClick={onClick}
       >
-        Sign In
+        Login
       </Link>
     </div>
   );

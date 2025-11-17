@@ -15,6 +15,9 @@ const Profile = lazy(() => import('./pages/profile/Profile'));
 const ChatHistory = lazy(() => import('./components/chatHistory/ChatHistory'));
 const Chat = lazy(() => import('./components/chat/Chat'));
 const MyProfile = lazy(() => import('./pages/myProfile/MyProfile'));
+const VerifyEmail = lazy(() => import('./pages/verifyEmail/VerifyEmail'));
+const PasswordResetRequest = lazy(() => import('./pages/passwordReset/PasswordResetRequest'));
+const PasswordResetConfirm = lazy(() => import('./pages/passwordReset/PasswordResetConfirm'));
 
 function App() {
 
@@ -23,6 +26,21 @@ function App() {
      <Route index element={<Home/>} />
         <Route path="signup" element={<SignUp/>}/>
         <Route path="signin" element={<Login/>}/>
+        <Route path="verify-email" element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <VerifyEmail/>
+          </Suspense>
+        }/>
+        <Route path="reset-password" element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <PasswordResetRequest/>
+          </Suspense>
+        }/>
+        <Route path="reset-password/confirm" element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <PasswordResetConfirm/>
+          </Suspense>
+        }/>
 
         <Route path='myprofile' element={
           <ProtectedRoute>

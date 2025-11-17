@@ -1,4 +1,5 @@
 import Header from '../components/header/Header'
+import CookieConsent from '../components/common/CookieConsent'
 import { Outlet, useLocation, useMatch } from 'react-router-dom'
 import { useEffect } from 'react'
 
@@ -15,6 +16,7 @@ export default function Layout() {
     <>
       {(notLayout || match) ? "" : <Header />}
       <Outlet />
+      <CookieConsent />
     </>
   )
 }
