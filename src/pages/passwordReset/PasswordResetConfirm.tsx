@@ -19,13 +19,13 @@ const PasswordResetConfirm = () => {
 
     if (!token) {
       setStatus("error");
-      setMessage("Der Link ist ungültig oder abgelaufen.");
+      setMessage("the Link is not valid.");
       return;
     }
 
     if (password !== confirmPassword) {
       setStatus("error");
-      setMessage("Die Passwörter stimmen nicht überein.");
+      setMessage("Password and confirmation do not match.");
       return;
     }
 
@@ -39,14 +39,15 @@ const PasswordResetConfirm = () => {
       });
       setStatus("success");
       setMessage(
-        response.data?.message || "Dein Passwort wurde erfolgreich geändert."
+        response.data?.message || "Your password has been reset successfully."
       );
       setPassword("");
       setConfirmPassword("");
+      navigate("/signin");
     } catch (error: any) {
       const fallback =
         error.response?.data?.errors?.[0]?.message ||
-        "Der Link ist ungültig oder abgelaufen.";
+        "A Link is not valid or has expired.";
       setStatus("error");
       setMessage(fallback);
     }
@@ -55,9 +56,9 @@ const PasswordResetConfirm = () => {
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg rounded-3xl border border-gray-100 bg-white p-8 shadow-xl">
-        <h1 className="text-2xl font-bold text-gray-900">Neues Passwort</h1>
+        <h1 className="text-2xl font-bold text-gray-900">New Password</h1>
         <p className="mt-2 text-sm text-gray-500">
-          Bitte wähle ein sicheres Passwort mit mindestens 8 Zeichen.
+          please enter your new password below to reset it.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -66,7 +67,7 @@ const PasswordResetConfirm = () => {
               htmlFor="new-password"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Neues Passwort
+              New Password
             </label>
             <input
               id="new-password"
@@ -85,7 +86,7 @@ const PasswordResetConfirm = () => {
               htmlFor="confirm-password"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Passwort bestätigen
+              Confirm New Password
             </label>
             <input
               id="confirm-password"
@@ -104,7 +105,7 @@ const PasswordResetConfirm = () => {
             disabled={status === "loading" || !token}
             className="w-full rounded-xl bg-black text-white! px-4 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {status === "loading" ? "Wird gespeichert..." : "Passwort ändern"}
+            {status === "loading" ? "Password will save..." : "Reset Password"}
           </button>
         </form>
 
@@ -120,29 +121,18 @@ const PasswordResetConfirm = () => {
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/signin")}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-50"
-          >
-            Zur Anmeldung
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="w-full rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-50"
-          >
-            Zur Startseite
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="w-full rounded-xl border border-gray-200 px-4 py-3 font-semibold text-white transition-all duration-200 hover:bg-gray-50 mt-5"
+        >
+          Back to Home
+        </button>
       </div>
     </div>
   );
 };
 
 export default PasswordResetConfirm;
-
-
 
 

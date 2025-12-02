@@ -1,5 +1,44 @@
 @import "tailwindcss";
 
+*,
+*::before,
+*::after {
+  cursor: url("/pawprint.png") 16 16, auto !important;
+}
+
+button:hover,
+a:hover,
+input:hover,
+select:hover,
+[role="button"]:hover {
+  cursor: url("/pawprint.png") 16 16, auto !important;
+}
+
+/* Alle interaktiven Elemente explizit */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+.clickable {
+  cursor: url("/pawprint.png") 16 16, auto !important;
+}
+
+/* Disabled-Zustand */
+button:disabled,
+a:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[disabled],
+.disabled {
+  cursor: url("/pawprint.png") 16 16, auto !important;
+}
+
 @layer components {
   .bg-whatsapp-green {
     background-color: var(--whatsapp-green);
