@@ -71,12 +71,12 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
         type: "success",
         message:
           response.data?.message ||
-          "Verifizierungs-E-Mail wurde erneut versendet.",
+          "Verification has been sent to your email address.",
       });
     } catch (error: any) {
       const fallback =
         error.response?.data?.errors?.[0]?.message ||
-        "Der Versand der Verifizierungs-E-Mail ist fehlgeschlagen.";
+        "Failed to send verification email.";
       setResendInfo({
         type: "error",
         message: fallback,
