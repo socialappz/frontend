@@ -29,6 +29,7 @@ const PasswordResetRequest = lazy(
 const PasswordResetConfirm = lazy(
   () => import("./pages/passwordReset/PasswordResetConfirm")
 );
+const Posts = lazy(() => import("./pages/posts/posts"));
 
 function App() {
   const router = createBrowserRouter(
@@ -131,6 +132,16 @@ function App() {
             <ProtectedRoute>
               <Suspense fallback={<LoadingSpinner />}>
                 <ChatHistory />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="posts"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingSpinner />}>
+                <Posts />
               </Suspense>
             </ProtectedRoute>
           }

@@ -7,6 +7,7 @@ import {
   MessageCircle,
   Heart,
   LogOut,
+  Camera,
 } from "lucide-react";
 import moment from "moment";
 // @ts-ignore
@@ -114,6 +115,7 @@ const Header = () => {
   const navLinks = [
     { to: "/", label: "Home", icon: Home },
     { to: "/chats", label: "Chats", icon: MessageCircle },
+    { to: "/posts", label: "Posts", icon: Camera },
     { to: "/matche", label: "Friends", icon: Heart },
     {
       to: "/myprofile",
@@ -316,6 +318,24 @@ const Header = () => {
                                   Decline
                                 </button>
                               </div>
+                            ) : n?.type === "post_like" ||
+                              n?.type === "post_comment" ? (
+                              <Link
+                                onClick={() => {
+                                  setPopupOpen(false);
+                                  setNotifications((prev) =>
+                                    prev.map((notif) =>
+                                      notif === n
+                                        ? { ...notif, read: true }
+                                        : notif
+                                    )
+                                  );
+                                }}
+                                className="inline-block mt-2 text-black text-sm hover:underline"
+                                to="/posts"
+                              >
+                                Go to Posts
+                              </Link>
                             ) : (
                               <Link
                                 onClick={() => setPopupOpen(false)}
