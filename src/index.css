@@ -1,5 +1,95 @@
 @import "tailwindcss";
 
+/* Font-Familien aus public/fonts einbinden */
+@font-face {
+  font-family: 'Changa One';
+  src: url('/fonts/Changa_One/ChangaOne-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Changa One';
+  src: url('/fonts/Changa_One/ChangaOne-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Sans';
+  src: url('/fonts/PT_Sans/PTSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Sans';
+  src: url('/fonts/PT_Sans/PTSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Sans';
+  src: url('/fonts/PT_Sans/PTSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PT Sans';
+  src: url('/fonts/PT_Sans/PTSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Slabo 27px';
+  src: url('/fonts/Slabo_27px/Slabo27px-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tinos';
+  src: url('/fonts/Tinos/Tinos-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tinos';
+  src: url('/fonts/Tinos/Tinos-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tinos';
+  src: url('/fonts/Tinos/Tinos-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tinos';
+  src: url('/fonts/Tinos/Tinos-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Standard: Schwarzer Cursor für weiße/helle Bereiche */
 *,
 *::before,
 *::after {
@@ -39,6 +129,59 @@ textarea:disabled,
   cursor: url("/pawprint.png") 16 16, auto !important;
 }
 
+/* Weißer Cursor für dunkle Bereiche */
+.bg-black,
+.bg-dark,
+.bg-gray-900,
+.bg-gray-800,
+.bg-gray-700,
+[class*="bg-black"],
+[class*="bg-dark"],
+[style*="background-color: #000"],
+[style*="background-color: rgb(0, 0, 0)"],
+[style*="background-color: black"],
+.bg-whatsapp-green-dark,
+.bg-whatsapp-green,
+*[class*="bg-black"] *,
+*[class*="bg-dark"] *,
+*[class*="bg-gray-900"] *,
+*[class*="bg-gray-800"] *,
+*[class*="bg-gray-700"] *,
+[data-cursor="white"],
+.cursor-white {
+  cursor: url("/pawprint_white.png") 16 16, auto !important;
+}
+
+.bg-black:hover,
+.bg-dark:hover,
+.bg-gray-900:hover,
+.bg-gray-800:hover,
+.bg-gray-700:hover,
+[class*="bg-black"]:hover,
+[class*="bg-dark"]:hover,
+.bg-whatsapp-green-dark:hover,
+.bg-whatsapp-green:hover,
+.bg-black button,
+.bg-black a,
+.bg-black input,
+.bg-black select,
+.bg-black textarea,
+.bg-dark button,
+.bg-dark a,
+.bg-dark input,
+.bg-dark select,
+.bg-dark textarea,
+.bg-gray-900 button,
+.bg-gray-900 a,
+.bg-gray-800 button,
+.bg-gray-800 a,
+.bg-gray-700 button,
+.bg-gray-700 a,
+[data-cursor="white"] *,
+.cursor-white * {
+  cursor: url("/pawprint_white.png") 16 16, auto !important;
+}
+
 @layer components {
   .bg-whatsapp-green {
     background-color: var(--whatsapp-green);
@@ -61,7 +204,7 @@ textarea:disabled,
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'PT Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -94,6 +237,7 @@ body {
   min-height: 100vh;
   background-color: #fff; /* optional */
   color: black;
+  font-family: 'PT Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 h1 {
   font-size: 3.2em;
