@@ -1,5 +1,3 @@
-import { X } from "lucide-react";
-
 interface DeletePostModalProps {
   onClose: () => void;
   onConfirm: () => void;
