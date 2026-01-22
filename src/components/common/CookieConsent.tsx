@@ -37,20 +37,19 @@ const CookieConsent = () => {
       <div className="w-full max-w-xl rounded-3xl bg-white p-8 shadow-2xl">
         <h2 className="text-2xl font-bold text-gray-900">Cookie Consent</h2>
         <p className="mt-3 text-sm text-gray-600">
-          we use cookies to enhance your experience on our website. By
-          continuing to browse or use our services, you agree to our use of
-          cookies. Please review our Privacy Policy for more information.
+          it's only simple cookies that we use to enhance your experience and
+          analyze site traffic.
         </p>
 
-        <button
-          type="button"
-          onClick={rejectCookies}
-          className="w-full rounded-xl bg-black text-white! px-5 py-3 text-sm font-semibold shadow-lg transition-all duration-200 hover:shadow-xl sm:w-auto"
-        >
-          Reject All Cookies
-        </button>
+        <div className="mt-6 flex justify-between gap-4 sm:justify-end">
+          <button
+            type="button"
+            onClick={rejectCookies}
+            className="w-full rounded-xl bg-black text-white! px-5 py-3 text-sm font-semibold shadow-lg transition-all duration-200 hover:shadow-xl sm:w-auto"
+          >
+            Reject All Cookies
+          </button>
 
-        <div className="mt-6 flex justify-end">
           <button
             type="button"
             onClick={handleAccept}
@@ -59,9 +58,6 @@ const CookieConsent = () => {
             Accept Cookies
           </button>
         </div>
-        <p className="mt-4 text-xs text-gray-400">
-          You can change your cookie preferences at any time in the settings.
-        </p>
       </div>
     </div>
   );
