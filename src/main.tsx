@@ -12,7 +12,10 @@ initDynamicCursor();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MainProvider>
-      <GoogleOAuthProvider clientId="1091903990138-o2dq78j1740onnnbn9mftad75o7kj032.apps.googleusercontent.com">
+      <GoogleOAuthProvider
+        clientId={
+          import.meta.env.VITE_GOOGLE_CLIENT_ID as string}
+      >
         <App />
       </GoogleOAuthProvider>
     </MainProvider>

@@ -25,15 +25,8 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
     message: string;
   } | null>(null);
   const [resendLoading, setResendLoading] = useState(false);
-
-  const loginObj = useRef<any>(null);
-
-  loginObj.current = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      fetchUserInfo(tokenResponse.access_token);
-    },
-    flow: "implicit",
-  });
+  const [googleError, setGoogleError] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const loginEmailRef = useRef<HTMLInputElement>(null);
   const loginPasswordRef = useRef<HTMLInputElement>(null);
@@ -102,6 +95,7 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
     }
     setVerificationPrompt(null);
     setResendInfo(null);
+    setGoogleError("");
     setResendLoading(false);
     setMode(nextMode);
     navigate(nextMode === "signin" ? "/signin" : "/signup", { replace: true });
@@ -275,16 +269,51 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
     onSuccess: (tokenResponse) => {
       fetchUserInfo(tokenResponse.access_token);
     },
+    onError: () => {
+      setGoogleError("Google-Anmeldung fehlgeschlagen.");
+      setGoogleLoading(false);
+    },
     flow: "implicit",
   });
 
+  const handleGoogleClick = () => {
+    setGoogleError("");
+    setGoogleLoading(true);
+    login();
+  };
+
   const fetchUserInfo = async (accessToken: string) => {
-    const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    await res.json();
+    setGoogleError("");
+    setGoogleLoading(true);
+    try {
+      const resp = await axiosPublic.post(
+        "/auth/google",
+        { access_token: accessToken },
+        { withCredentials: true }
+      );
+      if (resp.data.token) {
+        document.cookie = `token=${resp.data.token}; path=/; max-age=${
+          3600 * 24
+        }; secure; samesite=lax`;
+      }
+      setUser(resp.data.loggingUser);
+      if (reloadUser) await reloadUser();
+      setVerificationPrompt(null);
+      setResendInfo(null);
+      setSignupSuccessMessage("");
+      if (!resp.data.loggingUser?.profileCompleted) {
+        navigate("/dashboard");
+      } else {
+        navigate("/matche");
+      }
+    } catch (error: any) {
+      const msg =
+        error.response?.data?.errors?.[0]?.message ||
+        "Google-Anmeldung fehlgeschlagen.";
+      setGoogleError(msg);
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (
@@ -468,30 +497,38 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
                 </div>
 
                 <div className="mt-6">
+                  {googleError && (
+                    <p className="mb-2 text-sm text-red-600">{googleError}</p>
+                  )}
                   <button
                     type="button"
-                    onClick={() => login()}
-                    className="w-full bg-white border border-gray-300 text-white! font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-3"
+                    onClick={handleGoogleClick}
+                    disabled={googleLoading}
+                    className="w-full bg-white border border-gray-300 text-white! font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                      <path
-                        fill="#4285F4"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                      />
-                      <path
-                        fill="#34A853"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                      />
-                      <path
-                        fill="#FBBC05"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                      />
-                      <path
-                        fill="#EA4335"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                      />
-                    </svg>
-                    Sign in with Google
+                    {googleLoading ? (
+                      <span className="inline-block w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                    ) : (
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        />
+                      </svg>
+                    )}
+                    {googleLoading ? "Wird angemeldet…" : "Mit Google anmelden"}
                   </button>
                 </div>
               </div>
@@ -601,18 +638,64 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
                   disabled={signupLoading}
                   className="w-full bg-back text-white! font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  Sign Up
+                  Registrieren
                 </button>
               )}
 
-              <p className="text-center text-sm text-gray-600">
-                Already have an account?{" "}
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">ODER</span>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  {googleError && (
+                    <p className="mb-2 text-sm text-red-600">{googleError}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleGoogleClick}
+                    disabled={googleLoading}
+                    className="w-full bg-white border border-gray-300 text-white! font-medium py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {googleLoading ? (
+                      <span className="inline-block w-5 h-5 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+                    ) : (
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        />
+                      </svg>
+                    )}
+                    {googleLoading ? "Wird angemeldet…" : "Mit Google registrieren"}
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-center text-sm text-gray-600 mt-4">
+                Bereits ein Konto?{" "}
                 <button
                   type="button"
                   onClick={() => handleModeChange("signin")}
-                  className="font-semibold text-white! hover:text-black! hover:bg-white! transition-colors mt-4 hover:shadow-lg px-2 py-2 rounded-lg hover:shadow-gray-500! "
+                  className="font-semibold text-white! hover:text-black! hover:bg-white! transition-colors hover:shadow-lg px-2 py-2 rounded-lg hover:shadow-gray-500! "
                 >
-                  Log In
+                  Einloggen
                 </button>
               </p>
             </form>
