@@ -31,6 +31,8 @@ const PasswordResetConfirm = lazy(
 );
 const Posts = lazy(() => import("./pages/posts/posts"));
 
+
+// APP COMPONENT
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
