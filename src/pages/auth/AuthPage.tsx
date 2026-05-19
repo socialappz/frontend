@@ -27,7 +27,7 @@ const AuthPage = ({ initialMode = "signin" }: AuthPageProps) => {
   } | null>(null);
   const [resendLoading, setResendLoading] = useState(false);
   const [googleError, setGoogleError] = useState("");
-  const [googleLoading, setGoogleLoading] = useState(false);
+  const [, setGoogleLoading] = useState(false);
 
   const loginEmailRef = useRef<HTMLInputElement>(null);
   const loginPasswordRef = useRef<HTMLInputElement>(null);
