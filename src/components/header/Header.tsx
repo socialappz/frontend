@@ -16,7 +16,7 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
-import icon from "/icon_dinder.webp";
+import icon from "/icon_dinder.webp"; // Falls du stattdessen das neue /logo.png willst, kannst du es unten im <img> src anpassen
 import MapModal from "../map/MapModal";
 
 moment.locale("de");
@@ -93,41 +93,18 @@ const Header = () => {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  const NavLinks = ({ onClick }: { onClick?: () => void }) => (
-    <div className="flex flex-col sm:flex-row gap-3 w-full">
-      <Link
-        to="/"
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-        onClick={onClick}
-      >
-        Home
-      </Link>
-      <Link
-        to="/signin"
-        className="w-full sm:w-auto bg-black text-white! font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center"
-        onClick={onClick}
-      >
-        Login
-      </Link>
-    </div>
-  );
-
   const navLinks = [
     { to: "/", label: "Home", icon: Home },
     { to: "/chats", label: "Chats", icon: MessageCircle },
     { to: "/posts", label: "Posts", icon: Camera },
     { to: "/matche", label: "Friends", icon: Heart },
-    {
-      to: "/myprofile",
-      label: "Profile",
-      icon: null,
-    },
+    { to: "/myprofile", label: "Profile", icon: null },
   ];
 
   if (loading) {
     return (
-      <header className="bg-white shadow-sm border-b">
-        <div className="px-4 py-3">
+      <header className="bg-white shadow-sm border-b font-['Futura',_sans-serif]">
+        <div className="px-4 py-3 max-w-[1200px] mx-auto">
           <LoadingSpinner size="small" text="Loading..." />
         </div>
       </header>
@@ -135,29 +112,54 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50 w-full">
-      <div className="px-4 py-3">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50 w-full font-['Futura',_sans-serif]">
+      <div className="max-w-[1200px] mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
+          
           {/* Logo/Brand */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-xl font-bold text-black!"
-          >
-            <img src={icon} alt="Logo" className="w-10" />
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Dinder Logo" className="h-8 object-contain" />
           </Link>
 
           {/* Desktop Navigation */}
           {user === null ? (
-            <div className="hidden md:flex items-center gap-4">
-              <NavLinks />
-            </div>
+            <>
+              {/* Center Links (Logged Out Desktop) */}
+              <div className="hidden md:flex gap-10 font-bold text-sm text-[#006557]">
+                <Link to="/" className="text-[#00A991] hover:text-[#008774] transition">
+                  Home
+                </Link>
+                <Link to="#" className="hover:text-[#00A991] transition">
+                  How Dinder Works
+                </Link>
+                <Link to="/signup" className="hover:text-[#00A991] transition">
+                  Register Now
+                </Link>
+              </div>
+              
+              {/* Right Buttons (Logged Out Desktop) */}
+              <div className="hidden md:flex gap-4 items-center">
+                <Link
+                  to="/signin"
+                  className="border-2 border-[#006557] text-[#006557] px-8 py-2.5 rounded-full font-bold hover:bg-[#006557] hover:text-white transition inline-block text-center"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-[#00A991] text-white px-8 py-2.5 rounded-full font-bold hover:bg-[#008774] transition inline-block text-center"
+                >
+                  Sign up
+                </Link>
+              </div>
+            </>
           ) : (
             <div className="hidden md:flex items-center gap-2 flex-1 justify-center">
               {navLinks.map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
                   to={to}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors font-medium text-black!"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-[#FCF8EA] transition-colors font-bold text-[#006557] hover:text-[#00A991]"
                 >
                   {label === "Profile" ? (
                     <img
@@ -174,12 +176,12 @@ const Header = () => {
             </div>
           )}
 
-          {/* Notification & Logout */}
+          {/* Notification & Logout (Logged In Desktop) */}
           {user && (
-            <div className="hidden md:flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-4">
               <button
                 onClick={() => setMapOpen(true)}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black! bg-white!"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10 focus:outline-none"
                 aria-label="Open Coordination Map"
               >
                 <img
@@ -190,40 +192,40 @@ const Header = () => {
               </button>
               <button
                 onClick={handleTogglePopup}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10  focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors h-10 focus:outline-none"
               >
                 <div className="relative">
                   {notifications.filter((n) => !n.read).length > 0 ? (
                     <>
-                      <span className="absolute -top-1 -right-2 bg-red-500 text-white! text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                         {notifications.filter((n) => !n.read).length}
                       </span>
-                      <Bell className="w-5 h-5 text-white!" />
+                      <Bell className="w-5 h-5 text-[#35374B]" />
                     </>
                   ) : (
-                    <Bell className="w-5 h-5 text-white!" />
+                    <Bell className="w-5 h-5 text-[#35374B]" />
                   )}
                 </div>
               </button>
               <button
                 onClick={logOutFunc}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
+                className="bg-red-500 text-white px-5 py-2.5 rounded-full font-bold transition-colors flex items-center gap-2 hover:bg-red-600 focus:outline-none"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Logout</span>
+                <span>Logout</span>
               </button>
             </div>
           )}
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden  bg-black! text-black! font-semibold rounded-lg  hover:text-black! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! border-black!"
+            className="md:hidden p-2 text-[#006557] focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? (
-              <X className="w-6 h-6 text-white!" />
+              <X className="w-7 h-7" />
             ) : (
-              <Menu className="w-6 h-6 text-white!" />
+              <Menu className="w-7 h-7" />
             )}
           </button>
         </div>
@@ -238,19 +240,19 @@ const Header = () => {
             />
             {/* Popup */}
             <div
-              className="absolute right-4 top-20 w-80 bg-white shadow-xl border rounded-2xl z-50 p-4"
+              className="absolute right-4 md:right-[calc(50vw-600px+24px)] top-20 w-80 bg-white shadow-xl border rounded-2xl z-50 p-4"
               onClick={(e) => e.stopPropagation()}
             >
               {/* X-Button zum Löschen aller Benachrichtigungen */}
               <button
-                className="absolute top-2 right-2 text-white! focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2! hover:border-black!"
+                className="absolute top-3 right-3 text-sm text-gray-500 hover:text-red-500 focus:outline-none font-bold transition"
                 onClick={deleteAllNotifications}
                 aria-label="notification deleted"
               >
-                Remove All
+                Clear All
               </button>
-              <h3 className="font-semibold text-black! mb-3">Notification</h3>
-              <div className="max-h-64 overflow-y-auto space-y-2">
+              <h3 className="font-bold text-[#35374B] text-lg mb-3">Notifications</h3>
+              <div className="max-h-64 overflow-y-auto space-y-2 font-sans">
                 {notifications.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">Empty</p>
                 ) : (
@@ -262,7 +264,7 @@ const Header = () => {
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
-                            <div className="font-medium text-gray-800">
+                            <div className="font-bold text-[#35374B]">
                               {n.from}
                             </div>
                             <div className="text-sm text-gray-600 mt-1 line-clamp-2">
@@ -271,7 +273,7 @@ const Header = () => {
                             {n?.type === "like" ? (
                               <div className="flex gap-2 mt-2">
                                 <button
-                                  className="px-3 py-1 rounded-md bg-green-600 text-white text-sm"
+                                  className="px-3 py-1.5 rounded-md bg-[#00A991] text-white text-sm font-bold hover:bg-[#008774] transition"
                                   onClick={async () => {
                                     try {
                                       await axiosPublic.post(
@@ -279,7 +281,6 @@ const Header = () => {
                                         { likedUsername: n.from },
                                         { withCredentials: true }
                                       );
-                                      // refresh user and matched users
                                       try {
                                         await (reloadUser && reloadUser());
                                       } catch {}
@@ -307,7 +308,7 @@ const Header = () => {
                                   Accept
                                 </button>
                                 <button
-                                  className="px-3 py-1 rounded-md bg-gray-900 text-white text-sm"
+                                  className="px-3 py-1.5 rounded-md bg-gray-200 text-[#35374B] text-sm font-bold hover:bg-gray-300 transition"
                                   onClick={() => {
                                     setNotifications((prev) =>
                                       prev.filter((x) => x !== n)
@@ -331,7 +332,7 @@ const Header = () => {
                                     )
                                   );
                                 }}
-                                className="inline-block mt-2 text-black text-sm hover:underline"
+                                className="inline-block mt-2 text-[#00A991] text-sm hover:underline font-bold"
                                 to="/posts"
                               >
                                 Go to Posts
@@ -339,14 +340,14 @@ const Header = () => {
                             ) : (
                               <Link
                                 onClick={() => setPopupOpen(false)}
-                                className="inline-block mt-2 text-black text-sm hover:underline"
+                                className="inline-block mt-2 text-[#00A991] text-sm hover:underline font-bold"
                                 to={`/chat/${n?.senderId}`}
                               >
                                 Go to Chat
                               </Link>
                             )}
                           </div>
-                          <div className="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                          <div className="text-xs text-gray-400 ml-2 whitespace-nowrap font-medium">
                             {moment(n.sentAt).fromNow()}
                           </div>
                         </div>
@@ -359,19 +360,32 @@ const Header = () => {
           </>
         )}
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {menuOpen && (
-          <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex justify-end">
-            <div className="w-72 bg-white h-full shadow-lg p-6 flex flex-col gap-6">
+          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm flex justify-end">
+            <div className="w-72 bg-white h-full shadow-lg p-6 flex flex-col gap-6 pt-20 relative">
+              <button
+                className="absolute top-6 right-6 text-[#006557]"
+                onClick={() => setMenuOpen(false)}
+              >
+                <X className="w-7 h-7" />
+              </button>
+
               <div className="flex flex-col gap-4">
                 {user === null ? (
-                  <NavLinks onClick={() => setMenuOpen(false)} />
+                  <>
+                    <Link to="/" onClick={() => setMenuOpen(false)} className="text-[#006557] font-bold text-lg">Home</Link>
+                    <Link to="#" onClick={() => setMenuOpen(false)} className="text-[#006557] font-bold text-lg">How Dinder Works</Link>
+                    <hr className="border-gray-200 my-4" />
+                    <Link to="/signin" onClick={() => setMenuOpen(false)} className="border-2 border-[#006557] text-[#006557] px-6 py-3 rounded-full font-bold text-center">Login</Link>
+                    <Link to="/signup" onClick={() => setMenuOpen(false)} className="bg-[#00A991] text-white px-6 py-3 rounded-full font-bold text-center">Sign up</Link>
+                  </>
                 ) : (
                   navLinks.map(({ to, label, icon: Icon }) => (
                     <Link
                       key={to}
                       to={to}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors font-medium text-black!"
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#FCF8EA] transition-colors font-bold text-[#006557]"
                       onClick={() => setMenuOpen(false)}
                     >
                       {label === "Profile" ? (
@@ -388,57 +402,60 @@ const Header = () => {
                   ))
                 )}
               </div>
+
               {user && (
-                <>
+                <div className="flex flex-col gap-3 mt-auto mb-10">
                   <button
                     onClick={() => {
                       setMapOpen(true);
                       setMenuOpen(false);
                     }}
-                    className="flex items-center justify-center gap-3 p-3 rounded-xl transition-colors w-full font-medium !bg-white border-black! hover:border-black! !hover:bg-amber-400 focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
+                    className="flex items-center justify-center gap-3 p-3 rounded-xl transition-colors w-full font-bold text-[#006557] bg-[#FCF8EA]"
                   >
                     <img
                       src="/worldwide.png"
                       alt="coordination"
                       className="w-5 h-5"
                     />
+                    <span>Map</span>
                   </button>
                   <button
                     onClick={() => {
                       handleTogglePopup();
                       setMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 p-3 rounded-xl text-white border-black! transition-colors w-full font-medium focus:outline-none! focus:ring-2 focus:ring-white! focus:ring-offset-2!"
+                    className="flex items-center gap-3 p-3 rounded-xl text-white bg-[#00A991] transition-colors w-full font-bold"
                   >
                     <div className="relative">
                       {notifications.filter((n) => !n.read).length > 0 ? (
                         <>
-                          <Bell className="w-5 h-5 text-white!" />
-                          <span className="absolute -top-3 -right-2 bg-red-500 text-white! text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                          <Bell className="w-5 h-5 text-white" />
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                             {notifications.filter((n) => !n.read).length}
                           </span>
                         </>
                       ) : (
-                        <Bell className="w-5 h-5 text-white!" />
+                        <Bell className="w-5 h-5 text-white" />
                       )}
                     </div>
-                    <span className="text-white">Notification</span>
+                    <span>Notifications</span>
                   </button>
                   <button
                     onClick={() => {
                       logOutFunc();
                       setMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 p-3 rounded-xl text-white hover:bg-white! hover:text-black! border-black! transition-colors w-full font-medium"
+                    className="flex items-center gap-3 p-3 rounded-xl text-white bg-red-500 transition-colors w-full font-bold"
                   >
                     <LogOut className="w-5 h-5" />
                     <span>Logout</span>
                   </button>
-                </>
+                </div>
               )}
             </div>
           </div>
         )}
+        
         {/* Koordinations-Modal */}
         <MapModal isOpen={mapOpen} onClose={() => setMapOpen(false)} />
       </div>
@@ -447,9 +464,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// Modal außerhalb des Flusses rendern
-// Hinweis: Header ist sticky; Modal verwendet fixed und überdeckt die Seite
-// Rendering des Modals am Ende, damit es immer verfügbar ist
-// (kein Kommentar für Erklärungen im Code selbst)
-// eslint-disable-next-line
