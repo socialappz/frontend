@@ -16,7 +16,6 @@ import { mainContext } from "../../context/MainProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../utils/axiosConfig";
 import LoadingSpinner from "../common/LoadingSpinner";
-import icon from "/icon_dinder.webp"; // Falls du stattdessen das neue /logo.png willst, kannst du es unten im <img> src anpassen
 import MapModal from "../map/MapModal";
 
 moment.locale("de");
@@ -115,10 +114,13 @@ const Header = () => {
     <header className="bg-white shadow-sm border-b sticky top-0 z-50 w-full font-['Futura',_sans-serif]">
       <div className="max-w-[1200px] mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          
           {/* Logo/Brand */}
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Dinder Logo" className="h-8 object-contain" />
+            <img
+              src="/logo.png"
+              alt="Dinder Logo"
+              className="h-8 object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -126,7 +128,10 @@ const Header = () => {
             <>
               {/* Center Links (Logged Out Desktop) */}
               <div className="hidden md:flex gap-10 font-bold text-sm text-[#006557]">
-                <Link to="/" className="text-[#00A991] hover:text-[#008774] transition">
+                <Link
+                  to="/"
+                  className="text-[#00A991] hover:text-[#008774] transition"
+                >
                   Home
                 </Link>
                 <Link to="#" className="hover:text-[#00A991] transition">
@@ -136,7 +141,7 @@ const Header = () => {
                   Register Now
                 </Link>
               </div>
-              
+
               {/* Right Buttons (Logged Out Desktop) */}
               <div className="hidden md:flex gap-4 items-center">
                 <Link
@@ -251,7 +256,9 @@ const Header = () => {
               >
                 Clear All
               </button>
-              <h3 className="font-bold text-[#35374B] text-lg mb-3">Notifications</h3>
+              <h3 className="font-bold text-[#35374B] text-lg mb-3">
+                Notifications
+              </h3>
               <div className="max-h-64 overflow-y-auto space-y-2 font-sans">
                 {notifications.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">Empty</p>
@@ -279,7 +286,7 @@ const Header = () => {
                                       await axiosPublic.post(
                                         "/api/like",
                                         { likedUsername: n.from },
-                                        { withCredentials: true }
+                                        { withCredentials: true },
                                       );
                                       try {
                                         await (reloadUser && reloadUser());
@@ -287,16 +294,16 @@ const Header = () => {
                                       try {
                                         const resp = await axiosPublic.get(
                                           "/auth/getMatchedUsers",
-                                          { withCredentials: true }
+                                          { withCredentials: true },
                                         );
                                         setMatchUsers(
                                           Array.isArray(resp.data)
                                             ? resp.data
-                                            : []
+                                            : [],
                                         );
                                       } catch {}
                                       setNotifications((prev) =>
-                                        prev.filter((x) => x !== n)
+                                        prev.filter((x) => x !== n),
                                       );
                                     } catch (err) {
                                       console.error("Error liking back:", err);
@@ -311,7 +318,7 @@ const Header = () => {
                                   className="px-3 py-1.5 rounded-md bg-gray-200 text-[#35374B] text-sm font-bold hover:bg-gray-300 transition"
                                   onClick={() => {
                                     setNotifications((prev) =>
-                                      prev.filter((x) => x !== n)
+                                      prev.filter((x) => x !== n),
                                     );
                                     navigation("/matche");
                                   }}
@@ -328,8 +335,8 @@ const Header = () => {
                                     prev.map((notif) =>
                                       notif === n
                                         ? { ...notif, read: true }
-                                        : notif
-                                    )
+                                        : notif,
+                                    ),
                                   );
                                 }}
                                 className="inline-block mt-2 text-[#00A991] text-sm hover:underline font-bold"
@@ -374,11 +381,35 @@ const Header = () => {
               <div className="flex flex-col gap-4">
                 {user === null ? (
                   <>
-                    <Link to="/" onClick={() => setMenuOpen(false)} className="text-[#006557] font-bold text-lg">Home</Link>
-                    <Link to="#" onClick={() => setMenuOpen(false)} className="text-[#006557] font-bold text-lg">How Dinder Works</Link>
+                    <Link
+                      to="/"
+                      onClick={() => setMenuOpen(false)}
+                      className="text-[#006557] font-bold text-lg"
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      to="#"
+                      onClick={() => setMenuOpen(false)}
+                      className="text-[#006557] font-bold text-lg"
+                    >
+                      How Dinder Works
+                    </Link>
                     <hr className="border-gray-200 my-4" />
-                    <Link to="/signin" onClick={() => setMenuOpen(false)} className="border-2 border-[#006557] text-[#006557] px-6 py-3 rounded-full font-bold text-center">Login</Link>
-                    <Link to="/signup" onClick={() => setMenuOpen(false)} className="bg-[#00A991] text-white px-6 py-3 rounded-full font-bold text-center">Sign up</Link>
+                    <Link
+                      to="/signin"
+                      onClick={() => setMenuOpen(false)}
+                      className="border-2 border-[#006557] text-[#006557] px-6 py-3 rounded-full font-bold text-center"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={() => setMenuOpen(false)}
+                      className="bg-[#00A991] text-white px-6 py-3 rounded-full font-bold text-center"
+                    >
+                      Sign up
+                    </Link>
                   </>
                 ) : (
                   navLinks.map(({ to, label, icon: Icon }) => (
@@ -455,7 +486,7 @@ const Header = () => {
             </div>
           </div>
         )}
-        
+
         {/* Koordinations-Modal */}
         <MapModal isOpen={mapOpen} onClose={() => setMapOpen(false)} />
       </div>
