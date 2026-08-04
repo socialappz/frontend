@@ -5,14 +5,14 @@ import { useEffect } from "react";
 
 export default function Layout() {
   const location = useLocation();
+
   const notLayout = location.pathname === "/dashboard";
+  // Prüft, ob der aktuelle Pfad in diesem Array existiert
+  const notHeader = ["/signin", "/signup"].includes(location.pathname);
   const match = useMatch("/chat/:id");
 
   useEffect(() => {
-    // Prüfen, ob ein Hash in der URL existiert (z.B. "#works")
     if (location.hash) {
-      // Ein kurzes Timeout stellt sicher, dass die Seite (und die Section)
-      // bereits komplett geladen wurde, bevor gescrollt wird.
       setTimeout(() => {
         const id = location.hash.replace("#", "");
         const element = document.getElementById(id);
@@ -21,14 +21,17 @@ export default function Layout() {
         }
       }, 100);
     } else {
-      // Wenn kein Hash existiert, ganz normal nach oben scrollen
       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
-  }, [location.pathname, location.hash]); // location.hash als Dependency hinzugefügt
+  }, [location.pathname, location.hash]);
+
+  // Wenn notLayout, match ODER notHeader true ist, Header ausblenden
+  const hideHeader = notLayout || match || notHeader;
 
   return (
     <>
-      {notLayout || match ? "" : <Header />}
+      {/* null ist in React die saubere Methode, um nichts zu rendern (statt "") */}
+      {hideHeader ? null : <Header />}
       <Outlet />
       <CookieConsent />
     </>

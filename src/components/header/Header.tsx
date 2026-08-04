@@ -102,7 +102,7 @@ const Header = () => {
 
   if (loading) {
     return (
-      <header className="bg-white shadow-sm border-b font-['Futura',_sans-serif]">
+      <header className="bg-white shadow-sm border-b font-['Inter',sans-serif]">
         <div className="px-4 py-3 max-w-[1200px] mx-auto">
           <LoadingSpinner size="small" text="Loading..." />
         </div>
@@ -127,7 +127,7 @@ const Header = () => {
           {user === null ? (
             <>
               {/* Center Links (Logged Out Desktop) */}
-              <div className="hidden md:flex gap-10 font-semibold text-sm text-[#006557]">
+              <div className="hidden md:flex gap-10 font-semibold! text-sm text-[#006557]">
                 <Link
                   to="/"
                   className="text-[#00A991] hover:text-[#008774] transition"
