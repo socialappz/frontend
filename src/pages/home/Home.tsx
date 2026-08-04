@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <main className="bg-white min-h-screen w-full font-['Jost',sans-serif] text-[#35374B]">
+    <main className="bg-white min-h-screen w-full font-['Jost',sans-serif]! text-[#35374B]">
       {/* Header (Hero Section) */}
       <header className="max-w-[90%] mx-auto px-2 py-2 md:py-12 grid md:grid-cols-2 gap-0 items-center">
         <div>
@@ -61,10 +61,10 @@ export default function Home() {
           />
         </div>
         <div className="bg-[#008774] rounded-[2.5rem] p-10 md:p-16 flex flex-col justify-center">
-          <h2 className="text-[32px] md:text-[56px] font-extrabold text-white tracking-[2px] mb-6 leading-tight">
+          <h2 className="text-[48px]! md:text-[56px] font-extrabold! text-white tracking-[2px] mb-6 leading-tight">
             Never <span className="text-[#004C41]">walk</span> alone
           </h2>
-          <p className="text-white text-[16px] md:text-[18px] mb-6 leading-relaxed">
+          <p className="text-white text-[19px]! md:text-[18px] mb-6 leading-relaxed">
             Dinder connects dog lovers in your area. Find new friends for you
             and your dog, share walks, and experience adventures together. No
             more lonely walks – with Dinder, every walk is a chance to meet
@@ -78,9 +78,9 @@ export default function Home() {
       </section>
 
       {/* Main Section 2: Meet new People */}
-      <section className="max-w-[90%] mx-auto px-6 py-12 grid grid md:grid-cols-[30%_70%] gap-3">
+      <section className="max-w-[90%] mx-auto px-6 py-12 grid md:grid-cols-[30%_70%] gap-3">
         <div className="bg-[#FCF8EA] rounded-[2.5rem] p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
-          <h2 className="text-[32px] md:text-[56px] font-extrabold text-[#35374B] tracking-[2px] mb-6 leading-tight">
+          <h2 className="text-[48px]! font-extrabold! md:text-[56px] text-[#35374B] tracking-[2px] mb-6 leading-tight">
             Meet new <br />
             <span className="text-[#00A991]">People</span>
           </h2>
@@ -109,7 +109,7 @@ export default function Home() {
           />
         </div>
         <div className="bg-[#90E4DD] rounded-[2.5rem] p-10 md:p-16 flex flex-col justify-center">
-          <h2 className="text-[32px] md:text-[56px] font-extrabold text-[#FCF8EA] tracking-[2px] mb-6 leading-tight">
+          <h2 className="text-[42px]! md:text-[56px] font-extrabold! text-[#FCF8EA]! tracking-[2px] mb-6 leading-tight">
             Share <span className="text-[#004C41]">adventures</span>
           </h2>
           <p className="text-[#35374B] text-[16px] md:text-[18px] leading-relaxed">
@@ -122,7 +122,7 @@ export default function Home() {
       {/* Main Section 4: How Dinder Works */}
       <section className="max-w-[90%] mx-auto px-6 py-24" id="works">
         <div className="text-center mb-16">
-          <h2 className="text-[32px] md:text-[56px] font-extrabold text-[#35374B] tracking-[2px] mb-4">
+          <h2 className="text-[42px]! md:text-[56px] font-extrabold! text-[#35374B] tracking-[2px] mb-4">
             How Dinder Works
           </h2>
           <p className="text-[#35374B] text-[18px]">
