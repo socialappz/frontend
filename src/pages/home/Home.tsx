@@ -1,13 +1,15 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
   return (
-    <main className="bg-white min-h-screen w-full font-['Futura',sans-serif] text-[#35374B]">
+    <main className="bg-white min-h-screen w-full font-['Jost',sans-serif] text-[#35374B]">
       {/* Header (Hero Section) */}
-      <header className="max-w-[1200px] mx-auto px-6 py-6 md:py-12 grid md:grid-cols-2 gap-12 items-center">
+      <header className="max-w-[90%] mx-auto px-2 py-2 md:py-12 grid md:grid-cols-2 gap-0 items-center">
         <div>
           <div className="inline-flex items-center gap-2 bg-[#90E4DD]/40 text-[#006557] px-4 py-1.5 rounded-full text-sm font-bold mb-6">
             🐕 Now in Berlin · Hamburg · Munich
           </div>
-          <h1 className="text-[40px] md:text-[68px] font-extrabold leading-[1.1] tracking-[2px] mb-6 text-[#35374B]">
+          <h1 className="text-[40px] md:text-[68px] font-Jost font-extrabold! leading-[1.1] tracking-[2px] mb-6 text-[#35374B]">
             Never Walk <br className="hidden md:block" />
             <span className="text-[#00A991]">Alone</span> Again
           </h1>
@@ -16,11 +18,13 @@ export default function Home() {
             friends, and give your dog the social life they deserve.
           </p>
           <div className="flex flex-wrap gap-4 mb-10">
-            <button className="bg-[#00A991] text-white px-8 py-3.5 rounded-full font-bold hover:bg-[#008774] transition">
+            <button className="border-2 border-[#00A991] text-white px-16 py-2.5 rounded-[29px]! bg-[#00A991] font-bold hover:bg-[#008774] transition">
               Join the Community
             </button>
-            <button className="border-2 border-[#006557] text-[#006557] px-8 py-3.5 rounded-full font-bold hover:bg-[#006557] hover:text-white transition">
-              Log in
+            <button className="border-2 border-[#00A991] text-[#00A991]! px-16 py-4.5 rounded-[29px]! bg-[white] font-bold hover:bg-[#008774] hover:text-white! transition">
+              <Link className="text-[#00A991]! " to={"/signin"}>
+                Log In
+              </Link>
             </button>
           </div>
           <div className="flex flex-wrap gap-6 text-[15px] font-bold text-[#006557]">
@@ -48,7 +52,7 @@ export default function Home() {
       </header>
 
       {/* Main Section 1: Never walk alone */}
-      <section className="max-w-[1200px] mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
+      <section className="max-w-[90%] mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
         <div className="w-full h-[350px] md:h-auto md:min-h-[500px]">
           <img
             src="/right_main_bild.png"
@@ -74,7 +78,7 @@ export default function Home() {
       </section>
 
       {/* Main Section 2: Meet new People */}
-      <section className="max-w-[1200px] mx-auto px-6 py-12 grid grid md:grid-cols-[30%_70%] gap-3">
+      <section className="max-w-[90%] mx-auto px-6 py-12 grid grid md:grid-cols-[30%_70%] gap-3">
         <div className="bg-[#FCF8EA] rounded-[2.5rem] p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
           <h2 className="text-[32px] md:text-[56px] font-extrabold text-[#35374B] tracking-[2px] mb-6 leading-tight">
             Meet new <br />
@@ -96,7 +100,7 @@ export default function Home() {
       </section>
 
       {/* Main Section 3: Share adventures */}
-      <section className="max-w-[1200px] mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
+      <section className="max-w-[90%] mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
         <div className="w-full h-[350px] md:h-auto md:min-h-[500px]">
           <img
             src="/right_main_bild_2.png"
@@ -116,7 +120,7 @@ export default function Home() {
       </section>
 
       {/* Main Section 4: How Dinder Works */}
-      <section className="max-w-[1200px] mx-auto px-6 py-24">
+      <section className="max-w-[90%] mx-auto px-6 py-24" id="works">
         <div className="text-center mb-16">
           <h2 className="text-[32px] md:text-[56px] font-extrabold text-[#35374B] tracking-[2px] mb-4">
             How Dinder Works

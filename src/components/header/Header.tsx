@@ -111,7 +111,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-50 w-full font-['Futura',_sans-serif]">
+    <header className="bg-white shadow-sm sticky top-0 z-50 w-ful font-Inter">
       <div className="max-w-[1200px] mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
@@ -127,14 +127,14 @@ const Header = () => {
           {user === null ? (
             <>
               {/* Center Links (Logged Out Desktop) */}
-              <div className="hidden md:flex gap-10 font-bold text-sm text-[#006557]">
+              <div className="hidden md:flex gap-10 font-semibold text-sm text-[#006557]">
                 <Link
                   to="/"
                   className="text-[#00A991] hover:text-[#008774] transition"
                 >
                   Home
                 </Link>
-                <Link to="#" className="hover:text-[#00A991] transition">
+                <Link to="/#works" className="hover:text-[#00A991] transition">
                   How Dinder Works
                 </Link>
                 <Link to="/signup" className="hover:text-[#00A991] transition">
@@ -146,13 +146,13 @@ const Header = () => {
               <div className="hidden md:flex gap-4 items-center">
                 <Link
                   to="/signin"
-                  className="border-2 border-[#006557] text-[#006557] px-8 py-2.5 rounded-full font-bold hover:bg-[#006557] hover:text-white transition inline-block text-center"
+                  className="border-2 border-[#006557] text-[#006557] px-16 py-2.5 rounded-[29px] font-bold hover:bg-[#006557] hover:text-white transition inline-block text-center"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="bg-[#00A991] text-white px-8 py-2.5 rounded-full font-bold hover:bg-[#008774] transition inline-block text-center"
+                  className="bg-[#00A991] text-white px-16 py-2.5 rounded-[29px] font-bold hover:bg-[#008774] transition inline-block text-center"
                 >
                   Sign up
                 </Link>
@@ -389,7 +389,7 @@ const Header = () => {
                       Home
                     </Link>
                     <Link
-                      to="#"
+                      to="/#works"
                       onClick={() => setMenuOpen(false)}
                       className="text-[#006557] font-bold text-lg"
                     >

@@ -8,6 +8,8 @@ export default {
         extend: {
             fontFamily: {
                 'sans': ['PT Sans', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+                'Inter': ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+                'Jost': ['Jost', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
                 'changa': ['Changa One', 'cursive'],
                 'pt-sans': ['PT Sans', 'sans-serif'],
                 'slabo': ['Slabo 27px', 'serif'],
